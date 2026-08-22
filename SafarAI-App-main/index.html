@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>SafarAI | AI-Powered Travel Planning Platform</title>
+    <meta name="description" content="SafarAI is an AI-powered travel planning platform for smart itineraries, transport tools, safety insights, budget guidance, and personalized travel discovery." />
+    <meta name="theme-color" content="#4f46e5" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="SafarAI | AI-Powered Travel Planning Platform" />
+    <meta property="og:description" content="Plan smarter journeys with AI itineraries, live budgets, safety intelligence and railway tools — all in one place." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      // Apply the saved theme before first paint to avoid a flash of the wrong theme.
+      (function () {
+        try {
+          var stored = localStorage.getItem('safarai_theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = stored || (prefersDark ? 'dark' : 'light');
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+          document.documentElement.style.colorScheme = theme;
+        } catch (e) {}
+      })();
+    </script>
+
+    <script>
+      (function() {
+        window._POSTHOG_REMOTE_CONFIG = window._POSTHOG_REMOTE_CONFIG || {};
+        window._POSTHOG_REMOTE_CONFIG['phc_J1cUTHv4sRZCKzRwa1IHFWnRz6ldOPFm30Viodl5aRW'] = {
+          config: {"analytics":{"endpoint":"/i/v0/e/"},"autocaptureExceptions":false,"autocapture_opt_out":false,"captureDeadClicks":false,"capturePerformance":{"network_timing":true,"web_vitals":true,"web_vitals_allowed_metrics":null},"conversations":false,"defaultIdentifiedOnly":true,"elementsChainAsString":true,"errorTracking":{"autocaptureExceptions":false,"suppressionRules":[]},"hasFeatureFlags":true,"heatmaps":true,"logs":{"captureConsoleLogs":false},"productTours":false,"push":{"appIds":[]},"sdkVersion":{"requested":"1"},"sessionRecording":{"canvasFps":null,"canvasQuality":null,"consoleLogRecordingEnabled":true,"endpoint":"/s/","eventTriggers":[],"linkedFlag":null,"masking":null,"minimumDurationMilliseconds":15000,"networkPayloadCapture":null,"recordCanvas":false,"recorderVersion":"v2","sampleRate":"0.8","scriptConfig":{"script":"posthog-recorder"},"triggerMatchType":null,"urlBlocklist":[],"urlTriggers":[],"version":1},"supportedCompression":["gzip","gzip-js"],"surveys":false},
+          siteApps: []
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
