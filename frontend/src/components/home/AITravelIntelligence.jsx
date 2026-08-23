@@ -85,7 +85,6 @@ export default function AITravelIntelligence() {
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
             Neural Engine Live Log Stream
           </div>
-          <span className="text-2xs font-mono text-slate-400">STATUS: ACTIVE · 60 FPS</span>
         </div>
         <div className="h-8 overflow-hidden relative">
           <motion.div
