@@ -292,7 +292,6 @@ const RealisticGlobe = forwardRef(function RealisticGlobe(
       },
       reset: () => flyTo(18, 78, { altitude: 2.8, duration: 1200 }),
       getQuality: () => quality,
-      _getEngine: () => engine.current,
     }),
     [flyTo, quality]
   );

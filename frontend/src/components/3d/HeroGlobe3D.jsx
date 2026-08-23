@@ -1,14 +1,11 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RealisticGlobe from '../geo/RealisticGlobe';
-import TravelMarkerOverlay from '../geo/TravelMarkerOverlay';
 import { destinations } from '../../data/destinations';
-import { useTravelOS } from '../../context/TravelOSContext';
 
 export default function HeroGlobe3D({ className = '' }) {
   const navigate = useNavigate();
   const globeRef = useRef(null);
-  const { activeDestination } = useTravelOS();
 
   const handleSelectDestination = (dest) => {
     if (dest?.slug) {
@@ -28,7 +25,6 @@ export default function HeroGlobe3D({ className = '' }) {
         quality="high"
         className="w-full h-full"
       />
-      <TravelMarkerOverlay globeRef={globeRef} activeDestination={activeDestination} />
     </div>
   );
 }
