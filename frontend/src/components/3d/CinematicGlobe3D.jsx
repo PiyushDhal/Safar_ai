@@ -3,8 +3,8 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Html, Sphere, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Convert lat/lng to 3D position vector on sphere of given radius
-export function latLngToVector3(lat, lng, radius = 2) {
+// Convert lat/lng to 3D position vector on sphere of given radius (2.6)
+export function latLngToVector3(lat, lng, radius = 2.6) {
   const phi = (90 - lat) * (Math.PI / 180);
   const theta = (lng + 180) * (Math.PI / 180);
   const x = -(radius * Math.sin(phi) * Math.cos(theta));
@@ -48,8 +48,8 @@ const FLIGHT_CONNECTIONS = [
 
 function FlightPathArc({ start, end, active }) {
   const pathData = useMemo(() => {
-    const v1 = latLngToVector3(start.lat, start.lng, 2);
-    const v2 = latLngToVector3(end.lat, end.lng, 2);
+    const v1 = latLngToVector3(start.lat, start.lng, 2.6);
+    const v2 = latLngToVector3(end.lat, end.lng, 2.6);
     return createCurvedPath(v1, v2, 0.35);
   }, [start, end]);
 
@@ -75,14 +75,14 @@ function FlightPathArc({ start, end, active }) {
         new THREE.LineBasicMaterial({
           color: active ? '#06b6d4' : '#818cf8',
           transparent: true,
-          opacity: active ? 0.9 : 0.45,
-          linewidth: 1.8,
+          opacity: active ? 0.95 : 0.5,
+          linewidth: 2.0,
         })
       )} />
 
       {/* Travelling Energy Light Pulse */}
       <mesh ref={pulseRef}>
-        <sphereGeometry args={[0.035, 16, 16]} />
+        <sphereGeometry args={[0.045, 16, 16]} />
         <meshBasicMaterial color="#38bdf8" />
       </mesh>
     </group>
@@ -90,7 +90,7 @@ function FlightPathArc({ start, end, active }) {
 }
 
 function DestinationMarker({ dest, isHovered, isSelected, onClick, onHover }) {
-  const pos = useMemo(() => latLngToVector3(dest.lat, dest.lng, 2.02), [dest]);
+  const pos = useMemo(() => latLngToVector3(dest.lat, dest.lng, 2.62), [dest]);
   const ringRef = useRef();
 
   useFrame((state, delta) => {
@@ -113,28 +113,28 @@ function DestinationMarker({ dest, isHovered, isSelected, onClick, onHover }) {
         }}
         onPointerOut={() => onHover(null)}
       >
-        <sphereGeometry args={[isSelected ? 0.07 : 0.045, 16, 16]} />
+        <sphereGeometry args={[isSelected ? 0.08 : 0.055, 16, 16]} />
         <meshStandardMaterial
           color={isSelected ? '#ec4899' : isHovered ? '#38bdf8' : '#06b6d4'}
           emissive={isSelected ? '#f43f5e' : '#0284c7'}
-          emissiveIntensity={1.8}
+          emissiveIntensity={2.0}
         />
       </mesh>
 
       {/* Pulsing Aura Ring */}
       <mesh ref={ringRef}>
-        <ringGeometry args={[0.06, 0.085, 32]} />
+        <ringGeometry args={[0.07, 0.1, 32]} />
         <meshBasicMaterial
           color={isSelected ? '#ec4899' : '#06b6d4'}
           transparent
-          opacity={isHovered || isSelected ? 0.95 : 0.4}
+          opacity={isHovered || isSelected ? 0.95 : 0.5}
           side={THREE.DoubleSide}
         />
       </mesh>
 
       {/* HTML Label on Hover or Select */}
       {(isHovered || isSelected) && (
-        <Html distanceFactor={10} position={[0, 0.18, 0]} center>
+        <Html distanceFactor={10} position={[0, 0.2, 0]} center>
           <div className="pointer-events-none rounded-xl border border-cyan-500/30 bg-slate-950/85 px-3 py-1.5 shadow-2xl backdrop-blur-md text-white whitespace-nowrap animate-fade-in">
             <div className="flex items-center gap-1.5 text-xs font-bold">
               <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
@@ -168,24 +168,24 @@ function EarthGlobe({ selectedDest, hoveredDest, onSelectDest, onHoverDest }) {
 
   return (
     <group ref={globeGroupRef}>
-      {/* Photoreal Earth Sphere Mesh */}
-      <Sphere args={[2, 64, 64]}>
+      {/* Photoreal Earth Sphere Mesh (Scale 2.6) */}
+      <Sphere args={[2.6, 64, 64]}>
         <meshStandardMaterial
           map={dayMap}
           bumpMap={bumpMap}
-          bumpScale={0.04}
+          bumpScale={0.05}
           roughnessMap={waterMap}
-          roughness={0.4}
-          metalness={0.1}
+          roughness={0.35}
+          metalness={0.15}
         />
       </Sphere>
 
       {/* Atmosphere Glow Outer Shell */}
-      <Sphere args={[2.12, 64, 64]}>
+      <Sphere args={[2.78, 64, 64]}>
         <meshBasicMaterial
           color="#0284c7"
           transparent
-          opacity={0.15}
+          opacity={0.18}
           side={THREE.BackSide}
         />
       </Sphere>
@@ -236,7 +236,7 @@ export default function CinematicGlobe3D({ className = '' }) {
   const [hoveredDest, setHoveredDest] = useState(null);
 
   return (
-    <div className={`relative w-full h-full min-h-[480px] sm:min-h-[580px] overflow-hidden ${className}`}>
+    <div className={`relative w-full h-[540px] sm:h-[640px] overflow-hidden ${className}`}>
       {/* Overlay HUD info */}
       <div className="absolute top-4 left-4 z-10 pointer-events-none flex flex-col gap-1">
         <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-slate-950/70 px-3 py-1 text-2xs font-bold uppercase tracking-wider text-cyan-300 backdrop-blur-md">
@@ -264,7 +264,7 @@ export default function CinematicGlobe3D({ className = '' }) {
       </div>
 
       <Canvas
-        camera={{ position: [0, 0, 5.5], fov: 45 }}
+        camera={{ position: [0, 0, 4.3], fov: 45 }}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >
         <ambientLight intensity={0.6} />
@@ -282,8 +282,8 @@ export default function CinematicGlobe3D({ className = '' }) {
 
         <OrbitControls
           enableZoom={true}
-          minDistance={3.5}
-          maxDistance={8}
+          minDistance={3.2}
+          maxDistance={6.5}
           rotateSpeed={0.6}
           zoomSpeed={0.8}
           autoRotate={!selectedDest && !hoveredDest}
