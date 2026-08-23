@@ -1,0 +1,13 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Environment
+.env
+
+# Audit output
+.audit/
+
+# OS
+.DS_Store
+Thumbs.db
