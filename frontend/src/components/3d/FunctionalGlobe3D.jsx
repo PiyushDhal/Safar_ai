@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useState, useEffect, Suspense } from 'react';
+import React, { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Sphere, Float, useTexture, Html, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
@@ -103,20 +103,6 @@ function CandidatePin({ dest, isWinner, isAnalyzing, onClick }) {
           side={THREE.DoubleSide}
         />
       </mesh>
-
-      <Html distanceFactor={10} position={[0, 0.2, 0]} center>
-        <div className="pointer-events-none rounded-xl border border-cyan-500/40 bg-slate-950/90 px-2.5 py-1 text-white whitespace-nowrap shadow-2xl backdrop-blur-md">
-          <div className="flex items-center gap-1.5 text-xs font-black">
-            {isWinner && <span className="h-2 w-2 rounded-full bg-pink-500 animate-ping" />}
-            {dest.name}
-            {dest.intel?.overallScore && (
-              <span className="rounded-full bg-cyan-500/20 px-1.5 py-0.5 text-2xs font-bold text-cyan-300">
-                {dest.intel.overallScore}pt
-              </span>
-            )}
-          </div>
-        </div>
-      </Html>
     </group>
   );
 }
@@ -125,9 +111,8 @@ function EarthGlobeMesh() {
   const earthGroupRef = useRef();
   const { intent, activeDestination, rankedDestinations, isAnalyzing, selectDestination } = useTravelOS();
 
-  const [dayMap, nightMap, bumpMap, waterMap] = useTexture([
+  const [dayMap, bumpMap, waterMap] = useTexture([
     '/textures/earth-day-hi.jpg',
-    '/textures/earth-night.jpg',
     '/textures/earth-topology.png',
     '/textures/earth-water.png',
   ]);
