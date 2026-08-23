@@ -6,13 +6,9 @@ import CommandPalette from '../components/CommandPalette';
 import Icon from '../components/ui/Icon';
 import SpaceBackgroundCanvas from '../components/3d/SpaceBackgroundCanvas';
 import { useAssistant } from '../context/AssistantContext';
+import { useTheme } from '../context/ThemeContext';
 import { cn } from '../lib/cn';
 
-/**
- * The assistant (and its markdown renderer) is the heaviest optional feature,
- * so it is code-split and only mounted once the user asks for it — or after
- * the browser goes idle.
- */
 const TravelAssistantChat = lazy(() => import('../components/TravelAssistantChat'));
 
 function AssistantLauncher({ onClick }) {
@@ -60,16 +56,15 @@ function BackToTop() {
 
 function MainLayout() {
   const location = useLocation();
+  const { theme } = useTheme();
   const [commandOpen, setCommandOpen] = useState(false);
   const [assistantMounted, setAssistantMounted] = useState(false);
   const { dockOpen, openDock } = useAssistant();
 
-  // Mount the assistant as soon as any surface requests it.
   useEffect(() => {
     if (dockOpen) setAssistantMounted(true);
   }, [dockOpen]);
 
-  // Warm the chunk when the browser is idle so the first open feels instant.
   useEffect(() => {
     const preload = () => import('../components/TravelAssistantChat');
     if ('requestIdleCallback' in window) {
@@ -80,7 +75,6 @@ function MainLayout() {
     return () => clearTimeout(id);
   }, []);
 
-  // Global ⌘K / Ctrl+K (and "/") shortcut for search
   useEffect(() => {
     const onKeyDown = (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
@@ -110,9 +104,14 @@ function MainLayout() {
   const showAssistant = location.pathname !== '/assistant';
 
   return (
-    <div className="flex min-h-screen flex-col relative text-slate-100 dark">
-      {/* Dynamic 3D Cosmic Space Background */}
-      <SpaceBackgroundCanvas />
+    <div
+      className={cn(
+        'flex min-h-screen flex-col relative transition-colors duration-300',
+        theme === 'dark' ? 'dark text-slate-100 bg-slate-950' : 'light text-slate-900 bg-slate-50'
+      )}
+    >
+      {/* 3D Cosmic Space Background */}
+      {theme === 'dark' && <SpaceBackgroundCanvas />}
 
       <Navbar onOpenCommand={() => setCommandOpen(true)} />
 
