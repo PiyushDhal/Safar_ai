@@ -30,20 +30,6 @@ function Stat({ value, suffix, label }) {
   );
 }
 
-function FloatingCard({ className, style, children, delay = 0 }) {
-  return (
-    <div
-      className={cn(
-        'absolute hidden rounded-2xl border border-cyan-500/30 bg-slate-950/80 p-4 shadow-2xl backdrop-blur-xl animate-float-slow lg:block z-20 pointer-events-auto',
-        className
-      )}
-      style={{ animationDelay: `${delay}ms`, ...style }}
-    >
-      {children}
-    </div>
-  );
-}
-
 export default function HeroSection() {
   const navigate = useNavigate();
   const [wordIndex, setWordIndex] = useState(0);
@@ -121,38 +107,6 @@ export default function HeroSection() {
       {/* Atmospheric Soft Vignette Overlay */}
       <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-slate-950/90 via-slate-950/40 to-slate-950/80" />
       <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,transparent_40%,rgba(3,7,18,0.75)_100%)]" />
-
-      {/* Floating Glass Intelligence Cards */}
-      <FloatingCard className="left-8 top-28 w-52" delay={0}>
-        <p className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-cyan-400">
-          <Icon name="sparkles" size="xs" /> Neural Itinerary
-        </p>
-        <p className="mt-1 text-sm font-extrabold text-white">Day 3 · Munnar</p>
-        <p className="mt-0.5 text-xs text-slate-300">Tea estate sunrise, Eravikulam trek</p>
-        <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
-          <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-cyan-400 to-indigo-500" />
-        </div>
-      </FloatingCard>
-
-      <FloatingCard className="right-10 top-36 w-48" delay={900}>
-        <p className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-emerald-400">
-          <Icon name="wallet" size="xs" /> Live Budget
-        </p>
-        <p className="mt-1 text-lg font-black text-white">₹42,800</p>
-        <p className="text-xs text-emerald-400">12% under budget cap</p>
-      </FloatingCard>
-
-      <FloatingCard className="right-12 bottom-20 w-48" delay={1800}>
-        <p className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-purple-400">
-          <Icon name="shield" size="xs" /> Safety Index
-        </p>
-        <div className="mt-1 flex items-center gap-2">
-          <span className="text-lg font-black text-white">91/100</span>
-          <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-2xs font-bold text-emerald-300">
-            Verified Safe
-          </span>
-        </div>
-      </FloatingCard>
 
       {/* HERO CONTENT OVERLAY */}
       <div className="content-grid relative z-10 w-full">
