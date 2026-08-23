@@ -22,11 +22,11 @@ function Stat({ value, suffix, label }) {
   const [ref, animated] = useCountUp(value);
   return (
     <div ref={ref} className="text-left">
-      <p className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-md">
+      <p className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white drop-shadow-md">
         {animated}
-        <span className="text-cyan-400">{suffix}</span>
+        <span className="text-cyan-500 dark:text-cyan-400">{suffix}</span>
       </p>
-      <p className="mt-0.5 text-xs font-semibold text-slate-300">{label}</p>
+      <p className="mt-0.5 text-xs font-semibold text-slate-600 dark:text-slate-300">{label}</p>
     </div>
   );
 }
@@ -110,14 +110,14 @@ export default function HeroSection() {
       </div>
 
       {/* Atmospheric Soft Vignette Overlay */}
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-slate-950/90 via-slate-950/40 to-slate-950/80" />
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,transparent_40%,rgba(3,7,18,0.75)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-slate-50/80 via-slate-50/20 to-slate-50/70 dark:from-slate-950/90 dark:via-slate-950/40 dark:to-slate-950/80" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,transparent_40%,rgba(248,250,252,0.75)_100%)] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,transparent_40%,rgba(3,7,18,0.75)_100%)]" />
 
       {/* HERO CONTENT OVERLAY */}
       <div className="content-grid relative z-10 w-full">
         <div className="max-w-2xl">
           <div ref={headlineRef}>
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.08] drop-shadow-2xl">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.08] drop-shadow-2xl">
               Plan your next journey{' '}
               <span className="relative inline-flex h-[1.1em] overflow-hidden align-bottom">
                 <span className="invisible">together</span>
@@ -125,7 +125,7 @@ export default function HeroSection() {
                   <span
                     key={word}
                     className={cn(
-                      'bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent absolute inset-0 transition-all duration-500 ease-smooth font-black',
+                      'bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 dark:from-cyan-400 dark:via-indigo-300 dark:to-purple-400 bg-clip-text text-transparent absolute inset-0 transition-all duration-500 ease-smooth font-black',
                       index === wordIndex
                         ? 'translate-y-0 opacity-100'
                         : index === (wordIndex - 1 + ROTATING_WORDS.length) % ROTATING_WORDS.length
@@ -140,16 +140,16 @@ export default function HeroSection() {
               <br /> with SafarAI.
             </h1>
 
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg drop-shadow-md">
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-700 dark:text-slate-200 sm:text-lg drop-shadow-md">
               An award-winning command center for instant itineraries, live budgets, boutique stays, train booking intelligence and real-time safety scores.
             </p>
           </div>
 
           {/* Glassmorphic Search Panel */}
           <div ref={searchRef} className="relative mt-8 max-w-xl">
-            <div className="flex flex-col gap-2.5 rounded-2xl border border-cyan-500/30 bg-slate-950/85 p-2.5 shadow-2xl backdrop-blur-2xl sm:flex-row sm:items-center">
+            <div className="flex flex-col gap-2.5 rounded-2xl border border-slate-200 dark:border-cyan-500/30 bg-white/90 dark:bg-slate-950/85 p-2.5 shadow-2xl backdrop-blur-2xl sm:flex-row sm:items-center">
               <div className="relative flex flex-1 items-center gap-2.5 px-3">
-                <Icon name="search" size="md" className="text-cyan-400" />
+                <Icon name="search" size="md" className="text-cyan-500 dark:text-cyan-400" />
                 <input
                   value={query}
                   onChange={(e) => {
@@ -161,20 +161,20 @@ export default function HeroSection() {
                   onKeyDown={(e) => e.key === 'Enter' && startPlanning()}
                   placeholder="Where to? Try Goa, Ladakh, Kerala..."
                   aria-label="Destination"
-                  className="h-11 w-full bg-transparent text-sm font-medium text-white outline-none placeholder:text-slate-400"
+                  className="h-11 w-full bg-transparent text-sm font-medium text-slate-900 dark:text-white outline-none placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
 
-              <div className="flex items-center gap-2 border-slate-800 pl-3 sm:border-l">
+              <div className="flex items-center gap-2 border-slate-200 dark:border-slate-800 pl-3 sm:border-l">
                 <select
                   id="hero-days"
                   value={days}
                   onChange={(e) => setDays(e.target.value)}
                   aria-label="Trip length in days"
-                  className="h-11 cursor-pointer rounded-xl border-0 bg-slate-900/90 px-3 text-sm font-bold text-white outline-none"
+                  className="h-11 cursor-pointer rounded-xl border-0 bg-slate-100 dark:bg-slate-900/90 px-3 text-sm font-bold text-slate-900 dark:text-white outline-none"
                 >
                   {[2, 3, 4, 5, 6, 7, 10].map((val) => (
-                    <option key={val} value={val} className="bg-slate-950 text-white">
+                    <option key={val} value={val} className="bg-white dark:bg-slate-950 text-slate-900 dark:text-white">
                       {val} days
                     </option>
                   ))}
@@ -191,8 +191,8 @@ export default function HeroSection() {
 
             {/* Suggestions Dropdown */}
             {suggestOpen && suggestions.length > 0 && (
-              <div className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-cyan-500/30 bg-slate-950/95 p-2 shadow-2xl backdrop-blur-2xl animate-slide-down">
-                <p className="px-3 py-1.5 text-2xs font-bold uppercase tracking-wider text-slate-400">
+              <div className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-slate-200 dark:border-cyan-500/30 bg-white/95 dark:bg-slate-950/95 p-2 shadow-2xl backdrop-blur-2xl animate-slide-down">
+                <p className="px-3 py-1.5 text-2xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   {query.trim() ? 'Matching destinations' : 'Trending this season'}
                 </p>
                 {suggestions.map((item) => (
@@ -204,7 +204,7 @@ export default function HeroSection() {
                       setQuery(item.name);
                       startPlanning(item.name);
                     }}
-                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-slate-900/80"
+                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-slate-100 dark:hover:bg-slate-900/80"
                   >
                     <DestinationImage
                       destination={item}
@@ -214,10 +214,10 @@ export default function HeroSection() {
                       className="h-9 w-9 shrink-0"
                     />
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-bold text-white">{item.name}</span>
-                      <span className="block truncate text-xs text-slate-400">{item.tagline}</span>
+                      <span className="block truncate text-sm font-bold text-slate-900 dark:text-white">{item.name}</span>
+                      <span className="block truncate text-xs text-slate-500 dark:text-slate-400">{item.tagline}</span>
                     </span>
-                    <span className="hidden text-xs font-semibold text-cyan-400 sm:block">
+                    <span className="hidden text-xs font-semibold text-cyan-600 dark:text-cyan-400 sm:block">
                       {item.bestTime}
                     </span>
                   </button>
@@ -228,16 +228,16 @@ export default function HeroSection() {
 
           {/* CTA Buttons */}
           <div ref={buttonsRef} className="mt-6 flex flex-wrap items-center gap-3">
-            <Button to="/explore" variant="glass" trailingIcon="arrowRight" className="border-cyan-500/40 text-white bg-slate-950/60 hover:bg-cyan-500/20 backdrop-blur-xl">
+            <Button to="/explore" variant="glass" trailingIcon="arrowRight" className="border-slate-300 dark:border-cyan-500/40 text-slate-800 dark:text-white bg-white/80 dark:bg-slate-950/60 hover:bg-slate-100 dark:hover:bg-cyan-500/20 backdrop-blur-xl">
               Explore Destinations
             </Button>
-            <Button to="/assistant" variant="ghost" leadingIcon="bot" className="text-slate-300 hover:text-white bg-slate-950/40 backdrop-blur-md">
+            <Button to="/assistant" variant="ghost" leadingIcon="bot" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-200/60 dark:bg-slate-950/40 backdrop-blur-md">
               Ask AI Assistant
             </Button>
           </div>
 
           {/* Stats Row */}
-          <div className="mt-10 grid max-w-lg grid-cols-3 gap-6 border-t border-slate-800/80 pt-6">
+          <div className="mt-10 grid max-w-lg grid-cols-3 gap-6 border-t border-slate-200 dark:border-slate-800/80 pt-6">
             {HERO_STATS.map((stat) => (
               <Stat key={stat.label} {...stat} />
             ))}

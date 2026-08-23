@@ -60,19 +60,19 @@ function ContinuePlanning() {
           <Link
             key={item.id}
             to={item.href || '/'}
-            className="group flex items-center gap-3 rounded-2xl border border-line/70 bg-slate-900/80 p-4 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40"
+            className="group flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-line/70 bg-white/90 dark:bg-slate-900/80 p-4 shadow-lg dark:shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40"
           >
-            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
               <Icon name={item.icon} size="md" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-bold text-white">{item.title}</span>
-              <span className="block truncate text-xs text-slate-400">{item.subtitle}</span>
+              <span className="block truncate text-sm font-bold text-slate-900 dark:text-white">{item.title}</span>
+              <span className="block truncate text-xs text-slate-500 dark:text-slate-400">{item.subtitle}</span>
             </span>
             <Icon
               name="arrowRight"
               size="sm"
-              className="shrink-0 text-slate-500 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-cyan-400"
+              className="shrink-0 text-slate-400 dark:text-slate-500 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-cyan-500 dark:group-hover:text-cyan-400"
             />
           </Link>
         ))}
@@ -85,29 +85,29 @@ function AssistantPromo() {
   const { openDock } = useAssistant();
 
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-cyan-500/30 bg-slate-950/90 p-6 shadow-2xl backdrop-blur-xl sm:p-10 my-16">
+    <section className="relative overflow-hidden rounded-3xl border border-slate-200 dark:border-cyan-500/30 bg-white/90 dark:bg-slate-950/90 p-6 shadow-2xl backdrop-blur-xl sm:p-10 my-16">
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(50rem_28rem_at_15%_-10%,rgba(99,102,241,0.4),transparent),radial-gradient(40rem_24rem_at_90%_110%,rgba(6,182,212,0.3),transparent)]"
+        className="absolute inset-0 bg-[radial-gradient(50rem_28rem_at_15%_-10%,rgba(99,102,241,0.25),transparent),radial-gradient(40rem_24rem_at_90%_110%,rgba(6,182,212,0.2),transparent)]"
       />
-      <div className="absolute inset-0 bg-hero-grid bg-[size:22px_22px] opacity-[0.12]" aria-hidden="true" />
+      <div className="absolute inset-0 bg-hero-grid bg-[size:22px_22px] opacity-[0.08] dark:opacity-[0.12]" aria-hidden="true" />
 
       <div className="relative grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-center">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3.5 py-1 text-2xs font-bold uppercase tracking-widest text-cyan-300 backdrop-blur-md">
+          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3.5 py-1 text-2xs font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-300 backdrop-blur-md">
             <Icon name="bot" size="xs" /> Neural Travel Assistant
           </span>
-          <h2 className="mt-4 text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="mt-4 text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Ask anything. Get a plan, not a paragraph.
           </h2>
-          <p className="mt-3 max-w-lg text-sm leading-relaxed text-slate-300">
+          <p className="mt-3 max-w-lg text-sm leading-relaxed text-slate-600 dark:text-slate-300">
             SafarAI knows your saved trips, preferred style and recently viewed destinations — so answers arrive already tailored to the exact way you travel.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Button onClick={openDock} variant="glass" leadingIcon="sparkles" className="border-cyan-500/40 text-white bg-cyan-500/20 hover:bg-cyan-500/30">
+            <Button onClick={openDock} variant="glass" leadingIcon="sparkles" className="border-cyan-500/40 text-cyan-700 dark:text-white bg-cyan-500/10 dark:bg-cyan-500/20 hover:bg-cyan-500/20 dark:hover:bg-cyan-500/30">
               Open Assistant
             </Button>
-            <Button to="/assistant" variant="ghost" trailingIcon="arrowUpRight" className="text-slate-300 hover:text-white">
+            <Button to="/assistant" variant="ghost" trailingIcon="arrowUpRight" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
               Full Screen Chat
             </Button>
           </div>
@@ -121,12 +121,12 @@ function AssistantPromo() {
           ].map((item, index) => (
             <div
               key={item.q}
-              className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-md animate-fade-up"
+              className="rounded-2xl border border-slate-200 dark:border-white/15 bg-slate-50/90 dark:bg-white/10 p-4 backdrop-blur-md animate-fade-up"
               style={{ animationDelay: `${index * 120}ms` }}
             >
-              <p className="text-sm font-semibold text-white">{item.q}</p>
-              <p className="mt-1.5 flex items-start gap-2 text-xs leading-5 text-slate-300">
-                <Icon name="sparkles" size="xs" className="mt-0.5 shrink-0 text-cyan-400" />
+              <p className="text-sm font-semibold text-slate-900 dark:text-white">{item.q}</p>
+              <p className="mt-1.5 flex items-start gap-2 text-xs leading-5 text-slate-600 dark:text-slate-300">
+                <Icon name="sparkles" size="xs" className="mt-0.5 shrink-0 text-cyan-600 dark:text-cyan-400" />
                 {item.a}
               </p>
             </div>
@@ -157,7 +157,7 @@ function SeasonalRail() {
           <Link
             key={destination.slug}
             to={`/destination/${destination.slug}`}
-            className="group relative h-60 w-64 shrink-0 overflow-hidden rounded-2xl border border-line/80 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40"
+            className="group relative h-60 w-64 shrink-0 overflow-hidden rounded-2xl border border-slate-200 dark:border-line/80 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40"
           >
             <DestinationImage
               destination={destination}
