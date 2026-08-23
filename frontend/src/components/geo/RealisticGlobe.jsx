@@ -197,6 +197,36 @@ const markerFragmentShader = /* glsl */ `
   }
 `;
 
+function createProceduralEarthTexture() {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const grad = ctx.createLinearGradient(0, 0, 0, 256);
+    grad.addColorStop(0, '#0c243c');
+    grad.addColorStop(0.5, '#0f3854');
+    grad.addColorStop(1, '#0c243c');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 512, 256);
+
+    ctx.fillStyle = '#22543d';
+    ctx.beginPath(); ctx.ellipse(120, 80, 55, 35, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(165, 165, 32, 60, 0.2, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(340, 75, 95, 45, -0.1, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(280, 140, 48, 58, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(430, 180, 32, 28, 0, 0, Math.PI * 2); ctx.fill();
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
+  } catch (e) {
+    return null;
+  }
+}
+
 /* -------------------------------------------------------------- component */
 
 const RealisticGlobe = forwardRef(function RealisticGlobe(
@@ -338,8 +368,10 @@ const RealisticGlobe = forwardRef(function RealisticGlobe(
     const placeholder = new THREE.DataTexture(new Uint8Array([10, 14, 30, 255]), 1, 1);
     placeholder.needsUpdate = true;
 
+    const proceduralDay = createProceduralEarthTexture() || placeholder;
+
     const uniforms = {
-      uDayMap: { value: placeholder },
+      uDayMap: { value: proceduralDay },
       uNightMap: { value: placeholder },
       uBumpMap: { value: placeholder },
       uWaterMap: { value: placeholder },
@@ -464,11 +496,16 @@ const RealisticGlobe = forwardRef(function RealisticGlobe(
         );
       });
 
+    // Mark ready immediately so globe renders instantly without blocking UI loading
+    setStatus('ready');
+    onReady?.();
+
     loadTexture(TEXTURES.dayLow).then((texture) => {
-      if (disposed || !texture) return;
-      uniforms.uDayMap.value = texture;
-      setStatus('ready');
-      onReady?.();
+      if (disposed) return;
+      if (texture) {
+        uniforms.uDayMap.value = texture;
+        if (proceduralDay && proceduralDay.dispose) proceduralDay.dispose();
+      }
 
       if (!preset.hiRes) return;
 
@@ -476,7 +513,7 @@ const RealisticGlobe = forwardRef(function RealisticGlobe(
       loadTexture(TEXTURES.dayHigh).then((hi) => {
         if (disposed || !hi) return;
         uniforms.uDayMap.value = hi;
-        texture.dispose();
+        if (texture && texture.dispose) texture.dispose();
       });
 
       if (preset.night) {
