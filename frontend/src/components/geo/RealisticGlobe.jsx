@@ -28,7 +28,7 @@ const TEXTURES = {
 };
 
 /** Sphere radius (1.0) plus margin for the atmosphere shell and markers. */
-const FIT_RADIUS = 1.32;
+const FIT_RADIUS = 0.88;
 
 const QUALITY_PRESETS = {
   low: { segments: 48, dpr: 1, antialias: false, clouds: false, night: false, bump: false, stars: 550, hiRes: false },
@@ -692,6 +692,11 @@ const RealisticGlobe = forwardRef(function RealisticGlobe(
 
       const delta = clock.getDelta();
       const elapsed = clock.getElapsedTime();
+
+      // Dynamic light vs dark mode parameters
+      const isDark = document.documentElement.classList.contains('dark');
+      if (stars) stars.visible = isDark;
+      if (uniforms.uAmbient) uniforms.uAmbient.value = isDark ? 0.20 : 0.48;
 
       // Refresh the sun position every 60 s of wall clock.
       if (elapsed - sunUpdatedAt > 60) {
