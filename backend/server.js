@@ -236,21 +236,23 @@ app.use((err, req, res, next) => {
 });
 
 /* -------------------------------------------------------------------------- */
-/* Phase 10 — Railway Deployment Listener                                     */
+/* Vercel / Standalone Server Listener                                       */
 /* -------------------------------------------------------------------------- */
 
 const PORT = config.port || process.env.PORT || 3000;
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`
 =====================================================
-🚀 SafarAI API Server Running
+🚀 SafarAI Express API Server Running
 =====================================================
 • Environment : ${config.nodeEnv}
 • Listening   : http://0.0.0.0:${PORT}
 • Health Check: http://0.0.0.0:${PORT}/health
 =====================================================
-  `);
-});
+    `);
+  });
+}
 
 export default app;
