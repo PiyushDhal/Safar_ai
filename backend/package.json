@@ -1,0 +1,20 @@
+{
+  "name": "safarai-backend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "SafarAI backend services — AI (Groq), database (Supabase), data layer, and dev/audit scripts.",
+  "scripts": {
+    "images:fetch": "node scripts/fetch-images.mjs",
+    "audit": "node scripts/audit.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.99.2",
+    "groq-sdk": "^1.1.1"
+  },
+  "devDependencies": {
+    "axe-core": "^4.13.0",
+    "jsdom": "^30.0.1",
+    "puppeteer-core": "^25.8.0"
+  }
+}
