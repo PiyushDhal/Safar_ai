@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 
 /**
  * TravelEmojiOverlay — a lightweight, non-destructive HTML overlay component.
- * Animates a 🚀 rocket along an orbital trajectory centered around the Earth sphere:
+ * Animates a 🚀 rocket in a continuous, ultra-smooth 3D orbital loop with 0 pauses:
  * - Front pass: Arcs smoothly across the upper face of the globe (scaling & full opacity).
- * - Back pass: Loops around the back half, completely hidden (opacity: 0).
+ * - Back pass: Loops seamlessly around the back half, completely hidden (opacity: 0).
  */
 export default function TravelEmojiOverlay() {
   return (
@@ -19,19 +19,18 @@ export default function TravelEmojiOverlay() {
           className="absolute flex items-center justify-center"
           initial={{ opacity: 0 }}
           animate={{
-            // Centered orbital trajectory around the 3D globe sphere
-            x: ['-32vw', '-16vw', '0vw', '16vw', '32vw', '22vw', '-22vw', '-32vw'],
-            y: ['6vh', '-6vh', '-14vh', '-6vh', '6vh', '18vh', '20vh', '6vh'],
-            rotate: [-30, -12, 0, 12, 30, 115, -145, -30],
-            scale: [0.85, 1.15, 1.35, 1.15, 0.85, 0.5, 0.45, 0.85],
+            // Continuous smooth orbital loop around the 3D globe sphere
+            x: ['-30vw', '-15vw', '0vw', '15vw', '30vw', '18vw', '0vw', '-18vw', '-30vw'],
+            y: ['5vh', '-6vh', '-12vh', '-6vh', '5vh', '16vh', '20vh', '16vh', '5vh'],
+            rotate: [-28, -12, 0, 12, 28, 100, 180, -100, -28],
+            scale: [0.85, 1.15, 1.35, 1.15, 0.85, 0.55, 0.45, 0.55, 0.85],
             // Full opacity on front pass (1), completely hidden (0) when passing behind globe
-            opacity: [1, 1, 1, 1, 0, 0, 0, 1],
+            opacity: [1, 1, 1, 1, 0, 0, 0, 0, 1],
           }}
           transition={{
             duration: 16,
             repeat: Infinity,
-            ease: 'easeInOut',
-            times: [0, 0.18, 0.36, 0.54, 0.68, 0.80, 0.92, 1],
+            ease: 'linear',
           }}
         >
           {/* Clean Rocket Emoji */}
