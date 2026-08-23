@@ -5,7 +5,7 @@ import Icon from '../ui/Icon';
 import Button from '../ui/Button';
 import DestinationImage from '../DestinationImage';
 import HeroGlobe3D from '../3d/HeroGlobe3D';
-import TravelEmojiOverlay from './TravelEmojiOverlay';
+import TravelPlaneOverlay from './TravelPlaneOverlay';
 import useCountUp from '../../hooks/useCountUp';
 import { destinations } from '../../data/destinations';
 import { useTravelOS } from '../../context/TravelOSContext';
@@ -113,8 +113,8 @@ export default function HeroSection() {
         <HeroGlobe3D />
       </div>
 
-      {/* PURE HTML ANIMATED TRAVEL EMOJI OVERLAY */}
-      <TravelEmojiOverlay />
+      {/* PURE HTML ANIMATED TRAVEL PLANE OVERLAY */}
+      <TravelPlaneOverlay />
 
       {/* Atmospheric Soft Vignette Overlay */}
       <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-slate-50/85 via-slate-50/15 to-slate-50/75 dark:from-slate-950/90 dark:via-slate-950/40 dark:to-slate-950/80" />
