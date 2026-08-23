@@ -104,14 +104,17 @@ export default function HeroSection() {
       ref={heroContainerRef}
       className="relative min-h-[90vh] lg:min-h-screen flex items-center justify-center overflow-hidden py-12 lg:py-0"
     >
+      {/* Light Mode Soft Sky Backdrop */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-sky-50/50 via-slate-50/80 to-slate-50 dark:hidden pointer-events-none" />
+
       {/* FULL SCREEN 3D GLOBE CANVAS BACKGROUND */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-auto">
         <HeroGlobe3D />
       </div>
 
       {/* Atmospheric Soft Vignette Overlay */}
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-slate-50/80 via-slate-50/20 to-slate-50/70 dark:from-slate-950/90 dark:via-slate-950/40 dark:to-slate-950/80" />
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,transparent_40%,rgba(248,250,252,0.75)_100%)] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,transparent_40%,rgba(3,7,18,0.75)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-slate-50/85 via-slate-50/15 to-slate-50/75 dark:from-slate-950/90 dark:via-slate-950/40 dark:to-slate-950/80" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_85%_85%_at_50%_50%,transparent_45%,rgba(248,250,252,0.80)_100%)] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,transparent_40%,rgba(3,7,18,0.75)_100%)]" />
 
       {/* HERO CONTENT OVERLAY */}
       <div className="content-grid relative z-10 w-full">

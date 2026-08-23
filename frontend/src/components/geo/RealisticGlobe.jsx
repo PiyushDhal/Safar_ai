@@ -733,7 +733,11 @@ const RealisticGlobe = forwardRef(function RealisticGlobe(
       // Dynamic light vs dark mode parameters
       const isDark = document.documentElement.classList.contains('dark');
       if (stars) stars.visible = isDark;
-      if (uniforms.uAmbient) uniforms.uAmbient.value = isDark ? 0.20 : 0.48;
+      if (uniforms.uAmbient) uniforms.uAmbient.value = isDark ? 0.20 : 0.54;
+      if (atmosphere && atmosphere.material && atmosphere.material.uniforms) {
+        atmosphere.material.uniforms.uColor.value.set(isDark ? '#3882f6' : '#2563eb');
+        atmosphere.material.uniforms.uIntensity.value = isDark ? 0.45 : 0.28;
+      }
 
       // Refresh the sun position every 60 s of wall clock.
       if (elapsed - sunUpdatedAt > 60) {
