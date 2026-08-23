@@ -25,7 +25,7 @@ export default function TravelPlaneOverlay() {
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className="relative flex items-center justify-center text-[24px] md:text-[30px] lg:text-[34px] text-white/95 drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] select-none"
+        className="relative flex items-center justify-center text-[32px] md:text-[42px] lg:text-[48px] text-white/95 drop-shadow-[0_0_12px_rgba(255,255,255,0.75)] select-none"
       >
         {/* Soft Ambient White Halo */}
         <div className="absolute h-8 w-8 rounded-full bg-white/10 blur-md pointer-events-none" />
