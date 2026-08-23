@@ -116,15 +116,8 @@ export default function HeroSection() {
       {/* HERO CONTENT OVERLAY */}
       <div className="content-grid relative z-10 w-full">
         <div className="max-w-2xl">
-          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/40 bg-slate-950/80 py-1.5 pl-2.5 pr-4 text-xs font-bold text-cyan-300 backdrop-blur-xl shadow-2xl">
-            <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-cyan-500 to-indigo-600 px-2.5 py-0.5 text-2xs font-extrabold uppercase tracking-wider text-white">
-              <Icon name="sparkles" size="xs" /> AI-Native V2
-            </span>
-            Context-aware travel intelligence
-          </span>
-
           <div ref={headlineRef}>
-            <h1 className="mt-6 text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.08] drop-shadow-2xl">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.08] drop-shadow-2xl">
               Plan your next journey{' '}
               <span className="relative inline-flex h-[1.1em] overflow-hidden align-bottom">
                 <span className="invisible">together</span>
