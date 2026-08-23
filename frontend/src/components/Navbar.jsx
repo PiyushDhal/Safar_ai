@@ -410,6 +410,7 @@ function Navbar({ onOpenCommand }) {
   const { theme, toggleTheme } = useTheme();
   const { favourites } = useWorkspace();
   const location = useLocation();
+  const navRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -424,6 +425,7 @@ function Navbar({ onOpenCommand }) {
   }, [location.pathname]);
 
   const closeGroup = useCallback(() => setOpenGroup(null), []);
+  useOnClickOutside(navRef, closeGroup, openGroup !== null);
 
   return (
     <>
@@ -440,12 +442,12 @@ function Navbar({ onOpenCommand }) {
           scrolled ? 'border-b border-line glass shadow-sm' : 'border-b border-transparent bg-transparent'
         )}
       >
-        <nav className="content-grid flex h-[var(--nav-h)] items-center justify-between gap-2 xl:gap-4" aria-label="Main">
+        <nav ref={navRef} className="content-grid flex h-[var(--nav-h)] items-center justify-between gap-2 xl:gap-4" aria-label="Main">
           <Link to="/" className="shrink-0" aria-label="SafarAI home">
             <BrandLogo />
           </Link>
 
-          <ul className="hidden min-w-0 flex-nowrap items-center gap-0.5 overflow-hidden lg:flex xl:gap-1">
+          <ul className="hidden items-center gap-1 lg:flex xl:gap-1.5">
             <li>
               <NavLink
                 to="/"
@@ -473,7 +475,7 @@ function Navbar({ onOpenCommand }) {
               />
             ))}
 
-            <li className="hidden 2xl:block">
+            <li>
               <NavLink
                 to="/community"
                 className={({ isActive }) =>
