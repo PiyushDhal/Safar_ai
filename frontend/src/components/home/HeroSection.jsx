@@ -4,7 +4,7 @@ import gsap from 'gsap';
 import Icon from '../ui/Icon';
 import Button from '../ui/Button';
 import DestinationImage from '../DestinationImage';
-import HeroOrb3D from '../3d/HeroOrb3D';
+import HeroGlobe3D from '../3d/HeroGlobe3D';
 import useCountUp from '../../hooks/useCountUp';
 import { destinations } from '../../data/destinations';
 import { cn } from '../../lib/cn';
@@ -259,7 +259,7 @@ export default function HeroSection() {
           {/* Right Column: 3D AI Orb WebGL Canvas */}
           <div ref={orbContainerRef} className="relative">
             <div className="relative mx-auto aspect-square w-full max-w-[29rem]">
-              <HeroOrb3D />
+              <HeroGlobe3D />
             </div>
 
             {/* Floating Glass Intelligence Cards */}

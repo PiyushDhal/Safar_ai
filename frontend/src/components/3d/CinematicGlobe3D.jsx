@@ -1,6 +1,6 @@
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useRef, useState, useMemo, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Html, Sphere } from '@react-three/drei';
+import { OrbitControls, Html, Sphere, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 // Convert lat/lng to 3D position vector on sphere of given radius
@@ -14,7 +14,7 @@ export function latLngToVector3(lat, lng, radius = 2) {
 }
 
 // Generate curved flight path between 2 vectors
-export function createCurvedPath(v1, v2, midHeight = 0.5) {
+export function createCurvedPath(v1, v2, midHeight = 0.35) {
   const mid = v1.clone().add(v2).multiplyScalar(0.5);
   const distance = v1.distanceTo(v2);
   mid.normalize().multiplyScalar(v1.length() + distance * midHeight);
@@ -75,14 +75,14 @@ function FlightPathArc({ start, end, active }) {
         new THREE.LineBasicMaterial({
           color: active ? '#06b6d4' : '#818cf8',
           transparent: true,
-          opacity: active ? 0.85 : 0.4,
-          linewidth: 1.5,
+          opacity: active ? 0.9 : 0.45,
+          linewidth: 1.8,
         })
       )} />
 
       {/* Travelling Energy Light Pulse */}
       <mesh ref={pulseRef}>
-        <sphereGeometry args={[0.03, 16, 16]} />
+        <sphereGeometry args={[0.035, 16, 16]} />
         <meshBasicMaterial color="#38bdf8" />
       </mesh>
     </group>
@@ -117,7 +117,7 @@ function DestinationMarker({ dest, isHovered, isSelected, onClick, onHover }) {
         <meshStandardMaterial
           color={isSelected ? '#ec4899' : isHovered ? '#38bdf8' : '#06b6d4'}
           emissive={isSelected ? '#f43f5e' : '#0284c7'}
-          emissiveIntensity={1.5}
+          emissiveIntensity={1.8}
         />
       </mesh>
 
@@ -127,7 +127,7 @@ function DestinationMarker({ dest, isHovered, isSelected, onClick, onHover }) {
         <meshBasicMaterial
           color={isSelected ? '#ec4899' : '#06b6d4'}
           transparent
-          opacity={isHovered || isSelected ? 0.9 : 0.4}
+          opacity={isHovered || isSelected ? 0.95 : 0.4}
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -153,6 +153,13 @@ function DestinationMarker({ dest, isHovered, isSelected, onClick, onHover }) {
 function EarthGlobe({ selectedDest, hoveredDest, onSelectDest, onHoverDest }) {
   const globeGroupRef = useRef();
 
+  // Load high-resolution Earth textures
+  const [dayMap, bumpMap, waterMap] = useTexture([
+    '/textures/earth-day-hi.jpg',
+    '/textures/earth-topology.png',
+    '/textures/earth-water.png',
+  ]);
+
   useFrame((state, delta) => {
     if (globeGroupRef.current && !selectedDest && !hoveredDest) {
       globeGroupRef.current.rotation.y += delta * 0.08;
@@ -161,34 +168,24 @@ function EarthGlobe({ selectedDest, hoveredDest, onSelectDest, onHoverDest }) {
 
   return (
     <group ref={globeGroupRef}>
-      {/* Base Earth Sphere */}
+      {/* Photoreal Earth Sphere Mesh */}
       <Sphere args={[2, 64, 64]}>
-        <meshPhongMaterial
-          color="#0b1329"
-          emissive="#061838"
-          emissiveIntensity={0.6}
-          specular="#38bdf8"
-          shininess={25}
-          wireframe={false}
-        />
-      </Sphere>
-
-      {/* Wireframe Grid Layer */}
-      <Sphere args={[2.008, 48, 48]}>
-        <meshBasicMaterial
-          color="#1e293b"
-          wireframe
-          transparent
-          opacity={0.35}
+        <meshStandardMaterial
+          map={dayMap}
+          bumpMap={bumpMap}
+          bumpScale={0.04}
+          roughnessMap={waterMap}
+          roughness={0.4}
+          metalness={0.1}
         />
       </Sphere>
 
       {/* Atmosphere Glow Outer Shell */}
-      <Sphere args={[2.15, 64, 64]}>
+      <Sphere args={[2.12, 64, 64]}>
         <meshBasicMaterial
           color="#0284c7"
           transparent
-          opacity={0.12}
+          opacity={0.15}
           side={THREE.BackSide}
         />
       </Sphere>
@@ -221,13 +218,26 @@ function EarthGlobe({ selectedDest, hoveredDest, onSelectDest, onHoverDest }) {
   );
 }
 
+function GlobeLoadingState() {
+  return (
+    <Html center>
+      <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-cyan-500/30 bg-slate-950/85 px-5 py-3 shadow-2xl backdrop-blur-md text-white whitespace-nowrap">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-cyan-500/30 border-t-cyan-400" />
+        <span className="text-2xs font-bold text-cyan-300 uppercase tracking-wider">
+          Loading 3D Map Telemetry...
+        </span>
+      </div>
+    </Html>
+  );
+}
+
 export default function CinematicGlobe3D({ className = '' }) {
   const [selectedDest, setSelectedDest] = useState(null);
   const [hoveredDest, setHoveredDest] = useState(null);
 
   return (
     <div className={`relative w-full h-full min-h-[480px] sm:min-h-[580px] overflow-hidden ${className}`}>
-      {/* Subtle overlay HUD info */}
+      {/* Overlay HUD info */}
       <div className="absolute top-4 left-4 z-10 pointer-events-none flex flex-col gap-1">
         <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-slate-950/70 px-3 py-1 text-2xs font-bold uppercase tracking-wider text-cyan-300 backdrop-blur-md">
           <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" /> Live Global Intelligence Map
@@ -257,17 +267,18 @@ export default function CinematicGlobe3D({ className = '' }) {
         camera={{ position: [0, 0, 5.5], fov: 45 }}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={1.8} color="#38bdf8" />
-        <pointLight position={[-10, -10, -10]} intensity={1.0} color="#a855f7" />
+        <ambientLight intensity={0.6} />
+        <pointLight position={[10, 10, 10]} intensity={1.8} color="#ffffff" />
         <directionalLight position={[5, 3, 5]} intensity={1.2} color="#ffffff" />
 
-        <EarthGlobe
-          selectedDest={selectedDest}
-          hoveredDest={hoveredDest}
-          onSelectDest={setSelectedDest}
-          onHoverDest={setHoveredDest}
-        />
+        <Suspense fallback={<GlobeLoadingState />}>
+          <EarthGlobe
+            selectedDest={selectedDest}
+            hoveredDest={hoveredDest}
+            onSelectDest={setSelectedDest}
+            onHoverDest={setHoveredDest}
+          />
+        </Suspense>
 
         <OrbitControls
           enableZoom={true}
@@ -282,3 +293,8 @@ export default function CinematicGlobe3D({ className = '' }) {
     </div>
   );
 }
+
+// Preload textures
+useTexture.preload('/textures/earth-day-hi.jpg');
+useTexture.preload('/textures/earth-topology.png');
+useTexture.preload('/textures/earth-water.png');
