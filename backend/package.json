@@ -3,17 +3,21 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "SafarAI backend services — AI (Groq), database (Supabase), data layer, and dev/audit scripts.",
+  "description": "SafarAI production API server — Express.js, Groq AI, Supabase, and destination intelligence.",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
     "images:fetch": "node scripts/fetch-images.mjs",
     "images:fetch:dry": "node scripts/fetch-images.mjs --dry",
     "audit": "node scripts/audit.mjs",
-    "audit:local": "node scripts/audit.mjs http://localhost:5173",
-    "start": "node -e \"import('./services/index.js').then(m => console.log('Backend services loaded OK:', Object.keys(m)))\""
+    "audit:local": "node scripts/audit.mjs http://localhost:5173"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.99.2",
+    "cors": "^2.8.6",
     "dotenv": "^16.4.5",
+    "express": "^4.22.2",
     "groq-sdk": "^1.1.1"
   },
   "devDependencies": {

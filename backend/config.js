@@ -2,10 +2,7 @@
  * SafarAI backend configuration.
  *
  * Automatically loads a .env file from the backend directory if present.
- * Copy backend/.env.example → backend/.env and fill in your credentials.
- *
- * Env var names intentionally match the frontend VITE_ prefix so a single
- * .env file can serve both sides during development.
+ * Supports both standard process.env variables and VITE_ prefixed variables.
  */
 
 import { createRequire } from 'node:module';
@@ -23,20 +20,33 @@ if (existsSync(envPath)) {
     const dotenv = require('dotenv');
     dotenv.config({ path: envPath });
   } catch {
-    // dotenv not installed — env vars must be set externally
+    // dotenv not installed or already loaded — env vars set externally
   }
 }
 
 export const config = {
+  /** Server Port */
+  port: parseInt(process.env.PORT || '3000', 10),
+
   /** Supabase */
-  supabaseUrl: process.env.VITE_SUPABASE_URL || '',
-  supabaseAnonKey: process.env.VITE_SUPABASE_ANON_KEY || '',
+  supabaseUrl: process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '',
+  supabaseAnonKey: process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '',
 
   /** Groq AI */
-  groqApiKey: process.env.VITE_GROQ_API_KEY || '',
+  groqApiKey: process.env.VITE_GROQ_API_KEY || process.env.GROQ_API_KEY || '',
 
-  /** App */
+  /** Environment */
   nodeEnv: process.env.NODE_ENV || 'development',
+
+  /** Allowed CORS Origins */
+  allowedOrigins: process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
+    : [
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'http://localhost:4173',
+        'https://getsafarai.vercel.app',
+      ],
 };
 
 export default config;

@@ -1,13 +1,9 @@
 /**
  * SafarAI AI service — frontend entry point.
  *
- * This file keeps the original import path (`../services/aiService`)
- * working for all frontend components. The core implementation lives
- * here (browser-compatible Groq SDK call + offline fallback).
- *
- * Primary path  : Groq (llama-3.3-70b-versatile)
- * Fallback path : deterministic, data-grounded answer built from
- *                 the in-app destination / hotel / food datasets.
+ * Checks VITE_API_URL first to query the production Railway API server.
+ * If VITE_API_URL is not set or network fails, falls back gracefully to
+ * browser-compatible Groq SDK / offline engine.
  */
 
 import { destinations, findDestination } from '../data/destinations';
@@ -15,14 +11,19 @@ import { hotelsDatabase } from '../data/hotelsDatabase';
 import { foodCultureDatabase } from '../data/foodCultureDatabase';
 
 const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export const aiStatus = {
-  configured: Boolean(apiKey),
+  configured: Boolean(apiKey || apiUrl),
   model: 'llama-3.3-70b-versatile',
+  remoteServer: Boolean(apiUrl),
 };
 
 if (import.meta.env.DEV) {
-  console.info('[SafarAI AI] Groq key detected:', aiStatus.configured);
+  console.info(
+    '[SafarAI AI] Configuration status:',
+    aiStatus.remoteServer ? `Railway API (${apiUrl})` : apiKey ? 'Browser Groq Key' : 'Offline Fallback'
+  );
 }
 
 let clientPromise = null;
@@ -151,34 +152,56 @@ function offlineAnswer(message) {
  */
 export async function generateAITravelResponse(message, options = {}) {
   const { history = [], context = '' } = options;
+
+  // 1. Try Railway API Server if VITE_API_URL is configured
+  if (apiUrl) {
+    try {
+      const endpoint = `${apiUrl.replace(/\/$/, '')}/api/chat`;
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history, context }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.response) {
+          return data.response;
+        }
+      }
+    } catch (error) {
+      console.warn('[SafarAI AI] Railway API server call failed, falling back to local client:', error);
+    }
+  }
+
+  // 2. Client-side Groq SDK call
   const client = await getClient();
+  if (client) {
+    try {
+      const messages = [
+        { role: 'system', content: context ? `${SYSTEM_PROMPT}\n\nTraveller context: ${context}` : SYSTEM_PROMPT },
+        ...history.slice(-6).map((entry) => ({
+          role: entry.role === 'user' ? 'user' : 'assistant',
+          content: entry.text,
+        })),
+        { role: 'user', content: message },
+      ];
 
-  if (!client) {
-    await new Promise((resolve) => setTimeout(resolve, 420));
-    return offlineAnswer(message);
+      const response = await client.chat.completions.create({
+        model: aiStatus.model,
+        messages,
+        temperature: 0.7,
+      });
+
+      return response.choices?.[0]?.message?.content?.trim() || offlineAnswer(message);
+    } catch (error) {
+      console.error('Groq API Error:', error);
+    }
   }
 
-  try {
-    const messages = [
-      { role: 'system', content: context ? `${SYSTEM_PROMPT}\n\nTraveller context: ${context}` : SYSTEM_PROMPT },
-      ...history.slice(-6).map((entry) => ({
-        role: entry.role === 'user' ? 'user' : 'assistant',
-        content: entry.text,
-      })),
-      { role: 'user', content: message },
-    ];
-
-    const response = await client.chat.completions.create({
-      model: aiStatus.model,
-      messages,
-      temperature: 0.7,
-    });
-
-    return response.choices?.[0]?.message?.content?.trim() || offlineAnswer(message);
-  } catch (error) {
-    console.error('Groq API Error:', error);
-    return offlineAnswer(message);
-  }
+  // 3. Grounded local offline fallback
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  return offlineAnswer(message);
 }
 
 export default generateAITravelResponse;

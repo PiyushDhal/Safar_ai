@@ -1,8 +1,8 @@
 /**
  * SafarAI AI service — Node.js / backend edition.
  *
- * Uses process.env instead of import.meta.env (Vite is not available here).
- * Does NOT use dangerouslyAllowBrowser — this runs in a trusted Node context.
+ * Uses process.env / config.js.
+ * Does NOT use dangerouslyAllowBrowser — runs in trusted Node context.
  *
  * Primary path  : Groq (llama-3.3-70b-versatile)
  * Fallback path : deterministic, data-grounded answer built from local datasets.
@@ -13,27 +13,24 @@ import { destinations, findDestination } from '../data/destinations.js';
 import { hotelsDatabase } from '../data/hotelsDatabase.js';
 import { foodCultureDatabase } from '../data/foodCultureDatabase.js';
 
-const apiKey = config.groqApiKey;
-
-export const aiStatus = {
-  configured: Boolean(apiKey),
-  model: 'llama-3.3-70b-versatile',
-};
-
-if (config.nodeEnv === 'development') {
-  console.info('[SafarAI AI] Groq key configured:', aiStatus.configured);
+export function getAiStatus() {
+  const key = config.groqApiKey;
+  return {
+    configured: Boolean(key),
+    model: 'llama-3.3-70b-versatile',
+  };
 }
 
-/**
- * Lazy-load the Groq SDK so it is only imported when actually needed.
- */
+export const aiStatus = getAiStatus();
+
 let clientPromise = null;
 
 function getClient() {
+  const apiKey = config.groqApiKey;
   if (!apiKey) return Promise.resolve(null);
   if (!clientPromise) {
     clientPromise = import('groq-sdk')
-      .then(({ default: Groq }) => new Groq({ apiKey })) // no dangerouslyAllowBrowser in Node
+      .then(({ default: Groq }) => new Groq({ apiKey }))
       .catch((error) => {
         console.error('[SafarAI AI] Failed to load the Groq SDK:', error);
         return null;
@@ -196,7 +193,7 @@ export async function generateAITravelResponse(message, options = {}) {
     ];
 
     const response = await client.chat.completions.create({
-      model: aiStatus.model,
+      model: getAiStatus().model,
       messages,
       temperature: 0.7,
     });
