@@ -168,20 +168,7 @@ export default function HeroSection() {
                 />
               </div>
 
-              <div className="flex items-center gap-2 border-slate-200 dark:border-slate-800 pl-3 sm:border-l">
-                <select
-                  id="hero-days"
-                  value={days}
-                  onChange={(e) => setDays(e.target.value)}
-                  aria-label="Trip length in days"
-                  className="h-11 cursor-pointer rounded-xl border-0 bg-slate-100 dark:bg-slate-900/90 px-3 text-sm font-bold text-slate-900 dark:text-white outline-none"
-                >
-                  {[2, 3, 4, 5, 6, 7, 10].map((val) => (
-                    <option key={val} value={val} className="bg-white dark:bg-slate-950 text-slate-900 dark:text-white">
-                      {val} days
-                    </option>
-                  ))}
-                </select>
+              <div className="flex items-center gap-2 pl-3">
                 <Button
                   onClick={() => startPlanning()}
                   leadingIcon="sparkles"
