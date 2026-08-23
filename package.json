@@ -1,0 +1,10 @@
+{
+  "name": "safarai-root",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "build": "cd backend && npm install"
+  }
+}
