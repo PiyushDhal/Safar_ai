@@ -28,7 +28,7 @@ const TEXTURES = {
 };
 
 /** Sphere radius (1.0) plus margin for the atmosphere shell and markers. */
-const FIT_RADIUS = 0.88;
+const FIT_RADIUS = 0.45;
 
 const QUALITY_PRESETS = {
   low: { segments: 48, dpr: 1, antialias: false, clouds: false, night: false, bump: false, stars: 550, hiRes: false },
