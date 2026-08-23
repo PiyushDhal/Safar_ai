@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 
 /**
  * TravelEmojiOverlay — a lightweight, non-destructive HTML overlay component.
- * Animates a 🚀 rocket traveling left-to-right along the Earth's natural rotation direction,
- * matching its steady pace and fading out completely when passing behind the globe.
+ * Animates a 🚀 rocket along a 360° 3D elliptical orbit around the Earth sphere:
+ * - Front pass: Large, bright, arcing across the front face.
+ * - Back pass: Scales down and fades out completely behind the back of the globe.
  */
 export default function TravelEmojiOverlay() {
   return (
@@ -16,26 +17,26 @@ export default function TravelEmojiOverlay() {
         className="absolute top-0 left-0 flex items-center justify-center"
         initial={{ opacity: 0 }}
         animate={{
-          // West-to-East rotation path matching Earth's rotation
-          x: ['-5vw', '15vw', '45vw', '75vw', '95vw', '95vw', '-5vw'],
-          y: ['52vh', '48vh', '45vh', '48vh', '52vh', '52vh', '52vh'],
-          rotate: [18, 12, 0, -12, -18, -18, 18],
-          scale: [0.75, 1.0, 1.18, 1.0, 0.75, 0.5, 0.5],
-          // Completely hidden (opacity: 0) while rounding behind the back of the globe
-          opacity: [0, 1, 1, 1, 0, 0, 0],
+          // 360° Elliptical orbit around the globe sphere
+          x: ['18vw', '50vw', '82vw', '88vw', '50vw', '12vw', '18vw'],
+          y: ['56vh', '34vh', '48vh', '58vh', '66vh', '64vh', '56vh'],
+          rotate: [32, 8, -25, -55, -140, 150, 32],
+          scale: [0.85, 1.35, 0.95, 0.65, 0.45, 0.6, 0.85],
+          // Opacity: 1 on front pass, 0 when passing behind the globe
+          opacity: [1, 1, 0.9, 0, 0, 0, 1],
         }}
         transition={{
-          duration: 18,
+          duration: 16,
           repeat: Infinity,
-          ease: 'linear',
-          times: [0, 0.15, 0.45, 0.75, 0.88, 0.95, 1],
+          ease: 'easeInOut',
+          times: [0, 0.35, 0.65, 0.72, 0.85, 0.94, 1],
         }}
       >
         {/* Clean Rocket Emoji with gentle float */}
         <motion.div
           animate={{ y: [0, -5, 0] }}
           transition={{
-            duration: 2.4,
+            duration: 2.2,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
