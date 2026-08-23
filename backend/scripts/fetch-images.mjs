@@ -25,13 +25,15 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const root = join(here, '..');
+const backendRoot = join(here, '..');
+// Images are served from the frontend's public dir
+const frontendRoot = join(backendRoot, '..', 'frontend');
 const dry = process.argv.includes('--dry');
 
-const importFromRoot = (path) => import(pathToFileURL(join(root, path)).href);
-const { destinations } = await importFromRoot('src/data/destinations.js');
-const { hotelsDatabase } = await importFromRoot('src/data/hotelsDatabase.js');
-const { pointsOfInterest } = await importFromRoot('src/data/pointsOfInterest.js');
+const importFromBackend = (path) => import(pathToFileURL(join(backendRoot, path)).href);
+const { destinations } = await importFromBackend('data/destinations.js');
+const { hotelsDatabase } = await importFromBackend('data/hotelsDatabase.js');
+const { pointsOfInterest } = await importFromBackend('data/pointsOfInterest.js');
 
 const API = 'https://en.wikipedia.org/api/rest_v1/page/summary/';
 const USER_AGENT = 'SafarAI-image-verifier/1.0 (https://github.com/; contact: developer@travelcore.com)';
@@ -150,7 +152,7 @@ for (const target of targets) {
       continue;
     }
 
-    const imagePath = join(root, 'public/images', file);
+    const imagePath = join(frontendRoot, 'public/images', file);
     mkdirSync(dirname(imagePath), { recursive: true });
     if (!existsSync(imagePath)) {
       const binary = await downloadImage(source);
@@ -188,7 +190,10 @@ export function localImageForDestination(slug) {
 
 export default manifest;
 `;
-  writeFileSync(join(root, 'src/data/imageManifest.js'), contents);
+  // Write manifest to both backend/data and frontend/src/data
+  writeFileSync(join(backendRoot, 'data/imageManifest.js'), contents);
+  writeFileSync(join(frontendRoot, 'src/data/imageManifest.js'), contents);
+  console.log('  ✓ imageManifest.js written to backend/data/ and frontend/src/data/');
 }
 
 console.log(`\n${verified}/${targets.length} places verified.`);

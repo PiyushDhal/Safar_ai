@@ -1,6 +1,23 @@
-import { createClient } from '@supabase/supabase-js'
+/**
+ * SafarAI Supabase client — Node.js / backend edition.
+ *
+ * Uses process.env (via config.js) instead of import.meta.env.
+ * Safe to use in Node scripts, server-side tasks, and CI pipelines.
+ */
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co'
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key'
+import { createClient } from '@supabase/supabase-js';
+import { config } from '../config.js';
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+if (!config.supabaseUrl || config.supabaseUrl === '') {
+  console.warn(
+    '[SafarAI Supabase] VITE_SUPABASE_URL is not set. ' +
+      'Copy backend/.env.example to backend/.env and fill in your credentials.'
+  );
+}
+
+export const supabase = createClient(
+  config.supabaseUrl || 'https://placeholder.supabase.co',
+  config.supabaseAnonKey || 'placeholder-key'
+);
+
+export default supabase;

@@ -1,10 +1,31 @@
 /**
  * SafarAI backend configuration.
  *
- * Environment variables are read from process.env (Node.js) or a .env file.
- * Use dotenv (npm i dotenv) to load .env automatically in scripts:
- *   import 'dotenv/config';
+ * Automatically loads a .env file from the backend directory if present.
+ * Copy backend/.env.example → backend/.env and fill in your credentials.
+ *
+ * Env var names intentionally match the frontend VITE_ prefix so a single
+ * .env file can serve both sides during development.
  */
+
+import { createRequire } from 'node:module';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
+
+// Auto-load .env from the backend directory
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const envPath = join(__dirname, '.env');
+
+if (existsSync(envPath)) {
+  try {
+    const require = createRequire(import.meta.url);
+    const dotenv = require('dotenv');
+    dotenv.config({ path: envPath });
+  } catch {
+    // dotenv not installed — env vars must be set externally
+  }
+}
 
 export const config = {
   /** Supabase */

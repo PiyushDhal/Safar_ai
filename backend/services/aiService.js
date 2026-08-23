@@ -1,32 +1,31 @@
-// Backend: data is in ../data relative to services/
+/**
+ * SafarAI AI service — Node.js / backend edition.
+ *
+ * Uses process.env instead of import.meta.env (Vite is not available here).
+ * Does NOT use dangerouslyAllowBrowser — this runs in a trusted Node context.
+ *
+ * Primary path  : Groq (llama-3.3-70b-versatile)
+ * Fallback path : deterministic, data-grounded answer built from local datasets.
+ */
+
+import { config } from '../config.js';
 import { destinations, findDestination } from '../data/destinations.js';
 import { hotelsDatabase } from '../data/hotelsDatabase.js';
 import { foodCultureDatabase } from '../data/foodCultureDatabase.js';
 
-/**
- * SafarAI assistant service.
- *
- * Primary path  : Groq (llama-3.3-70b-versatile), unchanged from before.
- * Fallback path : a deterministic, data-grounded answer built from the
- *                 in-app destination / hotel / food datasets so the
- *                 assistant stays genuinely useful when no API key is
- *                 configured or the network call fails.
- */
-
-const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+const apiKey = config.groqApiKey;
 
 export const aiStatus = {
   configured: Boolean(apiKey),
   model: 'llama-3.3-70b-versatile',
 };
 
-if (import.meta.env.DEV) {
-  console.info('[SafarAI AI] Groq key detected:', aiStatus.configured);
+if (config.nodeEnv === 'development') {
+  console.info('[SafarAI AI] Groq key configured:', aiStatus.configured);
 }
 
 /**
- * The Groq SDK is loaded on demand so it never lands in the initial bundle —
- * the assistant is opt-in, most sessions never call it.
+ * Lazy-load the Groq SDK so it is only imported when actually needed.
  */
 let clientPromise = null;
 
@@ -34,7 +33,7 @@ function getClient() {
   if (!apiKey) return Promise.resolve(null);
   if (!clientPromise) {
     clientPromise = import('groq-sdk')
-      .then(({ default: Groq }) => new Groq({ apiKey, dangerouslyAllowBrowser: true }))
+      .then(({ default: Groq }) => new Groq({ apiKey })) // no dangerouslyAllowBrowser in Node
       .catch((error) => {
         console.error('[SafarAI AI] Failed to load the Groq SDK:', error);
         return null;
@@ -69,7 +68,9 @@ function offlineAnswer(message) {
   const wantsSafety = /safe|safety|risk|solo|women|emergency/.test(text);
 
   if (destination) {
-    const stays = hotelsDatabase.filter((hotel) => hotel.city.toLowerCase() === destination.name.toLowerCase());
+    const stays = hotelsDatabase.filter(
+      (hotel) => hotel.city.toLowerCase() === destination.name.toLowerCase()
+    );
     const food = foodCultureDatabase.filter((item) =>
       item.city.toLowerCase().includes(destination.name.toLowerCase())
     );
@@ -89,10 +90,21 @@ function offlineAnswer(message) {
     ];
 
     if (wantsStay && stays.length) {
-      lines.push('', '**Where to stay**', ...stays.map((hotel) => `- ${hotel.name} — ${inr(hotel.pricePerNight)}/night · ${hotel.rating}★ (${hotel.tier})`));
+      lines.push(
+        '',
+        '**Where to stay**',
+        ...stays.map(
+          (hotel) =>
+            `- ${hotel.name} — ${inr(hotel.pricePerNight)}/night · ${hotel.rating}★ (${hotel.tier})`
+        )
+      );
     }
     if (wantsFood && food.length) {
-      lines.push('', '**What to eat**', ...food.slice(0, 4).map((item) => `- ${item.dish} at ${item.place}`));
+      lines.push(
+        '',
+        '**What to eat**',
+        ...food.slice(0, 4).map((item) => `- ${item.dish} at ${item.place}`)
+      );
     }
     if (wantsBudget) {
       lines.push(
@@ -114,7 +126,10 @@ function offlineAnswer(message) {
       );
     }
 
-    lines.push('', `_Want a full day-by-day plan? Open the Trip Planner and pick ${destination.name}._`);
+    lines.push(
+      '',
+      `_Want a full day-by-day plan? Open the Trip Planner and pick ${destination.name}._`
+    );
     return lines.join('\n');
   }
 
@@ -123,7 +138,9 @@ function offlineAnswer(message) {
     return [
       '### Best value destinations right now',
       '',
-      ...cheapest.map((item) => `- **${item.name}** — from ${inr(item.dailyCost)}/day · ${item.bestTime}`),
+      ...cheapest.map(
+        (item) => `- **${item.name}** — from ${inr(item.dailyCost)}/day · ${item.bestTime}`
+      ),
       '',
       'Open **Budget Calculator** to model exact cost by travel style, season and group size.',
     ].join('\n');
@@ -147,24 +164,30 @@ function offlineAnswer(message) {
 /* --------------------------------------------------------------- public API */
 
 /**
- * @param {string} message                 the user question
+ * Generate an AI travel response using Groq, with offline fallback.
+ *
+ * @param {string} message            The user question
  * @param {object} [options]
- * @param {Array}  [options.history]       prior turns ({ role, text })
- * @param {string} [options.context]       extra grounding context
+ * @param {Array}  [options.history]  Prior turns ({ role, text })
+ * @param {string} [options.context]  Extra grounding context
+ * @returns {Promise<string>} Markdown-formatted response
  */
 export async function generateAITravelResponse(message, options = {}) {
   const { history = [], context = '' } = options;
   const client = await getClient();
 
   if (!client) {
-    // Keep the product usable without a key — clearly grounded, local answer.
-    await new Promise((resolve) => setTimeout(resolve, 420));
+    // No API key — return a useful, grounded offline answer immediately.
+    await new Promise((resolve) => setTimeout(resolve, 200));
     return offlineAnswer(message);
   }
 
   try {
     const messages = [
-      { role: 'system', content: context ? `${SYSTEM_PROMPT}\n\nTraveller context: ${context}` : SYSTEM_PROMPT },
+      {
+        role: 'system',
+        content: context ? `${SYSTEM_PROMPT}\n\nTraveller context: ${context}` : SYSTEM_PROMPT,
+      },
       ...history.slice(-6).map((entry) => ({
         role: entry.role === 'user' ? 'user' : 'assistant',
         content: entry.text,
@@ -180,7 +203,7 @@ export async function generateAITravelResponse(message, options = {}) {
 
     return response.choices?.[0]?.message?.content?.trim() || offlineAnswer(message);
   } catch (error) {
-    console.error('Groq API Error:', error);
+    console.error('[SafarAI AI] Groq API Error:', error.message);
     return offlineAnswer(message);
   }
 }
