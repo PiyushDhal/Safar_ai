@@ -71,7 +71,7 @@ const globeFragmentShader = /* glsl */ `
   void main() {
     vec3 normal = normalize(vNormal);
 
-    // --- terrain relief from the topography map (finite differences) -------
+    // --- terrain relief from topography bump map ---------------------------
     if (uHasBump > 0.5) {
       vec2 texel = vec2(1.0 / 2048.0, 1.0 / 1024.0);
       float hL = texture2D(uBumpMap, vUv - vec2(texel.x, 0.0)).r;
@@ -81,47 +81,47 @@ const globeFragmentShader = /* glsl */ `
       vec3 tangent = normalize(vec3(1.0, 0.0, (hR - hL) * uBumpScale));
       vec3 bitangent = normalize(vec3(0.0, 1.0, (hU - hD) * uBumpScale));
       vec3 perturbed = normalize(cross(tangent, bitangent));
-      normal = normalize(normal + perturbed * 0.55 * uBumpScale);
+      normal = normalize(normal + perturbed * 0.40 * uBumpScale);
     }
 
     vec3 sunDir = normalize(uSunDirection);
     float lambert = dot(normal, sunDir);
 
-    // Soft terminator: a few degrees of twilight rather than a hard edge.
-    float dayAmount = smoothstep(-0.18, 0.22, lambert);
+    // Natural realistic twilight terminator transition
+    float dayAmount = smoothstep(-0.20, 0.25, lambert);
 
     vec3 dayColor = texture2D(uDayMap, vUv).rgb;
-    vec3 litDay = dayColor * (uAmbient + 1.05 * max(lambert, 0.0));
+    vec3 litDay = dayColor * (uAmbient + 1.0 * max(lambert, 0.0));
 
-    // --- city lights on the dark side --------------------------------------
+    // --- warm golden city night lights ------------------------------------
     vec3 nightColor = vec3(0.0);
     if (uHasNight > 0.5) {
       nightColor = texture2D(uNightMap, vUv).rgb;
-      nightColor = pow(nightColor, vec3(1.25)) * 1.5;
-      nightColor += dayColor * 0.045;   // faint earthshine so oceans are not black
+      nightColor = pow(nightColor, vec3(1.2)) * 1.35 * vec3(1.0, 0.88, 0.68);
+      nightColor += dayColor * 0.035;   // subtle earthshine on night ocean
     } else {
-      nightColor = dayColor * 0.07;
+      nightColor = dayColor * 0.06;
     }
 
     vec3 color = mix(nightColor, litDay, dayAmount);
 
-    // --- specular glint on water -------------------------------------------
+    // --- natural specular glint on ocean water -----------------------------
     if (uHasWater > 0.5) {
       float water = texture2D(uWaterMap, vUv).r;
       vec3 viewDir = normalize(cameraPosition - vWorldPosition);
       vec3 halfway = normalize(sunDir + viewDir);
-      float spec = pow(max(dot(normal, halfway), 0.0), 42.0);
-      color += vec3(0.65, 0.78, 1.0) * spec * water * 0.55 * dayAmount;
+      float spec = pow(max(dot(normal, halfway), 0.0), 36.0);
+      color += vec3(0.45, 0.65, 0.95) * spec * water * 0.40 * dayAmount;
     }
 
-    // --- warm scattering right on the terminator ----------------------------
-    float twilight = exp(-pow(lambert * 7.0, 2.0));
-    color += vec3(0.38, 0.17, 0.05) * twilight * 0.20;
+    // --- natural Rayleigh sunset/twilight scattering on terminator ----------
+    float twilight = exp(-pow(lambert * 6.5, 2.0));
+    color += vec3(0.40, 0.18, 0.06) * twilight * 0.16;
 
-    // --- limb darkening -----------------------------------------------------
+    // --- subtle limb darkening ---------------------------------------------
     vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
     float rim = 1.0 - max(dot(normal, viewDirection), 0.0);
-    color *= 1.0 - rim * 0.22;
+    color *= 1.0 - rim * 0.18;
 
     gl_FragColor = vec4(color, 1.0);
     #include <colorspace_fragment>
@@ -132,7 +132,7 @@ const atmosphereVertexShader = /* glsl */ `
   varying vec3 vNormal;
   varying vec3 vWorldPosition;
   void main() {
-    vNormal = normalize(mat3(modelMatrix) * normal);    // world-space normal
+    vNormal = normalize(mat3(modelMatrix) * normal);
     vec4 worldPosition = modelMatrix * vec4(position, 1.0);
     vWorldPosition = worldPosition.xyz;
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
@@ -148,9 +148,9 @@ const atmosphereFragmentShader = /* glsl */ `
 
   void main() {
     vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
-    float rim = pow(1.0 - abs(dot(normalize(vNormal), viewDirection)), 4.4);
+    float rim = pow(1.0 - abs(dot(normalize(vNormal), viewDirection)), 4.0);
     float sun = max(dot(normalize(vNormal), normalize(uSunDirection)), 0.0);
-    float glow = rim * (0.35 + sun * 1.15) * uIntensity;
+    float glow = rim * (0.30 + sun * 1.0) * uIntensity;
     gl_FragColor = vec4(uColor, glow);
   }
 `;
@@ -366,8 +366,8 @@ const RealisticGlobe = forwardRef(function RealisticGlobe(
       new THREE.ShaderMaterial({
         uniforms: {
           uSunDirection: { value: sunDirection.clone() },
-          uColor: { value: new THREE.Color('#6ea8ff') },
-          uIntensity: { value: 0.62 },
+          uColor: { value: new THREE.Color('#3882f6') },
+          uIntensity: { value: 0.45 },
         },
         vertexShader: atmosphereVertexShader,
         fragmentShader: atmosphereFragmentShader,
@@ -391,7 +391,7 @@ const RealisticGlobe = forwardRef(function RealisticGlobe(
         new THREE.MeshLambertMaterial({
           map: cloudTexture,
           transparent: true,
-          opacity: 0.42,
+          opacity: 0.28,
           depthWrite: false,
         })
       );
