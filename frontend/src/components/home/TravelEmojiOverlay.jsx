@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 /**
  * TravelEmojiOverlay — a lightweight, non-destructive HTML overlay component.
- * Animates a 🚀 rocket with organic waypoints, pausing at travel destinations
+ * Animates a clean 🚀 rocket with organic waypoints, pausing at travel destinations
  * and matching the slow rotation pace of the Earth globe.
  */
 export default function TravelEmojiOverlay() {
@@ -31,11 +31,7 @@ export default function TravelEmojiOverlay() {
           times: [0, 0.22, 0.28, 0.48, 0.54, 0.74, 0.82, 1],
         }}
       >
-        {/* Glowing Cyan Thruster Exhaust */}
-        <div className="absolute h-10 w-10 rounded-full bg-cyan-400/30 blur-md" />
-        <div className="absolute h-7 w-7 rounded-full border border-cyan-400/70 shadow-[0_0_18px_rgba(6,182,212,0.9)] animate-pulse" />
-
-        {/* Gentle Floating Rocket Bobbing */}
+        {/* Clean Rocket Emoji */}
         <motion.div
           animate={{ y: [0, -6, 0] }}
           transition={{
@@ -43,7 +39,7 @@ export default function TravelEmojiOverlay() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="relative text-3xl sm:text-4xl drop-shadow-[0_0_14px_rgba(6,182,212,0.95)]"
+          className="relative text-3xl sm:text-4xl drop-shadow-md"
         >
           <span>🚀</span>
         </motion.div>
