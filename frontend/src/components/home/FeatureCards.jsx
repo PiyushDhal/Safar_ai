@@ -56,35 +56,35 @@ function TiltGlassCard({ module, index }) {
     >
       <Link
         to={module.route}
-        className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line/60 bg-gradient-to-b from-slate-900/80 to-slate-950/80 p-6 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-cyan-500/40 hover:shadow-cyan-500/10"
+        className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 dark:border-line/60 bg-white/90 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-950/80 p-6 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-cyan-500/40 hover:shadow-cyan-500/10"
       >
         {/* Mouse Follow Glow Backdrop */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-cyan-500/15 blur-3xl transition-all duration-500 group-hover:bg-cyan-400/30"
+          className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-cyan-500/10 dark:bg-cyan-500/15 blur-3xl transition-all duration-500 group-hover:bg-cyan-400/20 dark:group-hover:bg-cyan-400/30"
         />
 
         <div className="relative mb-4 flex items-center justify-between gap-3" style={{ transform: 'translateZ(20px)' }}>
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 text-white shadow-lg transition-transform duration-300 ease-spring group-hover:scale-110 group-hover:rotate-6">
             <Icon name={module.icon} size="md" />
           </span>
-          <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-2xs font-bold uppercase tracking-wider text-cyan-300">
+          <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-2xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-300">
             {module.category}
           </span>
         </div>
 
-        <h3 className="relative text-lg font-extrabold text-white group-hover:text-cyan-300 transition-colors" style={{ transform: 'translateZ(15px)' }}>
+        <h3 className="relative text-lg font-extrabold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors" style={{ transform: 'translateZ(15px)' }}>
           {module.title}
         </h3>
-        <p className="relative mt-2 text-sm leading-relaxed text-slate-300" style={{ transform: 'translateZ(10px)' }}>
+        <p className="relative mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300" style={{ transform: 'translateZ(10px)' }}>
           {module.description}
         </p>
 
         <div className="relative mt-3 grid grid-rows-[0fr] overflow-hidden transition-all duration-300 ease-smooth group-hover:grid-rows-[1fr]">
-          <p className="overflow-hidden text-xs leading-5 text-slate-400">{module.detail}</p>
+          <p className="overflow-hidden text-xs leading-5 text-slate-500 dark:text-slate-400">{module.detail}</p>
         </div>
 
-        <span className="relative mt-auto inline-flex items-center gap-1.5 pt-5 text-xs font-bold text-cyan-400 group-hover:text-cyan-300" style={{ transform: 'translateZ(15px)' }}>
+        <span className="relative mt-auto inline-flex items-center gap-1.5 pt-5 text-xs font-bold text-cyan-600 dark:text-cyan-400 group-hover:text-cyan-500 dark:group-hover:text-cyan-300" style={{ transform: 'translateZ(15px)' }}>
           Launch Module
           <Icon
             name="arrowRight"
