@@ -228,10 +228,19 @@ export default function HeroSection() {
 
           {/* CTA Buttons */}
           <div ref={buttonsRef} className="mt-6 flex flex-wrap items-center gap-3">
-            <Button to="/explore" variant="glass" trailingIcon="arrowRight" className="border-slate-300 dark:border-cyan-500/40 text-slate-800 dark:text-white bg-white/80 dark:bg-slate-950/60 hover:bg-slate-100 dark:hover:bg-cyan-500/20 backdrop-blur-xl">
+            <Button
+              to="/explore"
+              trailingIcon="arrowRight"
+              className="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:via-blue-500 hover:to-indigo-500 text-white font-extrabold shadow-lg shadow-cyan-500/30 border-0 px-6 py-3"
+            >
               Explore Destinations
             </Button>
-            <Button to="/assistant" variant="ghost" leadingIcon="bot" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-200/60 dark:bg-slate-950/40 backdrop-blur-md">
+            <Button
+              to="/assistant"
+              variant="glass"
+              leadingIcon="bot"
+              className="border border-cyan-500/40 text-slate-900 dark:text-cyan-300 bg-white/90 dark:bg-slate-950/80 hover:bg-slate-100 dark:hover:bg-slate-900 backdrop-blur-xl font-bold"
+            >
               Ask AI Assistant
             </Button>
           </div>
