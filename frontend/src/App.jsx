@@ -7,12 +7,9 @@ import { ToastProvider } from './context/ToastContext';
 import { WorkspaceProvider } from './context/WorkspaceContext';
 import { AuthProvider } from './context/AuthContext';
 import { AssistantProvider } from './context/AssistantContext';
+import { TravelOSProvider } from './context/TravelOSContext';
 import RouteFallback from './components/RouteFallback';
 
-/**
- * The landing page ships in the main bundle (it is the most common entry
- * point); every other route is code-split so first paint stays fast.
- */
 import HomePage from './pages/HomePage';
 
 const ExplorePage = lazy(() => import('./pages/ExplorePage'));
@@ -41,32 +38,34 @@ function App() {
         <WorkspaceProvider>
           <AuthProvider>
             <AssistantProvider>
-              <Suspense fallback={<RouteFallback />}>
-                <Routes>
-                  <Route path="/auth" element={<AuthPage />} />
-                  <Route element={<MainLayout />}>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/explore" element={<ExplorePage />} />
-                    <Route path="/world" element={<WorldExplorer />} />
-                    <Route path="/nearby" element={<NearbyExplorer />} />
-                    <Route path="/plan-trip" element={<PlanTripPage />} />
-                    <Route path="/transport" element={<TransportPage />} />
-                    <Route path="/railway" element={<RailwayExplorer />} />
-                    <Route path="/trip-planner" element={<TripPlanner />} />
-                    <Route path="/my-trips" element={<MyTrips />} />
-                    <Route path="/destination/:name" element={<DestinationDetails />} />
-                    <Route path="/hotels" element={<HotelsFinder />} />
-                    <Route path="/food-culture" element={<FoodCultureExplorer />} />
-                    <Route path="/assistant" element={<AIAssistant />} />
-                    <Route path="/safety" element={<SafetyPage />} />
-                    <Route path="/budget" element={<BudgetCalculator />} />
-                    <Route path="/events" element={<EventsExplorer />} />
-                    <Route path="/community" element={<CommunityPage />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                  </Route>
-                </Routes>
-              </Suspense>
+              <TravelOSProvider>
+                <Suspense fallback={<RouteFallback />}>
+                  <Routes>
+                    <Route path="/auth" element={<AuthPage />} />
+                    <Route element={<MainLayout />}>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/explore" element={<ExplorePage />} />
+                      <Route path="/world" element={<WorldExplorer />} />
+                      <Route path="/nearby" element={<NearbyExplorer />} />
+                      <Route path="/plan-trip" element={<PlanTripPage />} />
+                      <Route path="/transport" element={<TransportPage />} />
+                      <Route path="/railway" element={<RailwayExplorer />} />
+                      <Route path="/trip-planner" element={<TripPlanner />} />
+                      <Route path="/my-trips" element={<MyTrips />} />
+                      <Route path="/destination/:name" element={<DestinationDetails />} />
+                      <Route path="/hotels" element={<HotelsFinder />} />
+                      <Route path="/food-culture" element={<FoodCultureExplorer />} />
+                      <Route path="/assistant" element={<AIAssistant />} />
+                      <Route path="/safety" element={<SafetyPage />} />
+                      <Route path="/budget" element={<BudgetCalculator />} />
+                      <Route path="/events" element={<EventsExplorer />} />
+                      <Route path="/community" element={<CommunityPage />} />
+                      <Route path="/profile" element={<ProfilePage />} />
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Route>
+                  </Routes>
+                </Suspense>
+              </TravelOSProvider>
             </AssistantProvider>
           </AuthProvider>
         </WorkspaceProvider>

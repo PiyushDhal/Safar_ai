@@ -1,8 +1,14 @@
 /**
  * Single source of truth for product navigation.
- * Used by the navbar, the mobile drawer, the footer and the command palette
- * so every surface stays in sync.
+ * Simplified into 4 primary Travel OS Hubs: Discover, Plan, Trips, AI.
  */
+
+export const primaryLinks = [
+  { to: '/', label: 'Discover', icon: 'compass', description: 'Command Center & Interactive 3D Globe' },
+  { to: '/trip-planner', label: 'Plan', icon: 'sparkles', description: 'Travel Command Center & Itinerary OS' },
+  { to: '/my-trips', label: 'Trips', icon: 'luggage', description: 'Saved & Active Itineraries' },
+  { to: '/assistant', label: 'AI', icon: 'bot', description: 'Deep AI Travel Concierge' },
+];
 
 export const navGroups = [
   {
@@ -111,14 +117,8 @@ export const navGroups = [
   },
 ];
 
-export const primaryLinks = [
-  { to: '/', label: 'Home', icon: 'compass' },
-  { to: '/assistant', label: 'AI Assistant', icon: 'bot' },
-  { to: '/community', label: 'Community', icon: 'users' },
-];
-
 export const allNavItems = [
-  ...primaryLinks.map((item) => ({ ...item, group: 'General' })),
+  ...primaryLinks.map((item) => ({ ...item, group: 'Primary OS' })),
   ...navGroups.flatMap((group) => group.items.map((item) => ({ ...item, group: group.label }))),
   { to: '/profile', label: 'Dashboard & Profile', icon: 'user', group: 'Account', description: 'Your travel dashboard' },
 ];
