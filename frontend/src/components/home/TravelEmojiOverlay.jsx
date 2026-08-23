@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 
 /**
  * TravelEmojiOverlay — a lightweight, non-destructive HTML overlay component.
- * Animates a clean 🚀 rocket with organic waypoints, pausing at travel destinations
- * and matching the slow rotation pace of the Earth globe.
+ * Animates a 🚀 rocket traveling left-to-right along the Earth's natural rotation direction,
+ * matching its steady pace and fading out completely when passing behind the globe.
  */
 export default function TravelEmojiOverlay() {
   return (
@@ -16,26 +16,26 @@ export default function TravelEmojiOverlay() {
         className="absolute top-0 left-0 flex items-center justify-center"
         initial={{ opacity: 0 }}
         animate={{
-          // Multi-directional waypoints arcing around the globe surface
-          x: ['18vw', '44vw', '47vw', '74vw', '76vw', '54vw', '26vw', '18vw'],
-          y: ['50vh', '20vh', '21vh', '36vh', '37vh', '60vh', '40vh', '50vh'],
-          rotate: [-35, 20, 15, 80, 75, 165, 225, -35],
-          scale: [0.85, 1.2, 1.2, 1.05, 1.05, 0.8, 0.95, 0.85],
-          opacity: [0.3, 1, 1, 0.95, 0.95, 0.45, 0.85, 0.3],
+          // West-to-East rotation path matching Earth's rotation
+          x: ['-5vw', '15vw', '45vw', '75vw', '95vw', '95vw', '-5vw'],
+          y: ['52vh', '48vh', '45vh', '48vh', '52vh', '52vh', '52vh'],
+          rotate: [18, 12, 0, -12, -18, -18, 18],
+          scale: [0.75, 1.0, 1.18, 1.0, 0.75, 0.5, 0.5],
+          // Completely hidden (opacity: 0) while rounding behind the back of the globe
+          opacity: [0, 1, 1, 1, 0, 0, 0],
         }}
         transition={{
-          duration: 26,
+          duration: 18,
           repeat: Infinity,
-          ease: 'easeInOut',
-          // Keyframe timing pauses matching globe auto-rotation speed
-          times: [0, 0.22, 0.28, 0.48, 0.54, 0.74, 0.82, 1],
+          ease: 'linear',
+          times: [0, 0.15, 0.45, 0.75, 0.88, 0.95, 1],
         }}
       >
-        {/* Clean Rocket Emoji */}
+        {/* Clean Rocket Emoji with gentle float */}
         <motion.div
-          animate={{ y: [0, -6, 0] }}
+          animate={{ y: [0, -5, 0] }}
           transition={{
-            duration: 2.6,
+            duration: 2.4,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
