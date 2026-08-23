@@ -31,7 +31,7 @@ const variants = {
   success:
     'bg-emerald-500 text-white shadow-sm hover:-translate-y-0.5 hover:bg-emerald-600',
   glass:
-    'border border-white/25 bg-white/15 text-white backdrop-blur-md hover:bg-white/25',
+    'border border-slate-300 dark:border-cyan-500/40 bg-white/90 dark:bg-slate-950/70 text-slate-900 dark:text-cyan-300 backdrop-blur-xl hover:bg-slate-100 dark:hover:bg-slate-900 shadow-md',
 };
 
 const sizes = {

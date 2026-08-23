@@ -239,7 +239,7 @@ export default function HeroSection() {
               to="/assistant"
               variant="glass"
               leadingIcon="bot"
-              className="border border-cyan-500/40 text-slate-900 dark:text-cyan-300 bg-white/90 dark:bg-slate-950/80 hover:bg-slate-100 dark:hover:bg-slate-900 backdrop-blur-xl font-bold"
+              className="border border-slate-300 dark:border-cyan-500/40 text-slate-900 dark:text-cyan-300 bg-white/90 dark:bg-slate-950/80 hover:bg-slate-100 dark:hover:bg-slate-900 backdrop-blur-xl font-extrabold shadow-md"
             >
               Ask AI Assistant
             </Button>
