@@ -1,7 +1,50 @@
-import React, { useRef, useMemo, useEffect, Suspense } from 'react';
+import React, { useRef, useMemo, useEffect, useState, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Sphere, Float, useTexture, Html } from '@react-three/drei';
+import { Sphere, Float, useTexture, Html, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
+
+// Convert lat/lng to 3D position vector on sphere of given radius
+export function latLngToVector3(lat, lng, radius = 2.2) {
+  const phi = (90 - lat) * (Math.PI / 180);
+  const theta = (lng + 180) * (Math.PI / 180);
+  const x = -(radius * Math.sin(phi) * Math.cos(theta));
+  const z = radius * Math.sin(phi) * Math.sin(theta);
+  const y = radius * Math.cos(phi);
+  return new THREE.Vector3(x, y, z);
+}
+
+// Generate curved flight path between 2 vectors
+export function createCurvedPath(v1, v2, midHeight = 0.35) {
+  const mid = v1.clone().add(v2).multiplyScalar(0.5);
+  const distance = v1.distanceTo(v2);
+  mid.normalize().multiplyScalar(v1.length() + distance * midHeight);
+
+  const curve = new THREE.QuadraticBezierCurve3(v1, mid, v2);
+  const points = curve.getPoints(50);
+  return { curve, points };
+}
+
+const FEATURED_DESTINATIONS = [
+  { id: 'delhi', name: 'New Delhi', lat: 28.6139, lng: 77.209, country: 'India', score: 92 },
+  { id: 'tokyo', name: 'Tokyo', lat: 35.6762, lng: 139.6503, country: 'Japan', score: 98 },
+  { id: 'paris', name: 'Paris', lat: 48.8566, lng: 2.3522, country: 'France', score: 95 },
+  { id: 'nyc', name: 'New York', lat: 40.7128, lng: -74.006, country: 'USA', score: 94 },
+  { id: 'dubai', name: 'Dubai', lat: 25.2048, lng: 55.2708, country: 'UAE', score: 96 },
+  { id: 'bali', name: 'Bali', lat: -8.3405, lng: 115.092, country: 'Indonesia', score: 93 },
+  { id: 'london', name: 'London', lat: 51.5074, lng: -0.1278, country: 'UK', score: 96 },
+  { id: 'sydney', name: 'Sydney', lat: -33.8688, lng: 151.2093, country: 'Australia', score: 94 },
+];
+
+const FLIGHT_CONNECTIONS = [
+  ['delhi', 'dubai'],
+  ['delhi', 'tokyo'],
+  ['delhi', 'paris'],
+  ['delhi', 'bali'],
+  ['paris', 'nyc'],
+  ['london', 'nyc'],
+  ['tokyo', 'sydney'],
+  ['dubai', 'london'],
+];
 
 /* -------------------------------------------------------------------------- */
 /* Custom GLSL Shaders for Photoreal Day/Night & Atmosphere Earth             */
@@ -43,24 +86,19 @@ const EarthDayNightShader = {
       vec3 normal = normalize(vNormal);
       vec3 sunDir = normalize(uSunDirection);
 
-      // Diffuse lighting factor
       float cosineAngle = dot(normal, sunDir);
       float dayFactor = smoothstep(-0.25, 0.25, cosineAngle);
 
-      // Sample texture maps
       vec4 dayColor = texture2D(uDayMap, vUv);
       vec4 nightColor = texture2D(uNightMap, vUv);
       vec4 waterColor = texture2D(uWaterMap, vUv);
 
-      // Specular highlight on ocean water
       vec3 viewDir = normalize(cameraPosition - vWorldPosition);
       vec3 reflectDir = reflect(-sunDir, normal);
       float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0) * waterColor.r * 0.8;
 
-      // Mix day and night colors based on sun angle
-      vec3 finalColor = mix(nightColor.rgb * 1.8, dayColor.rgb + vec3(spec), dayFactor);
+      vec3 finalColor = mix(nightColor.rgb * 1.9, dayColor.rgb + vec3(spec), dayFactor);
 
-      // Atmosphere rim glow tint
       float rim = 1.0 - max(dot(viewDir, normal), 0.0);
       vec3 atmosphereGlow = vec3(0.02, 0.72, 0.96) * pow(rim, 3.5) * 0.65;
 
@@ -86,17 +124,117 @@ const AtmosphereGlowShader = {
   `,
 };
 
+function FlightPathArc({ start, end, active }) {
+  const pathData = useMemo(() => {
+    const v1 = latLngToVector3(start.lat, start.lng, 2.2);
+    const v2 = latLngToVector3(end.lat, end.lng, 2.2);
+    return createCurvedPath(v1, v2, 0.35);
+  }, [start, end]);
+
+  const pulseRef = useRef();
+
+  useFrame((state) => {
+    if (pulseRef.current && pathData.curve) {
+      const t = (state.clock.getElapsedTime() * 0.4) % 1;
+      const point = pathData.curve.getPoint(t);
+      pulseRef.current.position.copy(point);
+    }
+  });
+
+  const lineGeometry = useMemo(() => {
+    return new THREE.BufferGeometry().setFromPoints(pathData.points);
+  }, [pathData]);
+
+  return (
+    <group>
+      <primitive object={new THREE.Line(
+        lineGeometry,
+        new THREE.LineBasicMaterial({
+          color: active ? '#06b6d4' : '#818cf8',
+          transparent: true,
+          opacity: active ? 0.95 : 0.5,
+          linewidth: 2.0,
+        })
+      )} />
+
+      <mesh ref={pulseRef}>
+        <sphereGeometry args={[0.04, 16, 16]} />
+        <meshBasicMaterial color="#38bdf8" />
+      </mesh>
+    </group>
+  );
+}
+
+function DestinationMarker({ dest, isHovered, onClick, onHover }) {
+  const pos = useMemo(() => latLngToVector3(dest.lat, dest.lng, 2.22), [dest]);
+  const ringRef = useRef();
+
+  useFrame((state, delta) => {
+    if (ringRef.current) {
+      ringRef.current.rotation.z += delta * 1.5;
+    }
+  });
+
+  return (
+    <group position={pos}>
+      <mesh
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick(dest);
+        }}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          onHover(dest);
+        }}
+        onPointerOut={() => onHover(null)}
+      >
+        <sphereGeometry args={[0.05, 16, 16]} />
+        <meshStandardMaterial
+          color={isHovered ? '#38bdf8' : '#06b6d4'}
+          emissive="#0284c7"
+          emissiveIntensity={2.0}
+        />
+      </mesh>
+
+      <mesh ref={ringRef}>
+        <ringGeometry args={[0.065, 0.09, 32]} />
+        <meshBasicMaterial
+          color="#06b6d4"
+          transparent
+          opacity={isHovered ? 0.95 : 0.5}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+
+      {isHovered && (
+        <Html distanceFactor={10} position={[0, 0.2, 0]} center>
+          <div className="pointer-events-none rounded-xl border border-cyan-500/40 bg-slate-950/90 px-3 py-1.5 shadow-2xl backdrop-blur-md text-white whitespace-nowrap animate-fade-in">
+            <div className="flex items-center gap-1.5 text-xs font-extrabold">
+              <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
+              {dest.name} <span className="text-cyan-300 font-normal">({dest.country})</span>
+            </div>
+            <div className="text-[10px] text-slate-300 mt-0.5">
+              Safety Score: <span className="text-emerald-400 font-bold">{dest.score}/100</span>
+            </div>
+          </div>
+        </Html>
+      )}
+    </group>
+  );
+}
+
 /* -------------------------------------------------------------------------- */
-/* Photoreal Earth Sphere Mesh                                               */
+/* Photoreal Earth Mesh Component                                             */
 /* -------------------------------------------------------------------------- */
 
-function RealisticEarthMesh({ mouse, hoverState }) {
-  const earthRef = useRef();
+function RealisticEarthMesh({ mouse, hoverState, activeDest, setActiveDest }) {
+  const earthGroupRef = useRef();
   const cloudsRef = useRef();
   const ring1Ref = useRef();
   const ring2Ref = useRef();
 
-  // Load high-resolution textures from public/textures/
+  const [hoveredDest, setHoveredDest] = useState(null);
+
   const [dayMap, nightMap, bumpMap, waterMap] = useTexture([
     '/textures/earth-day-hi.jpg',
     '/textures/earth-night.jpg',
@@ -105,15 +243,9 @@ function RealisticEarthMesh({ mouse, hoverState }) {
   ]);
 
   useEffect(() => {
-    console.info('[SafarAI 3D Globe] Earth textures loaded successfully:', {
-      dayMap: dayMap?.image ? 'OK' : 'FAIL',
-      nightMap: nightMap?.image ? 'OK' : 'FAIL',
-      bumpMap: bumpMap?.image ? 'OK' : 'FAIL',
-      waterMap: waterMap?.image ? 'OK' : 'FAIL',
-    });
-  }, [dayMap, nightMap, bumpMap, waterMap]);
+    console.info('[SafarAI Fullscreen Globe] High-res textures loaded successfully.');
+  }, []);
 
-  // Create custom shader material with loaded textures
   const shaderMaterial = useMemo(() => {
     return new THREE.ShaderMaterial({
       uniforms: {
@@ -129,57 +261,47 @@ function RealisticEarthMesh({ mouse, hoverState }) {
   }, [dayMap, nightMap, bumpMap, waterMap]);
 
   useFrame((state, delta) => {
-    if (earthRef.current) {
-      // Rotate Earth on axis
-      earthRef.current.rotation.y += delta * 0.06;
-
-      // Mouse interactive tilt lerp
-      const targetX = mouse.current.y * 0.35;
-      const targetY = mouse.current.x * 0.35;
-      earthRef.current.rotation.x = THREE.MathUtils.lerp(earthRef.current.rotation.x, targetX, 0.05);
-      earthRef.current.rotation.z = THREE.MathUtils.lerp(earthRef.current.rotation.z, -targetY, 0.05);
+    if (earthGroupRef.current && !hoveredDest) {
+      earthGroupRef.current.rotation.y += delta * 0.07;
     }
 
     if (cloudsRef.current) {
-      // Clouds rotate slightly faster
-      cloudsRef.current.rotation.y += delta * 0.08;
+      cloudsRef.current.rotation.y += delta * 0.09;
     }
 
-    const speedMultiplier = hoverState.current ? 1.8 : 1.0;
+    const speedMultiplier = hoverState.current ? 1.6 : 1.0;
     if (ring1Ref.current) {
-      ring1Ref.current.rotation.x += delta * 0.4 * speedMultiplier;
-      ring1Ref.current.rotation.y += delta * 0.6 * speedMultiplier;
+      ring1Ref.current.rotation.x += delta * 0.3 * speedMultiplier;
+      ring1Ref.current.rotation.y += delta * 0.5 * speedMultiplier;
     }
     if (ring2Ref.current) {
-      ring2Ref.current.rotation.y -= delta * 0.5 * speedMultiplier;
-      ring2Ref.current.rotation.z += delta * 0.3 * speedMultiplier;
+      ring2Ref.current.rotation.y -= delta * 0.4 * speedMultiplier;
+      ring2Ref.current.rotation.z += delta * 0.2 * speedMultiplier;
     }
   });
 
   return (
-    <group>
+    <group ref={earthGroupRef}>
       {/* 3D Photoreal Earth Sphere */}
-      <group ref={earthRef}>
-        <mesh material={shaderMaterial}>
-          <sphereGeometry args={[1.65, 64, 64]} />
-        </mesh>
+      <mesh material={shaderMaterial}>
+        <sphereGeometry args={[2.2, 64, 64]} />
+      </mesh>
 
-        {/* Semi-transparent Atmosphere Cloud Shell */}
-        <mesh ref={cloudsRef}>
-          <sphereGeometry args={[1.68, 64, 64]} />
-          <meshStandardMaterial
-            color="#ffffff"
-            transparent
-            opacity={0.18}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-          />
-        </mesh>
-      </group>
+      {/* Cloud Shell */}
+      <mesh ref={cloudsRef}>
+        <sphereGeometry args={[2.24, 64, 64]} />
+        <meshStandardMaterial
+          color="#ffffff"
+          transparent
+          opacity={0.18}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
 
-      {/* Rayleigh Atmosphere Outer Glow Shell */}
+      {/* Rayleigh Atmosphere Outer Glow */}
       <mesh scale={[1.12, 1.12, 1.12]}>
-        <sphereGeometry args={[1.65, 64, 64]} />
+        <sphereGeometry args={[2.2, 64, 64]} />
         <shaderMaterial
           vertexShader={AtmosphereGlowShader.vertexShader}
           fragmentShader={AtmosphereGlowShader.fragmentShader}
@@ -189,14 +311,34 @@ function RealisticEarthMesh({ mouse, hoverState }) {
         />
       </mesh>
 
+      {/* Flight Path Arcs */}
+      {FLIGHT_CONNECTIONS.map(([srcId, dstId], idx) => {
+        const src = FEATURED_DESTINATIONS.find((d) => d.id === srcId);
+        const dst = FEATURED_DESTINATIONS.find((d) => d.id === dstId);
+        if (!src || !dst) return null;
+        const isActive = hoveredDest?.id === srcId || hoveredDest?.id === dstId;
+        return <FlightPathArc key={idx} start={src} end={dst} active={isActive} />;
+      })}
+
+      {/* Destination Markers */}
+      {FEATURED_DESTINATIONS.map((dest) => (
+        <DestinationMarker
+          key={dest.id}
+          dest={dest}
+          isHovered={hoveredDest?.id === dest.id}
+          onClick={setActiveDest}
+          onHover={setHoveredDest}
+        />
+      ))}
+
       {/* Sleek Orbit Ring 1 */}
       <group ref={ring1Ref}>
         <mesh rotation={[Math.PI / 3.5, 0, 0]}>
-          <torusGeometry args={[2.35, 0.012, 16, 100]} />
+          <torusGeometry args={[3.1, 0.012, 16, 100]} />
           <meshBasicMaterial color="#06b6d4" transparent opacity={0.65} />
         </mesh>
-        <mesh position={[2.35, 0, 0]}>
-          <sphereGeometry args={[0.05, 16, 16]} />
+        <mesh position={[3.1, 0, 0]}>
+          <sphereGeometry args={[0.06, 16, 16]} />
           <meshBasicMaterial color="#38bdf8" />
         </mesh>
       </group>
@@ -204,11 +346,11 @@ function RealisticEarthMesh({ mouse, hoverState }) {
       {/* Sleek Orbit Ring 2 */}
       <group ref={ring2Ref}>
         <mesh rotation={[-Math.PI / 4, Math.PI / 4, 0]}>
-          <torusGeometry args={[2.75, 0.01, 16, 100]} />
+          <torusGeometry args={[3.6, 0.01, 16, 100]} />
           <meshBasicMaterial color="#818cf8" transparent opacity={0.45} />
         </mesh>
-        <mesh position={[-2.75, 0, 0]}>
-          <sphereGeometry args={[0.05, 16, 16]} />
+        <mesh position={[-3.6, 0, 0]}>
+          <sphereGeometry args={[0.06, 16, 16]} />
           <meshBasicMaterial color="#c084fc" />
         </mesh>
       </group>
@@ -217,10 +359,10 @@ function RealisticEarthMesh({ mouse, hoverState }) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Floating Star & Space Dust Field                                           */
+/* Space Starfield                                                            */
 /* -------------------------------------------------------------------------- */
 
-function SpaceDustField({ count = 280 }) {
+function SpaceStarfield({ count = 350 }) {
   const pointsRef = useRef();
 
   const [positions, colors] = useMemo(() => {
@@ -234,7 +376,7 @@ function SpaceDustField({ count = 280 }) {
     ];
 
     for (let i = 0; i < count; i++) {
-      const r = 2.8 + Math.random() * 3.5;
+      const r = 4.0 + Math.random() * 4.5;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
 
@@ -252,8 +394,8 @@ function SpaceDustField({ count = 280 }) {
 
   useFrame((state, delta) => {
     if (pointsRef.current) {
-      pointsRef.current.rotation.y += delta * 0.04;
-      pointsRef.current.rotation.x += delta * 0.02;
+      pointsRef.current.rotation.y += delta * 0.03;
+      pointsRef.current.rotation.x += delta * 0.015;
     }
   });
 
@@ -274,10 +416,10 @@ function SpaceDustField({ count = 280 }) {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.055}
+        size={0.06}
         vertexColors
         transparent
-        opacity={0.75}
+        opacity={0.8}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
@@ -285,17 +427,13 @@ function SpaceDustField({ count = 280 }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Loading Fallback Component (Replaces procedural blob)                     */
-/* -------------------------------------------------------------------------- */
-
 function GlobeLoadingIndicator() {
   return (
     <Html center>
-      <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-cyan-500/30 bg-slate-950/80 px-6 py-4 shadow-2xl backdrop-blur-xl text-white whitespace-nowrap">
+      <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-cyan-500/30 bg-slate-950/85 px-6 py-4 shadow-2xl backdrop-blur-xl text-white whitespace-nowrap">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500/30 border-t-cyan-400" />
-        <span className="text-xs font-bold tracking-wider text-cyan-300 uppercase">
-          Initializing 3D Earth Globe...
+        <span className="text-xs font-extrabold tracking-wider text-cyan-300 uppercase">
+          Initializing 3D Global Network...
         </span>
       </div>
     </Html>
@@ -303,12 +441,13 @@ function GlobeLoadingIndicator() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Main HeroGlobe3D Component                                                 */
+/* Fullscreen HeroGlobe3D Component                                           */
 /* -------------------------------------------------------------------------- */
 
 export default function HeroGlobe3D({ className = '' }) {
   const mouse = useRef({ x: 0, y: 0 });
   const hoverState = useRef(false);
+  const [activeDest, setActiveDest] = useState(null);
 
   const handleMouseMove = (e) => {
     const { innerWidth, innerHeight } = window;
@@ -318,32 +457,43 @@ export default function HeroGlobe3D({ className = '' }) {
 
   return (
     <div
-      className={`relative w-full h-full min-h-[380px] sm:min-h-[460px] ${className}`}
+      className={`absolute inset-0 w-full h-full overflow-hidden ${className}`}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => { hoverState.current = true; }}
       onMouseLeave={() => { hoverState.current = false; mouse.current = { x: 0, y: 0 }; }}
     >
       <Canvas
-        camera={{ position: [0, 0, 6.2], fov: 45 }}
+        camera={{ position: [1.2, 0, 5.8], fov: 45 }}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         style={{ background: 'transparent' }}
       >
-        <ambientLight intensity={0.4} />
+        <ambientLight intensity={0.5} />
         <directionalLight position={[5, 3, 5]} intensity={1.5} color="#ffffff" />
-        <pointLight position={[-10, -10, -10]} intensity={1.0} color="#818cf8" />
+        <pointLight position={[-10, -10, -10]} intensity={1.2} color="#818cf8" />
 
         <Suspense fallback={<GlobeLoadingIndicator />}>
-          <Float speed={1.8} rotationIntensity={0.3} floatIntensity={0.6}>
-            <RealisticEarthMesh mouse={mouse} hoverState={hoverState} />
+          <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.4}>
+            <RealisticEarthMesh
+              mouse={mouse}
+              hoverState={hoverState}
+              activeDest={activeDest}
+              setActiveDest={setActiveDest}
+            />
           </Float>
-          <SpaceDustField count={250} />
+          <SpaceStarfield count={300} />
         </Suspense>
+
+        <OrbitControls
+          enableZoom={false}
+          rotateSpeed={0.5}
+          autoRotate={true}
+          autoRotateSpeed={0.6}
+        />
       </Canvas>
     </div>
   );
 }
 
-// Preload Earth texture maps for instant rendering
 useTexture.preload('/textures/earth-day-hi.jpg');
 useTexture.preload('/textures/earth-night.jpg');
 useTexture.preload('/textures/earth-topology.png');
