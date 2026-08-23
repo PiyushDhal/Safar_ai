@@ -191,8 +191,8 @@ export default function HeroSection() {
 
             {/* Suggestions Dropdown */}
             {suggestOpen && suggestions.length > 0 && (
-              <div className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-slate-200 dark:border-cyan-500/30 bg-white/95 dark:bg-slate-950/95 p-2 shadow-2xl backdrop-blur-2xl animate-slide-down">
-                <p className="px-3 py-1.5 text-2xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <div className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-slate-300 dark:border-cyan-500/40 bg-white dark:bg-slate-950 p-2 shadow-2xl backdrop-blur-2xl animate-slide-down">
+                <p className="px-3 py-1.5 text-2xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   {query.trim() ? 'Matching destinations' : 'Trending this season'}
                 </p>
                 {suggestions.map((item) => (
@@ -214,10 +214,14 @@ export default function HeroSection() {
                       className="h-9 w-9 shrink-0"
                     />
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-bold text-slate-900 dark:text-white">{item.name}</span>
-                      <span className="block truncate text-xs text-slate-500 dark:text-slate-400">{item.tagline}</span>
+                      <span className="block truncate text-sm font-black text-slate-900 dark:text-white">
+                        {item.name}
+                      </span>
+                      <span className="block truncate text-xs font-medium text-slate-600 dark:text-slate-300">
+                        {item.tagline}
+                      </span>
                     </span>
-                    <span className="hidden text-xs font-semibold text-cyan-600 dark:text-cyan-400 sm:block">
+                    <span className="hidden text-xs font-bold text-cyan-600 dark:text-cyan-400 sm:block">
                       {item.bestTime}
                     </span>
                   </button>
