@@ -4,6 +4,8 @@ import HeroSection from '../components/home/HeroSection';
 import DestinationExplorer from '../components/home/DestinationExplorer';
 import WorldMapSection from '../components/home/WorldMapSection';
 import FeatureCards from '../components/home/FeatureCards';
+import AITravelIntelligence from '../components/home/AITravelIntelligence';
+import InteractiveTravelGlobeSection from '../components/home/InteractiveTravelGlobeSection';
 import { HowItWorks, Testimonials, TrustBar } from '../components/home/Sections';
 import { SectionHeader, Reveal } from '../components/ui/Section';
 import Button from '../components/ui/Button';
@@ -58,19 +60,19 @@ function ContinuePlanning() {
           <Link
             key={item.id}
             to={item.href || '/'}
-            className="group flex items-center gap-3 rounded-2xl border border-line bg-surface p-4 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-lift"
+            className="group flex items-center gap-3 rounded-2xl border border-line/70 bg-slate-900/80 p-4 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40"
           >
-            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/12 dark:text-brand-300">
+            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
               <Icon name={item.icon} size="md" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-bold text-fg">{item.title}</span>
-              <span className="block truncate text-xs text-fg-muted">{item.subtitle}</span>
+              <span className="block truncate text-sm font-bold text-white">{item.title}</span>
+              <span className="block truncate text-xs text-slate-400">{item.subtitle}</span>
             </span>
             <Icon
               name="arrowRight"
               size="sm"
-              className="shrink-0 text-fg-subtle transition-transform duration-200 group-hover:translate-x-1 group-hover:text-brand-500"
+              className="shrink-0 text-slate-500 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-cyan-400"
             />
           </Link>
         ))}
@@ -83,31 +85,30 @@ function AssistantPromo() {
   const { openDock } = useAssistant();
 
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-line bg-slate-950 p-6 shadow-lift sm:p-10">
+    <section className="relative overflow-hidden rounded-3xl border border-cyan-500/30 bg-slate-950/90 p-6 shadow-2xl backdrop-blur-xl sm:p-10 my-16">
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(50rem_28rem_at_15%_-10%,rgba(99,102,241,0.5),transparent),radial-gradient(40rem_24rem_at_90%_110%,rgba(6,182,212,0.4),transparent)]"
+        className="absolute inset-0 bg-[radial-gradient(50rem_28rem_at_15%_-10%,rgba(99,102,241,0.4),transparent),radial-gradient(40rem_24rem_at_90%_110%,rgba(6,182,212,0.3),transparent)]"
       />
-      <div className="absolute inset-0 bg-hero-grid bg-[size:22px_22px] opacity-[0.15]" aria-hidden="true" />
+      <div className="absolute inset-0 bg-hero-grid bg-[size:22px_22px] opacity-[0.12]" aria-hidden="true" />
 
       <div className="relative grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-center">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-2xs font-bold uppercase tracking-[0.2em] text-white/85 backdrop-blur">
-            <Icon name="bot" size="xs" /> AI assistant
+          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3.5 py-1 text-2xs font-bold uppercase tracking-widest text-cyan-300 backdrop-blur-md">
+            <Icon name="bot" size="xs" /> Neural Travel Assistant
           </span>
-          <h2 className="mt-4 text-2xl font-extrabold text-white sm:text-3xl">
+          <h2 className="mt-4 text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Ask anything. Get a plan, not a paragraph.
           </h2>
-          <p className="mt-3 max-w-lg text-sm leading-7 text-white/75">
-            SafarAI knows your saved trips, preferred style and recently viewed destinations — so answers arrive
-            already tailored to the way you travel.
+          <p className="mt-3 max-w-lg text-sm leading-relaxed text-slate-300">
+            SafarAI knows your saved trips, preferred style and recently viewed destinations — so answers arrive already tailored to the exact way you travel.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Button onClick={openDock} variant="glass" leadingIcon="sparkles">
-              Open the assistant
+            <Button onClick={openDock} variant="glass" leadingIcon="sparkles" className="border-cyan-500/40 text-white bg-cyan-500/20 hover:bg-cyan-500/30">
+              Open Assistant
             </Button>
-            <Button to="/assistant" variant="glass" trailingIcon="arrowUpRight">
-              Full screen chat
+            <Button to="/assistant" variant="ghost" trailingIcon="arrowUpRight" className="text-slate-300 hover:text-white">
+              Full Screen Chat
             </Button>
           </div>
         </div>
@@ -124,8 +125,8 @@ function AssistantPromo() {
               style={{ animationDelay: `${index * 120}ms` }}
             >
               <p className="text-sm font-semibold text-white">{item.q}</p>
-              <p className="mt-1.5 flex items-start gap-2 text-xs leading-5 text-white/75">
-                <Icon name="sparkles" size="xs" className="mt-0.5 shrink-0 text-accent-300" />
+              <p className="mt-1.5 flex items-start gap-2 text-xs leading-5 text-slate-300">
+                <Icon name="sparkles" size="xs" className="mt-0.5 shrink-0 text-cyan-400" />
                 {item.a}
               </p>
             </div>
@@ -144,7 +145,7 @@ function SeasonalRail() {
   const monthName = new Date().toLocaleDateString('en-IN', { month: 'long' });
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-5 my-12">
       <SectionHeader
         eyebrow="Right season"
         icon="calendar"
@@ -156,7 +157,7 @@ function SeasonalRail() {
           <Link
             key={destination.slug}
             to={`/destination/${destination.slug}`}
-            className="group relative h-56 w-64 shrink-0 overflow-hidden rounded-2xl border border-line shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lift"
+            className="group relative h-60 w-64 shrink-0 overflow-hidden rounded-2xl border border-line/80 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40"
           >
             <DestinationImage
               destination={destination}
@@ -164,12 +165,12 @@ function SeasonalRail() {
               className="h-full w-full"
               imgClassName="transition-transform duration-700 group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-4">
               <p className="text-base font-extrabold text-white">{destination.name}</p>
-              <p className="text-xs text-white/80">{destination.tagline}</p>
-              <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-1 text-2xs font-bold text-white backdrop-blur">
-                <Icon name="star" size="xs" filled className="text-gold-400" />
+              <p className="text-xs text-slate-300">{destination.tagline}</p>
+              <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-slate-950/60 px-2.5 py-1 text-2xs font-bold text-cyan-300 backdrop-blur border border-line/40">
+                <Icon name="star" size="xs" filled className="text-amber-400" />
                 {destination.rating} · {destination.budget}
               </span>
             </div>
@@ -182,21 +183,23 @@ function SeasonalRail() {
 
 function HomePage() {
   usePageMeta(
-    'SafarAI | AI-Powered Travel Planning Platform',
-    'SafarAI helps travelers plan smarter and safer with AI itinerary generation, destination intelligence, transport tools, and personalized recommendations.'
+    'SafarAI | Cinematic AI Travel Intelligence Platform',
+    'SafarAI helps travelers plan smarter and safer with AI itinerary generation, 3D destination intelligence, transport tools, and personalized recommendations.'
   );
 
   return (
     <div>
       <HeroSection />
 
-      <div className="content-grid space-y-20 pb-8 sm:space-y-24">
+      <div className="content-grid space-y-20 pb-16 sm:space-y-24">
         <Reveal>
           <TrustBar />
         </Reveal>
 
         <ContinuePlanning />
+        <AITravelIntelligence />
         <DestinationExplorer />
+        <InteractiveTravelGlobeSection />
         <SeasonalRail />
         <WorldMapSection />
         <HowItWorks />

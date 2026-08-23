@@ -1,13 +1,10 @@
-import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import gsap from 'gsap';
 import Icon from '../ui/Icon';
 import Button from '../ui/Button';
 import DestinationImage from '../DestinationImage';
-import InteractiveGlobe from './InteractiveGlobe';
-
-/** The photoreal globe (three.js) is deferred until the browser is idle so it
- *  never blocks first paint; the lightweight canvas globe stands in meanwhile. */
-const RealisticGlobe = lazy(() => import('../geo/RealisticGlobe'));
+import HeroOrb3D from '../3d/HeroOrb3D';
 import useCountUp from '../../hooks/useCountUp';
 import { destinations } from '../../data/destinations';
 import { cn } from '../../lib/cn';
@@ -23,12 +20,12 @@ const HERO_STATS = [
 function Stat({ value, suffix, label }) {
   const [ref, animated] = useCountUp(value);
   return (
-    <div ref={ref}>
-      <p className="text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">
+    <div ref={ref} className="text-center sm:text-left">
+      <p className="text-2xl sm:text-3xl font-black tracking-tight text-white">
         {animated}
-        <span className="text-brand-500">{suffix}</span>
+        <span className="text-cyan-400">{suffix}</span>
       </p>
-      <p className="mt-0.5 text-xs font-medium text-fg-muted">{label}</p>
+      <p className="mt-0.5 text-xs font-semibold text-slate-400">{label}</p>
     </div>
   );
 }
@@ -37,7 +34,7 @@ function FloatingCard({ className, style, children, delay = 0 }) {
   return (
     <div
       className={cn(
-        'absolute hidden rounded-2xl border border-line bg-surface/90 p-3.5 shadow-lift backdrop-blur-md animate-float-slow lg:block',
+        'absolute hidden rounded-2xl border border-line/60 bg-slate-950/80 p-4 shadow-2xl backdrop-blur-xl animate-float-slow lg:block',
         className
       )}
       style={{ animationDelay: `${delay}ms`, ...style }}
@@ -53,41 +50,58 @@ export default function HeroSection() {
   const [query, setQuery] = useState('');
   const [days, setDays] = useState('4');
   const [suggestOpen, setSuggestOpen] = useState(false);
-  const parallaxRef = useRef(null);
-  const globeRef = useRef(null);
-  const [heavyGlobe, setHeavyGlobe] = useState(true);
+
+  const heroContainerRef = useRef(null);
+  const headlineRef = useRef(null);
+  const searchRef = useRef(null);
+  const buttonsRef = useRef(null);
+  const orbContainerRef = useRef(null);
+
+  // GSAP Entrance Sequence
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 1.0 } });
+
+      tl.fromTo(
+        orbContainerRef.current,
+        { scale: 0.7, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 1.2 }
+      )
+        .fromTo(
+          headlineRef.current,
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1 },
+          '-=0.8'
+        )
+        .fromTo(
+          searchRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1 },
+          '-=0.6'
+        )
+        .fromTo(
+          buttonsRef.current,
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1 },
+          '-=0.5'
+        );
+    }, heroContainerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   useEffect(() => {
     const id = setInterval(() => setWordIndex((prev) => (prev + 1) % ROTATING_WORDS.length), 2600);
     return () => clearInterval(id);
   }, []);
 
-  useEffect(() => {
-    const node = parallaxRef.current;
-    if (!node) return undefined;
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
-
-    const onMove = (event) => {
-      const { innerWidth, innerHeight } = window;
-      const x = (event.clientX / innerWidth - 0.5) * 2;
-      const y = (event.clientY / innerHeight - 0.5) * 2;
-      node.style.setProperty('--px', x.toFixed(3));
-      node.style.setProperty('--py', y.toFixed(3));
-    };
-
-    window.addEventListener('pointermove', onMove);
-    return () => window.removeEventListener('pointermove', onMove);
-  }, []);
-
-  // Memoised: a new array each render would rebuild the globe's GPU buffers.
-  const heroDestinations = useMemo(
-    () => [...destinations].sort((a, b) => b.popularity - a.popularity).slice(0, 40),
-    []
-  );
-
   const suggestions = query.trim()
     ? destinations
-        .filter((item) => `${item.name} ${item.country} ${item.state || ''} ${item.tags.join(' ')}`.toLowerCase().includes(query.toLowerCase()))
+        .filter((item) =>
+          `${item.name} ${item.country} ${item.state || ''} ${item.tags.join(' ')}`
+            .toLowerCase()
+            .includes(query.toLowerCase())
+        )
         .slice(0, 5)
     : destinations.slice(0, 5);
 
@@ -102,124 +116,107 @@ export default function HeroSection() {
   };
 
   return (
-    <section
-      ref={parallaxRef}
-      className="relative overflow-hidden pb-10 pt-6 sm:pb-16 sm:pt-10"
-      style={{ '--px': 0, '--py': 0 }}
-    >
-      {/* animated background */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div
-          className="absolute -left-32 -top-24 h-[28rem] w-[28rem] rounded-full bg-brand-400/25 blur-[90px] dark:bg-brand-500/20"
-          style={{ transform: 'translate3d(calc(var(--px) * 18px), calc(var(--py) * 18px), 0)' }}
-        />
-        <div
-          className="absolute -right-24 top-10 h-[24rem] w-[24rem] rounded-full bg-accent-400/25 blur-[90px] dark:bg-accent-500/15"
-          style={{ transform: 'translate3d(calc(var(--px) * -22px), calc(var(--py) * -14px), 0)' }}
-        />
-        <div
-          className="absolute bottom-0 left-1/3 h-[20rem] w-[20rem] rounded-full bg-gold-300/20 blur-[100px] dark:bg-gold-500/10"
-          style={{ transform: 'translate3d(calc(var(--px) * 12px), calc(var(--py) * -18px), 0)' }}
-        />
-        <div className="absolute inset-0 bg-dot-grid bg-[size:26px_26px] opacity-40 [mask-image:radial-gradient(70%_60%_at_50%_30%,#000,transparent)]" />
-      </div>
-
+    <section ref={heroContainerRef} className="relative overflow-hidden pb-12 pt-8 sm:pb-20 sm:pt-14">
       <div className="content-grid">
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-          {/* ---------------------------------------------------------- copy */}
-          <div className="relative">
-            <span className="inline-flex items-center gap-2 rounded-full border border-brand-200/70 bg-surface/80 py-1.5 pl-1.5 pr-3.5 text-xs font-semibold text-brand-700 shadow-sm backdrop-blur dark:border-brand-400/25 dark:text-brand-200">
-              <span className="inline-flex items-center gap-1 rounded-full bg-brand-gradient px-2 py-0.5 text-2xs font-bold uppercase tracking-wider text-white">
-                <Icon name="sparkles" size="xs" /> New
+          {/* Left Column: Copy & Planning Tool */}
+          <div className="relative z-10">
+            <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 py-1.5 pl-2 pr-4 text-xs font-bold text-cyan-300 backdrop-blur-md">
+              <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-cyan-500 to-indigo-600 px-2.5 py-0.5 text-2xs font-extrabold uppercase tracking-wider text-white">
+                <Icon name="sparkles" size="xs" /> AI-Native V2
               </span>
-              Context-aware itineraries powered by Llama 3.3
+              Context-aware travel intelligence
             </span>
 
-            <h1 className="display-heading mt-5 text-fg">
-              Plan your next journey{' '}
-              <span className="relative inline-flex h-[1.05em] overflow-hidden align-bottom">
-                <span className="invisible">together</span>
-                {ROTATING_WORDS.map((word, index) => (
-                  <span
-                    key={word}
-                    className={cn(
-                      'text-gradient absolute inset-0 transition-all duration-500 ease-smooth',
-                      index === wordIndex
-                        ? 'translate-y-0 opacity-100'
-                        : index === (wordIndex - 1 + ROTATING_WORDS.length) % ROTATING_WORDS.length
-                        ? '-translate-y-full opacity-0'
-                        : 'translate-y-full opacity-0'
-                    )}
-                  >
-                    {word}
-                  </span>
-                ))}
-              </span>
-              <br className="hidden sm:block" /> with SafarAI.
-            </h1>
+            <div ref={headlineRef}>
+              <h1 className="mt-6 text-4xl sm:text-6xl font-black tracking-tight text-white leading-[1.1]">
+                Plan your next journey{' '}
+                <span className="relative inline-flex h-[1.1em] overflow-hidden align-bottom">
+                  <span className="invisible">together</span>
+                  {ROTATING_WORDS.map((word, index) => (
+                    <span
+                      key={word}
+                      className={cn(
+                        'bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent absolute inset-0 transition-all duration-500 ease-smooth font-black',
+                        index === wordIndex
+                          ? 'translate-y-0 opacity-100'
+                          : index === (wordIndex - 1 + ROTATING_WORDS.length) % ROTATING_WORDS.length
+                          ? '-translate-y-full opacity-0'
+                          : 'translate-y-full opacity-0'
+                      )}
+                    >
+                      {word}
+                    </span>
+                  ))}
+                </span>
+                <br className="hidden sm:block" /> with SafarAI.
+              </h1>
 
-            <p className="mt-5 max-w-xl text-base leading-7 text-fg-muted sm:text-lg">
-              One workspace for itineraries, live budgets, stays, trains and safety intelligence — grounded in
-              real destination data, not generic tips.
-            </p>
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
+                An award-winning command center for instant itineraries, live budgets, boutique stays, train booking intelligence and real-time safety scores.
+              </p>
+            </div>
 
-            {/* Instant planning search */}
-            <div className="relative mt-8 max-w-xl">
-              <div className="flex flex-col gap-2 rounded-2xl border border-line bg-surface p-2 shadow-card sm:flex-row sm:items-center">
-                <div className="relative flex flex-1 items-center gap-2 px-2">
-                  <Icon name="search" size="md" className="text-fg-subtle" />
+            {/* Glassmorphic Search Panel */}
+            <div ref={searchRef} className="relative mt-8 max-w-xl">
+              <div className="flex flex-col gap-2.5 rounded-2xl border border-line/80 bg-slate-900/80 p-2.5 shadow-2xl backdrop-blur-xl sm:flex-row sm:items-center">
+                <div className="relative flex flex-1 items-center gap-2.5 px-3">
+                  <Icon name="search" size="md" className="text-cyan-400" />
                   <input
                     value={query}
-                    onChange={(event) => {
-                      setQuery(event.target.value);
+                    onChange={(e) => {
+                      setQuery(e.target.value);
                       setSuggestOpen(true);
                     }}
                     onFocus={() => setSuggestOpen(true)}
                     onBlur={() => setTimeout(() => setSuggestOpen(false), 140)}
-                    onKeyDown={(event) => event.key === 'Enter' && startPlanning()}
-                    placeholder="Where to? Try Goa, Ladakh, Kerala…"
+                    onKeyDown={(e) => e.key === 'Enter' && startPlanning()}
+                    placeholder="Where to? Try Goa, Ladakh, Kerala..."
                     aria-label="Destination"
-                    className="h-11 w-full bg-transparent text-sm text-fg outline-none placeholder:text-fg-subtle"
+                    className="h-11 w-full bg-transparent text-sm font-medium text-white outline-none placeholder:text-slate-400"
                   />
                 </div>
 
-                <div className="flex items-center gap-2 border-line pl-2 sm:border-l">
-                  <label htmlFor="hero-days" className="sr-only">
-                    Trip length in days
-                  </label>
+                <div className="flex items-center gap-2 border-line/60 pl-3 sm:border-l">
                   <select
                     id="hero-days"
                     value={days}
-                    onChange={(event) => setDays(event.target.value)}
-                    className="h-11 cursor-pointer rounded-xl border-0 bg-transparent px-2 text-sm font-semibold text-fg outline-none"
+                    onChange={(e) => setDays(e.target.value)}
+                    aria-label="Trip length in days"
+                    className="h-11 cursor-pointer rounded-xl border-0 bg-slate-800/80 px-3 text-sm font-bold text-white outline-none"
                   >
-                    {[2, 3, 4, 5, 6, 7, 10].map((value) => (
-                      <option key={value} value={value}>
-                        {value} days
+                    {[2, 3, 4, 5, 6, 7, 10].map((val) => (
+                      <option key={val} value={val} className="bg-slate-900 text-white">
+                        {val} days
                       </option>
                     ))}
                   </select>
-                  <Button onClick={() => startPlanning()} leadingIcon="sparkles" className="shrink-0">
-                    Plan trip
+                  <Button
+                    onClick={() => startPlanning()}
+                    leadingIcon="sparkles"
+                    className="shrink-0 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold shadow-lg shadow-cyan-500/25"
+                  >
+                    Plan Trip
                   </Button>
                 </div>
               </div>
 
+              {/* Suggestions Dropdown */}
               {suggestOpen && suggestions.length > 0 && (
-                <div className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-line bg-surface-raised p-2 shadow-lift animate-slide-down">
-                  <p className="px-3 py-1.5 text-2xs font-bold uppercase tracking-wider text-fg-subtle">
+                <div className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-line bg-slate-950/95 p-2 shadow-2xl backdrop-blur-2xl animate-slide-down">
+                  <p className="px-3 py-1.5 text-2xs font-bold uppercase tracking-wider text-slate-400">
                     {query.trim() ? 'Matching destinations' : 'Trending this season'}
                   </p>
                   {suggestions.map((item) => (
                     <button
                       key={item.slug}
                       type="button"
-                      onMouseDown={(event) => event.preventDefault()}
+                      onMouseDown={(e) => e.preventDefault()}
                       onClick={() => {
                         setQuery(item.name);
                         startPlanning(item.name);
                       }}
-                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition hover:bg-surface-muted"
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-slate-900/80"
                     >
                       <DestinationImage
                         destination={item}
@@ -229,10 +226,10 @@ export default function HeroSection() {
                         className="h-9 w-9 shrink-0"
                       />
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-semibold text-fg">{item.name}</span>
-                        <span className="block truncate text-xs text-fg-muted">{item.tagline}</span>
+                        <span className="block truncate text-sm font-bold text-white">{item.name}</span>
+                        <span className="block truncate text-xs text-slate-400">{item.tagline}</span>
                       </span>
-                      <span className="hidden text-xs font-semibold text-brand-600 sm:block dark:text-brand-300">
+                      <span className="hidden text-xs font-semibold text-cyan-400 sm:block">
                         {item.bestTime}
                       </span>
                     </button>
@@ -241,83 +238,61 @@ export default function HeroSection() {
               )}
             </div>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <Button to="/explore" variant="secondary" trailingIcon="arrowRight">
-                Explore destinations
+            {/* CTA Buttons */}
+            <div ref={buttonsRef} className="mt-6 flex flex-wrap items-center gap-3">
+              <Button to="/explore" variant="glass" trailingIcon="arrowRight" className="border-cyan-500/30 text-white hover:bg-cyan-500/10">
+                Explore Destinations
               </Button>
-              <Button to="/assistant" variant="ghost" leadingIcon="bot">
-                Ask the AI assistant
+              <Button to="/assistant" variant="ghost" leadingIcon="bot" className="text-slate-300 hover:text-white">
+                Ask AI Assistant
               </Button>
             </div>
 
-            <div className="mt-10 grid max-w-lg grid-cols-3 gap-6 border-t border-line pt-6">
+            {/* Stats Row */}
+            <div className="mt-10 grid max-w-lg grid-cols-3 gap-6 border-t border-line/60 pt-6">
               {HERO_STATS.map((stat) => (
                 <Stat key={stat.label} {...stat} />
               ))}
             </div>
           </div>
 
-          {/* --------------------------------------------------------- visual */}
-          <div className="relative">
-            <div
-              className="relative"
-              style={{ transform: 'translate3d(calc(var(--px) * -10px), calc(var(--py) * -10px), 0)' }}
-            >
-              <div className="relative mx-auto aspect-square w-full max-w-[27rem]">
-                {heavyGlobe ? (
-                  <Suspense fallback={<InteractiveGlobe />}>
-                    <RealisticGlobe
-                      ref={globeRef}
-                      destinations={heroDestinations}
-                      onSelect={(destination) => navigate(`/destination/${destination.slug}`)}
-                      showLabels={false}
-                      className="animate-fade-in"
-                    />
-                  </Suspense>
-                ) : (
-                  <InteractiveGlobe />
-                )}
-              </div>
-
-              <FloatingCard className="-left-2 top-6 w-48" delay={0}>
-                <p className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-fg-subtle">
-                  <Icon name="sparkles" size="xs" className="text-brand-500" /> AI itinerary
-                </p>
-                <p className="mt-1.5 text-sm font-bold text-fg">Day 3 · Munnar</p>
-                <p className="mt-0.5 text-xs text-fg-muted">Tea estate sunrise, Eravikulam trek</p>
-                <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-surface-muted">
-                  <div className="h-full w-3/4 rounded-full bg-brand-gradient" />
-                </div>
-              </FloatingCard>
-
-              <FloatingCard className="-right-2 top-24 w-44" delay={900}>
-                <p className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-fg-subtle">
-                  <Icon name="wallet" size="xs" className="text-emerald-500" /> Live budget
-                </p>
-                <p className="mt-1.5 text-lg font-extrabold text-fg">₹42,800</p>
-                <p className="text-xs text-emerald-600 dark:text-emerald-400">12% under your cap</p>
-              </FloatingCard>
-
-              <FloatingCard className="bottom-8 left-6 w-44" delay={1800}>
-                <p className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-fg-subtle">
-                  <Icon name="shield" size="xs" className="text-accent-500" /> Safety score
-                </p>
-                <div className="mt-1.5 flex items-center gap-2">
-                  <span className="text-lg font-extrabold text-fg">91</span>
-                  <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-2xs font-bold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
-                    Very safe
-                  </span>
-                </div>
-              </FloatingCard>
+          {/* Right Column: 3D AI Orb WebGL Canvas */}
+          <div ref={orbContainerRef} className="relative">
+            <div className="relative mx-auto aspect-square w-full max-w-[29rem]">
+              <HeroOrb3D />
             </div>
 
-            <p className="mt-4 text-center text-2xs font-medium text-fg-subtle lg:mt-2">
-              {heavyGlobe ? 'Live satellite globe · drag to rotate, click a marker' : 'Drag the globe · click a marker'}
-              {' · '}
-              <Link to="/world" className="font-semibold text-brand-600 hover:underline dark:text-brand-300">
-                open world explorer
-              </Link>
-            </p>
+            {/* Floating Glass Intelligence Cards */}
+            <FloatingCard className="-left-4 top-4 w-52" delay={0}>
+              <p className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-cyan-400">
+                <Icon name="sparkles" size="xs" /> Neural Itinerary
+              </p>
+              <p className="mt-1 text-sm font-extrabold text-white">Day 3 · Munnar</p>
+              <p className="mt-0.5 text-xs text-slate-300">Tea estate sunrise, Eravikulam trek</p>
+              <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+                <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-cyan-400 to-indigo-500" />
+              </div>
+            </FloatingCard>
+
+            <FloatingCard className="-right-2 top-28 w-48" delay={900}>
+              <p className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-emerald-400">
+                <Icon name="wallet" size="xs" /> Live Budget
+              </p>
+              <p className="mt-1 text-lg font-black text-white">₹42,800</p>
+              <p className="text-xs text-emerald-400">12% under budget cap</p>
+            </FloatingCard>
+
+            <FloatingCard className="bottom-6 left-6 w-48" delay={1800}>
+              <p className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-purple-400">
+                <Icon name="shield" size="xs" /> Safety Index
+              </p>
+              <div className="mt-1 flex items-center gap-2">
+                <span className="text-lg font-black text-white">91/100</span>
+                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-2xs font-bold text-emerald-300">
+                  Verified Safe
+                </span>
+              </div>
+            </FloatingCard>
           </div>
         </div>
       </div>
