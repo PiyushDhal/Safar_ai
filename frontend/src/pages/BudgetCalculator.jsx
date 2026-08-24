@@ -186,37 +186,62 @@ function BudgetCalculator() {
     }));
   }
 
-  /* Calculate single destination breakdown */
+  /* Calculate single destination breakdown with accurate math */
   function calculateForStyle(targetStyle = form.style, targetDest = form.destination, daysStr = form.days, travStr = form.travelers) {
     const days = Math.max(1, parseInt(daysStr, 10) || 1);
     const travelers = Math.max(1, parseInt(travStr, 10) || 1);
+    const roomsNeeded = Math.max(1, Math.ceil(travelers / 2));
 
-    const destination = destinationCosts[targetDest];
-    const destinationState = DESTINATION_STATE_MAP[targetDest];
-    const hotelCost = stateHotelCosts[destinationState] || destination?.hotelCost || 3000;
+    // Robust case-insensitive destination lookup with fallback baseline
+    const cleanDest = (targetDest || destinationInput || '').trim().toLowerCase();
+    const destKey = Object.keys(destinationCosts).find(
+      (k) => k === cleanDest || k === cleanDest.replace(/,.*$/, '').trim()
+    ) || 'goa';
+
+    const destination = destinationCosts[destKey] || {
+      hotelCost: 3500,
+      foodCost: 1200,
+      transportCost: 800,
+      activityCost: 1500,
+    };
+
+    const destinationState = DESTINATION_STATE_MAP[destKey];
+    const hotelCost = stateHotelCosts[destinationState] || destination.hotelCost || 3500;
     const styleMultiplier = STYLE_CONFIG[targetStyle]?.multiplier || 1;
     const seasonMultiplier = seasonMultipliers[form.season] || 1;
 
     const modeKey = form.travelMode === 'flight' ? 'flight' : 'train';
     const distanceKey = form.distance in transportCosts ? form.distance : 'medium';
-    const transportCost = transportCosts[distanceKey]?.[modeKey] || 0;
+    const transportCost = transportCosts[distanceKey]?.[modeKey] || 1500;
 
-    if (!destination) return null;
-
-    const baseHotel = hotelCost * days;
+    // Correct Base Calculations:
+    // Hotel: room rate * days * rooms needed
+    const baseHotel = hotelCost * days * roomsNeeded;
+    // Food: food rate per person * travelers * days
     const baseFood = destination.foodCost * travelers * days;
-    const baseActivities = destination.activityCost * days;
+    // Activities: activity rate per person * travelers * days
+    const baseActivities = destination.activityCost * travelers * days;
+    // Intercity Transit: ticket price * travelers
     const travelCost = form.includeIntercity ? transportCost * travelers : 0;
 
     const hotel = Math.round(baseHotel * styleMultiplier * seasonMultiplier);
     const food = Math.round(baseFood * styleMultiplier * seasonMultiplier);
     const activities = Math.round(baseActivities * styleMultiplier * seasonMultiplier);
-    const travel = Math.round(travelCost * styleMultiplier * seasonMultiplier);
+
+    const transitMultiplier = form.travelMode === 'flight'
+      ? (targetStyle === 'Luxury' ? 1.8 : targetStyle === 'Budget' ? 0.9 : 1.0)
+      : (targetStyle === 'Luxury' ? 2.2 : targetStyle === 'Budget' ? 0.6 : 1.0);
+    const travel = Math.round(travelCost * transitMultiplier);
 
     const shopping = (parseInt(form.shoppingFund, 10) || 0) * travelers;
     const subtotal = hotel + food + activities + travel + shopping;
     const buffer = form.includeBuffer ? Math.round(subtotal * 0.1) : 0;
     const total = subtotal + buffer;
+
+    const displayDestinationLabel =
+      destinationOptions.find((option) => option.value === destKey)?.label ||
+      destinationInput.trim() ||
+      targetDest;
 
     return {
       hotel,
@@ -228,9 +253,10 @@ function BudgetCalculator() {
       total,
       days,
       travelers,
+      roomsNeeded,
       style: targetStyle,
-      destination: destinationOptions.find((option) => option.value === targetDest)?.label || targetDest,
-      destinationKey: targetDest,
+      destination: displayDestinationLabel,
+      destinationKey: destKey,
       travelMode: form.travelMode === 'flight' ? 'Flight' : 'Train',
       distance: form.distance.charAt(0).toUpperCase() + form.distance.slice(1),
       season: SEASON_LABELS[form.season] || 'Normal season',
@@ -804,12 +830,12 @@ https://vibevoyage.app`;
                         <span className="min-w-0 flex-1">
                           <span className="block text-sm font-semibold text-fg">{meta.label}</span>
                           <span className="block text-2xs text-fg-subtle">
-                            {key === 'hotel' && `${shown.days} night${shown.days > 1 ? 's' : ''} stay`}
+                            {key === 'hotel' && `${shown.days} night${shown.days > 1 ? 's' : ''} stay (${shown.roomsNeeded} room${shown.roomsNeeded > 1 ? 's' : ''})`}
                             {key === 'food' && `${shown.days} days × ${shown.travelers} traveller${shown.travelers > 1 ? 's' : ''}`}
-                            {key === 'travel' && `${shown.travelMode} (${shown.distance}) × ${shown.travelers}`}
-                            {key === 'activities' && `${shown.days} day${shown.days > 1 ? 's' : ''} of experiences`}
-                            {key === 'shopping' && `Shopping & souvenir allowance`}
-                            {key === 'buffer' && `10% emergency safety fund`}
+                            {key === 'travel' && `${shown.travelMode} (${shown.distance}) × ${shown.travelers} traveller${shown.travelers > 1 ? 's' : ''}`}
+                            {key === 'activities' && `${shown.days} days × ${shown.travelers} traveller${shown.travelers > 1 ? 's' : ''}`}
+                            {key === 'shopping' && `Shopping allowance × ${shown.travelers} traveller${shown.travelers > 1 ? 's' : ''}`}
+                            {key === 'buffer' && `10% emergency safety buffer`}
                           </span>
                         </span>
                         <span className="shrink-0 text-sm font-extrabold text-fg">{formatCost(shown[key], currency)}</span>
