@@ -1,46 +1,30 @@
+import React from 'react';
 import { cn } from '../lib/cn';
 
 /**
- * BrandLogo — animated compass mark + wordmark.
- * `compact` renders just the mark (used in the mobile drawer / footer).
+ * BrandLogo — Official Yatri AI Brand Logo.
+ * Renders the custom Yatri AI logo artwork featuring the globe, flight trail, and official tagline.
  */
 function BrandLogo({ compact = false, className, inverted = false }) {
+  if (compact) {
+    return (
+      <span className={cn('inline-flex items-center gap-2', className)}>
+        <img
+          src="/logo.jpg"
+          alt="Yatri AI Mark"
+          className="h-9 w-9 rounded-xl object-cover shadow-float border border-cyan-500/30 transition-transform duration-300 group-hover:scale-105"
+        />
+      </span>
+    );
+  }
+
   return (
     <span className={cn('group inline-flex items-center gap-2.5', className)}>
-      <span className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-gradient shadow-float">
-        <span
-          className="absolute inset-0 rounded-xl bg-brand-gradient opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-70"
-          aria-hidden="true"
-        />
-        <svg viewBox="0 0 24 24" className="relative h-6 w-6" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" stroke="white" strokeOpacity="0.85" strokeWidth="1.6" />
-          <path
-            d="m15.4 8.6-2.1 4.7-4.7 2.1 2.1-4.7 4.7-2.1Z"
-            fill="white"
-            className="origin-center transition-transform duration-500 ease-spring group-hover:rotate-[135deg]"
-          />
-        </svg>
-      </span>
-      {!compact && (
-        <span className="leading-tight">
-          <span
-            className={cn(
-              'brand-title block text-[1.05rem] font-extrabold',
-              inverted ? 'text-white' : 'text-fg'
-            )}
-          >
-            YATRI AI
-          </span>
-          <span
-            className={cn(
-              'block text-[10px] font-semibold tracking-[0.14em]',
-              inverted ? 'text-white/70' : 'text-fg-subtle'
-            )}
-          >
-            TRAVEL SMART · TRAVEL SAFE
-          </span>
-        </span>
-      )}
+      <img
+        src="/logo.jpg"
+        alt="Yatri AI — Har Yatra, Smart Yatra"
+        className="h-10 w-auto rounded-xl object-contain shadow-float border border-cyan-500/20 transition-transform duration-300 group-hover:scale-105"
+      />
     </span>
   );
 }
