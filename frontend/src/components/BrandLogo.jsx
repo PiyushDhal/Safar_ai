@@ -39,7 +39,7 @@ function BrandLogo({ compact = false, className, inverted = false }) {
               inverted ? 'text-cyan-300/90' : 'text-cyan-600 dark:text-cyan-400'
             )}
           >
-            EXPLORE • PLAN • VIBE
+            PLAN • EXPLORE • VIBE
           </span>
         </span>
       )}
