@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 const ThemeContext = createContext({ theme: 'dark', toggleTheme: () => {}, setTheme: () => {} });
 
-const STORAGE_KEY = 'vibevoyage_theme';
+const STORAGE_KEY = 'safarai_theme';
 
 export function ThemeProvider({ children }) {
   const [theme, setThemeState] = useState(() => {

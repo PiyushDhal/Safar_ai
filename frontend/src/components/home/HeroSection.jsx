@@ -148,7 +148,7 @@ export default function HeroSection() {
                   </span>
                 ))}
               </span>
-              <br /> with VibeVoyage.
+              <br /> with Safar AI.
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-700 dark:text-slate-200 sm:text-lg drop-shadow-md">

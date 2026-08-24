@@ -137,7 +137,7 @@ function formatCost(amountInINR, currencyKey = 'INR', compact = false) {
 }
 
 function BudgetCalculator() {
-  usePageMeta('Budget Calculator | VibeVoyage', 'Unified trip cost calculator & custom budget planner.');
+  usePageMeta('Budget Calculator | Safar AI', 'Unified trip cost calculator & custom budget planner.');
 
   const { logActivity } = useWorkspace();
   const toast = useToast();
@@ -360,7 +360,7 @@ function BudgetCalculator() {
   function exportBudgetReport() {
     if (!shown) return;
     const text = `===========================================
-VibeVoyage — Trip Budget Estimate
+Safar AI — Trip Budget Estimate
 ===========================================
 Destination: ${shown.destination}
 Duration: ${shown.days} Days
@@ -380,13 +380,13 @@ ESTIMATED TOTAL:           ${formatCost(shown.total, currency)}
   • Per Person:            ${formatCost(Math.round(shown.total / shown.travelers), currency)}
   • Per Day:               ${formatCost(Math.round(shown.total / shown.days), currency)}
 ===========================================
-Generated via VibeVoyage Budget Intelligence
+Generated via Safar AI Budget Intelligence
 https://vibevoyage.app`;
 
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `VibeVoyage-Budget-${shown.destination.toLowerCase().replace(/\s+/g, '-')}.txt`;
+    link.download = `Safar AI-Budget-${shown.destination.toLowerCase().replace(/\s+/g, '-')}.txt`;
     link.click();
     toast.success('Budget report downloaded!');
   }

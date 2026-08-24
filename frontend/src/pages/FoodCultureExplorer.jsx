@@ -18,8 +18,8 @@ import { useAssistant } from '../context/AssistantContext';
 
 function FoodCultureExplorer() {
   usePageMeta(
-    'Food & Culture Explorer | VibeVoyage',
-    'Explore local dishes, restaurants, and cultural experiences across destinations with VibeVoyage.'
+    'Food & Culture Explorer | Safar AI',
+    'Explore local dishes, restaurants, and cultural experiences across destinations with Safar AI.'
   );
 
   const [searchParams] = useSearchParams();

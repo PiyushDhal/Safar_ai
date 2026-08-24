@@ -94,8 +94,8 @@ function distanceKm(a, b) {
 
 function NearbyExplorer() {
   usePageMeta(
-    'Nearby Places Explorer | VibeVoyage',
-    'Discover nearby attractions, restaurants, hotels, and cafes in your destination with VibeVoyage.'
+    'Nearby Places Explorer | Safar AI',
+    'Discover nearby attractions, restaurants, hotels, and cafes in your destination with Safar AI.'
   );
 
   const toast = useToast();
@@ -362,7 +362,7 @@ function NearbyExplorer() {
         <EmptyState
           icon="mapPin"
           title="Search a city to see what is nearby"
-          description="Pick one of the covered cities above, or let VibeVoyage detect the closest one to you."
+          description="Pick one of the covered cities above, or let Safar AI detect the closest one to you."
           action={{ label: 'Use my location', onClick: useMyLocation, icon: 'target' }}
           secondaryAction={{ label: 'Browse destinations', to: '/explore', icon: 'compass' }}
         />

@@ -221,7 +221,7 @@ export default function InteractiveGlobe({ className, size = 420 }) {
         ref={canvasRef}
         className="block cursor-grab touch-none"
         role="img"
-        aria-label="Interactive globe showing VibeVoyage destinations"
+        aria-label="Interactive globe showing Safar AI destinations"
       />
 
       {/* Accessible + hoverable marker layer */}

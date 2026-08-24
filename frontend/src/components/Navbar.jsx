@@ -452,7 +452,7 @@ function Navbar({ onOpenCommand }) {
         )}
       >
         <nav ref={navRef} className="content-grid flex h-[var(--nav-h)] items-center justify-between gap-2 xl:gap-4" aria-label="Main">
-          <Link to="/" className="shrink-0" aria-label="VibeVoyage home">
+          <Link to="/" className="shrink-0" aria-label="Safar AI home">
             <BrandLogo />
           </Link>
 

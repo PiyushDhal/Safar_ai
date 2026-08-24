@@ -54,7 +54,7 @@ export function HowItWorks() {
         icon="target"
         align="center"
         title="From idea to itinerary in four steps"
-        description="No spreadsheets, no twenty open tabs. VibeVoyage keeps the whole trip in one place."
+        description="No spreadsheets, no twenty open tabs. Safar AI keeps the whole trip in one place."
       />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-center">
@@ -190,7 +190,7 @@ export function Testimonials() {
         icon="heart"
         align="center"
         title="Trips people actually took"
-        description="Real plans, real budgets — feedback from the VibeVoyage community."
+        description="Real plans, real budgets — feedback from the Safar AI community."
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

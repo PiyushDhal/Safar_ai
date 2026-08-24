@@ -1,5 +1,5 @@
 /**
- * VibeVoyage global destination catalogue.
+ * Safar AI global destination catalogue.
  * ---------------------------------------------------------------------------
  * Every entry uses real geographic coordinates (WGS84) and factual travel data.
  * Photography is resolved at runtime from Wikipedia's REST API using the `wiki`

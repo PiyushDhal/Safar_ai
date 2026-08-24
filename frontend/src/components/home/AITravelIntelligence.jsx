@@ -74,7 +74,7 @@ export default function AITravelIntelligence() {
           Real-Time AI Trip Construction
         </h2>
         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-          VibeVoyage dynamically computes weather patterns, pricing fluctuations, safety feeds, and local crowds to build precision itineraries in seconds.
+          Safar AI dynamically computes weather patterns, pricing fluctuations, safety feeds, and local crowds to build precision itineraries in seconds.
         </p>
       </div>
 

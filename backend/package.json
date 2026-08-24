@@ -1,9 +1,9 @@
 {
-  "name": "vibevoyage-backend",
+  "name": "safarai-backend",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "VibeVoyage production API server — Express.js, Groq AI, Supabase, and destination intelligence.",
+  "description": "Safar AI production API server — Express.js, Groq AI, Supabase, and destination intelligence.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

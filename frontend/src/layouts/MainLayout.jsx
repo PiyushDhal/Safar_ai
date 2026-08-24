@@ -17,14 +17,14 @@ function AssistantLauncher({ onClick }) {
       <button
         type="button"
         onClick={onClick}
-        aria-label="Open VibeVoyage assistant"
+        aria-label="Open Safar AI assistant"
         className="group relative inline-flex items-center gap-2.5 rounded-full border border-cyan-400/40 bg-gradient-to-r from-cyan-500/90 to-indigo-600/90 py-3 pl-3 pr-4 text-sm font-bold text-white shadow-2xl backdrop-blur-xl transition-all duration-300 ease-spring hover:-translate-y-0.5 hover:border-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.4)]"
       >
         <span className="absolute inset-0 -z-10 rounded-full bg-cyan-500/30 animate-ping" aria-hidden="true" />
         <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/20 backdrop-blur-md">
           <Icon name="sparkles" size="sm" />
         </span>
-        <span className="hidden sm:inline">Ask VibeVoyage</span>
+        <span className="hidden sm:inline">Ask Safar AI</span>
       </button>
     </div>
   );

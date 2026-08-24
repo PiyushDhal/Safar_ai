@@ -8,7 +8,7 @@ import { aiStatus } from '../services/aiService';
 import { useToast } from '../context/ToastContext';
 
 /**
- * TravelAssistantChat — the conversational surface of VibeVoyage.
+ * TravelAssistantChat — the conversational surface of Safar AI.
  * `mode="page"` renders the full-height experience used by /assistant,
  * `mode="floating"` renders the dock available on every other route.
  */
@@ -137,7 +137,7 @@ function Composer({ value, onChange, onSubmit, disabled, compact }) {
           }
         }}
         placeholder="Ask about destinations, budgets, routes…"
-        aria-label="Message the VibeVoyage assistant"
+        aria-label="Message the Safar AI assistant"
         className="max-h-36 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-fg outline-none placeholder:text-fg-subtle"
       />
       <Button
@@ -211,7 +211,7 @@ function TravelAssistantChat({ mode = 'floating', initialQuestion }) {
           <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-brand-600 bg-emerald-400" />
         </span>
         <div className="min-w-0">
-          <p className="truncate text-sm font-bold">VibeVoyage Assistant</p>
+          <p className="truncate text-sm font-bold">Safar AI Assistant</p>
           <p className="truncate text-2xs text-white/80">
             {isTyping ? 'Thinking…' : aiStatus.configured ? 'Online · Llama 3.3 70B' : 'Online · offline knowledge mode'}
           </p>
@@ -290,7 +290,7 @@ function TravelAssistantChat({ mode = 'floating', initialQuestion }) {
         <div className="border-t border-line bg-surface p-3 sm:p-4">
           <Composer value={input} onChange={setInput} onSubmit={submit} disabled={isTyping} />
           <p className="mt-2 text-center text-2xs text-fg-subtle">
-            VibeVoyage can make mistakes — double-check prices, timings and visa rules.
+            Safar AI can make mistakes — double-check prices, timings and visa rules.
           </p>
         </div>
       </div>
@@ -305,7 +305,7 @@ function TravelAssistantChat({ mode = 'floating', initialQuestion }) {
           dockOpen ? 'translate-y-0 scale-100 opacity-100' : 'pointer-events-none translate-y-4 scale-95 opacity-0'
         )}
         role="dialog"
-        aria-label="VibeVoyage assistant"
+        aria-label="Safar AI assistant"
         aria-hidden={!dockOpen}
       >
         {header}
@@ -319,7 +319,7 @@ function TravelAssistantChat({ mode = 'floating', initialQuestion }) {
         type="button"
         onClick={() => setDockOpen(!dockOpen)}
         aria-expanded={dockOpen}
-        aria-label={dockOpen ? 'Close VibeVoyage assistant' : 'Open VibeVoyage assistant'}
+        aria-label={dockOpen ? 'Close Safar AI assistant' : 'Open Safar AI assistant'}
         className={cn(
           'pointer-events-auto group relative inline-flex items-center gap-2.5 rounded-full border border-cyan-400/40 bg-gradient-to-r from-cyan-500/90 to-indigo-600/90 py-3 pl-3 pr-4 text-sm font-bold text-white shadow-2xl backdrop-blur-xl transition-all duration-300 ease-spring hover:-translate-y-0.5 hover:border-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.4)]',
           dockOpen && 'pl-3.5 pr-3.5'
@@ -331,7 +331,7 @@ function TravelAssistantChat({ mode = 'floating', initialQuestion }) {
         <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/20">
           <Icon name={dockOpen ? 'close' : 'sparkles'} size="sm" />
         </span>
-        {!dockOpen && <span className="hidden sm:inline">Ask VibeVoyage</span>}
+        {!dockOpen && <span className="hidden sm:inline">Ask Safar AI</span>}
       </button>
     </div>
   );

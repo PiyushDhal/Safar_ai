@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 
 const memory = new Map();
 const inflight = new Map();
-const STORAGE_KEY = 'vibevoyage_wiki_images';
+const STORAGE_KEY = 'safarai_wiki_images';
 
 function readCache() {
   try {

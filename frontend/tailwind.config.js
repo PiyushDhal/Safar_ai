@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 /**
- * VibeVoyage Design System — Tailwind theme
+ * Safar AI Design System — Tailwind theme
  * ------------------------------------------------------------------
  * Colour model:
  *  • Static brand scales (brand / accent / gold) keep product identity.

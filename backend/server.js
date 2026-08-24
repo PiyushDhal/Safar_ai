@@ -1,5 +1,5 @@
 /**
- * VibeVoyage Production API Server — Railway Deployable
+ * Safar AI Production API Server — Railway Deployable
  *
  * Built with Express.js, featuring CORS, structured JSON APIs,
  * health monitoring, and seamless integration with existing AI,
@@ -66,7 +66,7 @@ const asyncHandler = (fn) => (req, res, next) => {
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
-    service: 'VibeVoyage Backend',
+    service: 'Safar AI Backend',
     environment: config.nodeEnv,
     timestamp: new Date().toISOString(),
     aiConfigured: getAiStatus().configured,
@@ -79,7 +79,7 @@ app.get('/health', (req, res) => {
  */
 app.get('/', (req, res) => {
   res.status(200).json({
-    name: 'VibeVoyage Production API Server',
+    name: 'Safar AI Production API Server',
     version: '1.0.0',
     documentation: '/health',
     endpoints: [
@@ -227,7 +227,7 @@ app.use((req, res) => {
 
 // Global 500 Error Handler
 app.use((err, req, res, next) => {
-  console.error('[VibeVoyage Server Error]:', err);
+  console.error('[Safar AI Server Error]:', err);
   res.status(err.status || 500).json({
     success: false,
     error: err.message || 'Internal Server Error',
@@ -245,7 +245,7 @@ if (process.env.VERCEL !== '1') {
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`
 =====================================================
-🚀 VibeVoyage Express API Server Running
+🚀 Safar AI Express API Server Running
 =====================================================
 • Environment : ${config.nodeEnv}
 • Listening   : http://0.0.0.0:${PORT}

@@ -4,7 +4,7 @@ import { cn } from '../../lib/cn';
 import Icon from './Icon';
 
 /**
- * Button — the single source of truth for actions across VibeVoyage.
+ * Button — the single source of truth for actions across Safar AI.
  * Variants map to intent, never to decoration.
  */
 const base =

@@ -88,7 +88,7 @@ const LOCAL_TIPS = [
 ];
 
 function TransportPage() {
-  usePageMeta('Transport | VibeVoyage', 'Railway and transport planning tools for smoother trip movement with VibeVoyage.');
+  usePageMeta('Transport | Safar AI', 'Railway and transport planning tools for smoother trip movement with Safar AI.');
 
   const [distanceKey, setDistanceKey] = useState('medium');
   const [travellers, setTravellers] = useState(2);

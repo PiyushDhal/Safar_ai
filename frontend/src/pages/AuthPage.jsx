@@ -98,7 +98,7 @@ function FloatingField({ id, label, type = 'text', value, onChange, required, au
 /* --------------------------------------------------------------------- page */
 
 function AuthPage() {
-  usePageMeta('Sign in | VibeVoyage', 'Create an account or log in to VibeVoyage.');
+  usePageMeta('Sign in | Safar AI', 'Create an account or log in to Safar AI.');
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -170,7 +170,7 @@ function AuthPage() {
         if (error) throw error;
 
         setSuccessMessage('Logged in successfully! Redirecting...');
-        toast.success('Welcome back to VibeVoyage');
+        toast.success('Welcome back to Safar AI');
         setTimeout(() => navigate('/'), 1200);
       } else {
         const { data, error } = await supabase.auth.signUp({
@@ -460,7 +460,7 @@ function AuthPage() {
             </div>
 
             <p className="mt-7 text-center text-xs text-slate-400">
-              {isLogin ? 'New to VibeVoyage? ' : 'Already have an account? '}
+              {isLogin ? 'New to Safar AI? ' : 'Already have an account? '}
               <button
                 type="button"
                 onClick={() => {

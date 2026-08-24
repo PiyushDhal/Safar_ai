@@ -35,10 +35,10 @@ function DestinationDetails() {
   const [tab, setTab] = useState('overview');
 
   usePageMeta(
-    destination ? `${destination.name} | VibeVoyage` : 'Destination Details | VibeVoyage',
+    destination ? `${destination.name} | Safar AI` : 'Destination Details | Safar AI',
     destination
-      ? `Explore attractions, budget expectations, and the best time to visit ${destination.name} with VibeVoyage.`
-      : 'Explore destination details with VibeVoyage.'
+      ? `Explore attractions, budget expectations, and the best time to visit ${destination.name} with Safar AI.`
+      : 'Explore destination details with Safar AI.'
   );
 
   useEffect(() => {
@@ -115,7 +115,7 @@ function DestinationDetails() {
     const url = window.location.href;
     try {
       if (navigator.share) {
-        await navigator.share({ title: `${destination.name} · VibeVoyage`, url });
+        await navigator.share({ title: `${destination.name} · Safar AI`, url });
       } else {
         await navigator.clipboard.writeText(url);
         toast.success('Link copied to clipboard');

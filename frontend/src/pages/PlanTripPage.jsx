@@ -99,11 +99,11 @@ const REGION_PACKING = {
 };
 
 function PlanTripPage() {
-  usePageMeta('Plan Trip | VibeVoyage', 'Build AI-powered itineraries and save personalized travel plans with VibeVoyage.');
+  usePageMeta('Plan Trip | Safar AI', 'Build AI-powered itineraries and save personalized travel plans with Safar AI.');
 
   const { trips } = useWorkspace();
   const { send, openDock } = useAssistant();
-  const [checklists, setChecklists] = useLocalStorage('vibevoyage_trip_checklists', {});
+  const [checklists, setChecklists] = useLocalStorage('safarai_trip_checklists', {});
   const [activeId, setActiveId] = useState('');
 
   const sortedTrips = useMemo(

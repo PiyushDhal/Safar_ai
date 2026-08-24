@@ -304,7 +304,7 @@ console.log('\n▸ Globe interactions');
 
   const mapState = await page.evaluate(() => ({
     container: Boolean(document.querySelector('.leaflet-container')),
-    markers: document.querySelectorAll('.vibevoyage-marker, .vibevoyage-cluster').length,
+    markers: document.querySelectorAll('.safarai-marker, .safarai-cluster').length,
     controls: document.querySelectorAll('.leaflet-control-attribution').length,
     zoomBadge: /zoom \d+/.test(document.body.innerText),
   }));
@@ -339,8 +339,8 @@ console.log('\n▸ Real places on the map');
   await new Promise((resolve) => setTimeout(resolve, 2500));
 
   const poiState = await page.evaluate(() => ({
-    pois: document.querySelectorAll('.vibevoyage-poi').length,
-    tooltips: document.querySelectorAll('.vibevoyage-tooltip').length,
+    pois: document.querySelectorAll('.safarai-poi').length,
+    tooltips: document.querySelectorAll('.safarai-tooltip').length,
     legend: /zoom in to see them|places in/i.test(document.body.innerText),
     zoom: (document.body.innerText.match(/zoom (\d+)/i) || [])[1],
   }));

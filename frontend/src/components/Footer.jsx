@@ -56,7 +56,7 @@ function Footer() {
                 Get a complete, day-by-day trip plan in under a minute.
               </h2>
               <p className="mt-3 max-w-lg text-sm leading-6 text-white/80">
-                Tell VibeVoyage where and when. We handle the itinerary, budget, stays, transport and safety notes.
+                Tell Safar AI where and when. We handle the itinerary, budget, stays, transport and safety notes.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Button to="/trip-planner" variant="glass" leadingIcon="sparkles">
@@ -149,7 +149,7 @@ function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-line pt-6 sm:flex-row">
-          <p className="text-xs text-fg-subtle">© {new Date().getFullYear()} VibeVoyage · A TravelCore Product</p>
+          <p className="text-xs text-fg-subtle">© {new Date().getFullYear()} Safar AI · A TravelCore Product</p>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-fg-subtle">
             <Link to="/safety" className="transition hover:text-fg">
               Safety

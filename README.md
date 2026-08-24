@@ -1,6 +1,6 @@
-# VibeVoyage — AI-Powered Travel Assistant
+# Safar AI — AI-Powered Travel Assistant
 
-VibeVoyage is an AI-powered travel planning platform for Indian destinations, featuring an interactive globe, budget calculator, trip planner, hotel finder, and an AI chat assistant powered by Groq.
+Safar AI is an AI-powered travel planning platform for Indian destinations, featuring an interactive globe, budget calculator, trip planner, hotel finder, and an AI chat assistant powered by Groq.
 
 ---
 

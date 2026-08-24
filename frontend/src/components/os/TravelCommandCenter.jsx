@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTravelOS } from '../../context/TravelOSContext';
 import TravelModeSelector from './TravelModeSelector';
-import WhyVibeVoyageChoseThis from './WhySafarAIChoseThis';
+import WhySafar AIChoseThis from './WhySafarAIChoseThis';
 import Icon from '../ui/Icon';
 import Button from '../ui/Button';
 
@@ -105,7 +105,7 @@ export default function TravelCommandCenter() {
         {/* OVERVIEW TAB */}
         {activeTab === 'overview' && (
           <div className="grid gap-6 lg:grid-cols-2">
-            <WhyVibeVoyageChoseThis />
+            <WhySafar AIChoseThis />
 
             {/* Quick Destination Card */}
             <div className="rounded-3xl border border-slate-800 bg-slate-950/80 p-6 shadow-2xl backdrop-blur-2xl flex flex-col justify-between">

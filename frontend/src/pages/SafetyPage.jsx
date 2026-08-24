@@ -77,7 +77,7 @@ const SCENARIOS = [
 ];
 
 function SafetyPage() {
-  usePageMeta('Safety | VibeVoyage', 'Get travel safety intelligence and context-aware alerts with VibeVoyage.');
+  usePageMeta('Safety | Safar AI', 'Get travel safety intelligence and context-aware alerts with Safar AI.');
 
   const { preferences } = useWorkspace();
   const toast = useToast();

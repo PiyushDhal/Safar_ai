@@ -136,7 +136,7 @@ function HotelCard({ hotel, nights, guests, onView }) {
 }
 
 function HotelsFinderPage() {
-  usePageMeta('Hotels & Stay Finder | VibeVoyage', 'Search and discover hotels across popular Indian destinations with VibeVoyage.');
+  usePageMeta('Hotels & Stay Finder | Safar AI', 'Search and discover hotels across popular Indian destinations with Safar AI.');
 
   const [searchParams, setSearchParams] = useSearchParams();
   const searchParamsRef = useRef(setSearchParams);

@@ -1,5 +1,5 @@
 /**
- * VibeVoyage Supabase client — Node.js / backend edition.
+ * Safar AI Supabase client — Node.js / backend edition.
  *
  * Uses process.env / config.js (supports VITE_SUPABASE_URL & SUPABASE_URL).
  * Safe to use in Node scripts, server-side tasks, and API endpoints.
@@ -15,7 +15,7 @@ export const isSupabaseConfigured = Boolean(config.supabaseUrl && config.supabas
 
 if (config.nodeEnv === 'development' && !isSupabaseConfigured) {
   console.info(
-    '[VibeVoyage Supabase] URL/Key not set. Operating in local guest mode.'
+    '[Safar AI Supabase] URL/Key not set. Operating in local guest mode.'
   );
 }
 

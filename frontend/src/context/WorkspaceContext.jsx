@@ -2,22 +2,22 @@ import { createContext, useCallback, useContext, useMemo } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 
 /**
- * WorkspaceContext — the personalisation layer of VibeVoyage.
+ * WorkspaceContext — the personalisation layer of Safar AI.
  *
  * Everything is persisted locally (no backend change required) and the
  * original storage keys/shapes are preserved so existing saved data keeps
  * working:
- *   • `vibevoyage_trips`    — itineraries saved from the Trip Planner
- *   • `vibevoyage_events`   — user created events (managed by EventsExplorer)
+ *   • `safarai_trips`    — itineraries saved from the Trip Planner
+ *   • `safarai_events`   — user created events (managed by EventsExplorer)
  * New keys add favourites, recently viewed items and an activity feed.
  */
 
-const TRIPS_KEY = 'vibevoyage_trips';
-const FAVOURITES_KEY = 'vibevoyage_favourites';
-const RECENT_KEY = 'vibevoyage_recent';
-const ACTIVITY_KEY = 'vibevoyage_activity';
-const PREFS_KEY = 'vibevoyage_preferences';
-const SEARCHES_KEY = 'vibevoyage_recent_searches';
+const TRIPS_KEY = 'safarai_trips';
+const FAVOURITES_KEY = 'safarai_favourites';
+const RECENT_KEY = 'safarai_recent';
+const ACTIVITY_KEY = 'safarai_activity';
+const PREFS_KEY = 'safarai_preferences';
+const SEARCHES_KEY = 'safarai_recent_searches';
 
 const defaultPreferences = {
   homeCity: 'Delhi',

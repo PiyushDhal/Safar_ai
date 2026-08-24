@@ -1,12 +1,12 @@
-# VibeVoyage Backend — Vercel Deployment Guide
+# Safar AI Backend — Vercel Deployment Guide
 
-This guide walks through deploying the VibeVoyage Express API backend directly to **Vercel** as a Serverless Function.
+This guide walks through deploying the Safar AI Express API backend directly to **Vercel** as a Serverless Function.
 
 ---
 
 ## 📋 Overview
 
-The VibeVoyage backend is configured with `@vercel/node` and `vercel.json` to run seamlessly on Vercel Serverless Functions.
+The Safar AI backend is configured with `@vercel/node` and `vercel.json` to run seamlessly on Vercel Serverless Functions.
 
 Available endpoints on your Vercel deployment:
 - 🏥 `GET /health` — Health check status
@@ -50,14 +50,14 @@ vercel --prod
 
 ## 🧪 Testing Your Vercel API
 
-Once deployed, test your Vercel URL (e.g. `https://vibevoyage-backend.vercel.app`):
+Once deployed, test your Vercel URL (e.g. `https://safarai-backend.vercel.app`):
 
 ```bash
 # Health Check
-curl https://vibevoyage-backend.vercel.app/health
+curl https://safarai-backend.vercel.app/health
 
 # Output:
-# {"status":"ok","service":"VibeVoyage Backend","environment":"production",...}
+# {"status":"ok","service":"Safar AI Backend","environment":"production",...}
 ```
 
 ---
@@ -67,5 +67,5 @@ curl https://vibevoyage-backend.vercel.app/health
 In your frontend Vercel project environment variables:
 
 ```env
-VITE_API_URL=https://vibevoyage-backend.vercel.app
+VITE_API_URL=https://safarai-backend.vercel.app
 ```
