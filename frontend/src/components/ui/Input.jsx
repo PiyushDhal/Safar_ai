@@ -103,7 +103,7 @@ export const Select = forwardRef(function Select(
   return (
     <div className="relative">
       {icon && (
-        <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-subtle">
+        <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-cyan-500 dark:text-cyan-400 z-10">
           <Icon name={icon} size="sm" />
         </span>
       )}
@@ -112,7 +112,7 @@ export const Select = forwardRef(function Select(
         className={cn(
           controlBase,
           sizes[size],
-          'cursor-pointer appearance-none pr-10',
+          'cursor-pointer appearance-none pr-10 font-semibold text-fg bg-surface border border-line-strong hover:border-cyan-500/60 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-700 dark:hover:border-cyan-400 shadow-sm transition-all',
           icon && 'pl-10',
           invalid && 'border-rose-400',
           className
@@ -124,7 +124,7 @@ export const Select = forwardRef(function Select(
       <Icon
         name="chevronDown"
         size="sm"
-        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-fg-subtle"
+        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-cyan-500 dark:text-cyan-400 font-bold z-10"
       />
     </div>
   );
