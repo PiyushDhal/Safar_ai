@@ -10,6 +10,7 @@ import EmptyState from '../components/ui/EmptyState';
 import { Field, Input, Select } from '../components/ui/Input';
 import { DonutChart } from '../components/charts/Charts';
 import { destinationCosts } from '../data/budgetDatabase';
+import { destinations } from '../data/destinations';
 import { stateHotelCosts } from '../data/stateHotelCosts';
 import { transportCosts } from '../data/transportCosts';
 import { seasonMultipliers } from '../data/seasonMultipliers';
@@ -156,6 +157,17 @@ function BudgetCalculator() {
     shoppingFund: 3000,
     includeBuffer: true,
   });
+
+  const [destinationInput, setDestinationInput] = useState('Goa');
+  const [suggestOpen, setSuggestOpen] = useState(false);
+
+  const suggestions = useMemo(() => {
+    const query = destinationInput.trim().toLowerCase();
+    if (!query) return destinations.slice(0, 6);
+    return destinations
+      .filter((d) => `${d.name} ${d.country} ${d.tags?.join(' ') || ''}`.toLowerCase().includes(query))
+      .slice(0, 6);
+  }, [destinationInput]);
 
   const [currency, setCurrency] = useState('INR');
   const [hasCalculated, setHasCalculated] = useState(false);
@@ -424,14 +436,77 @@ https://vibevoyage.app`;
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Destination" htmlFor="destination" className="sm:col-span-2">
-              <Select id="destination" name="destination" icon="mapPin" value={form.destination} onChange={handleChange}>
-                {destinationOptions.map((destination) => (
-                  <option key={destination.value} value={destination.value}>
-                    {destination.label}
-                  </option>
-                ))}
-              </Select>
+            <Field label="Destination" htmlFor="destination-search" className="sm:col-span-2 relative">
+              <Input
+                id="destination-search"
+                icon="search"
+                value={destinationInput}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setDestinationInput(val);
+                  setSuggestOpen(true);
+                  const query = val.trim().toLowerCase();
+                  const matchedOpt = destinationOptions.find(
+                    (opt) => opt.label.toLowerCase() === query || opt.value === query
+                  );
+                  if (matchedOpt) {
+                    setForm((prev) => ({ ...prev, destination: matchedOpt.value }));
+                  }
+                }}
+                onFocus={() => setSuggestOpen(true)}
+                onBlur={() => setTimeout(() => setSuggestOpen(false), 200)}
+                placeholder="Search any city, region or destination (e.g. Goa, Tokyo, Jaipur)"
+                autoComplete="off"
+                className="font-extrabold text-base"
+              />
+
+              {suggestOpen && suggestions.length > 0 && (
+                <div className="absolute left-0 right-0 top-[4.7rem] z-40 overflow-hidden rounded-2xl border border-cyan-500/40 bg-slate-950 p-2 shadow-2xl backdrop-blur-xl animate-slide-down">
+                  <p className="px-3 py-1 text-3xs font-extrabold uppercase tracking-wider text-cyan-400">
+                    Matching Destinations
+                  </p>
+                  <div className="space-y-1 mt-1">
+                    {suggestions.map((item) => {
+                      const key = item.slug || item.value;
+                      const label = item.name || item.label;
+                      const country = item.country || 'India';
+                      const dbKey = Object.keys(destinationCosts).find(
+                        (k) => k === key.toLowerCase() || k === label.toLowerCase()
+                      );
+
+                      return (
+                        <button
+                          key={key}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            setDestinationInput(label);
+                            const targetKey = dbKey || destinationOptions[0].value;
+                            setForm((prev) => ({ ...prev, destination: targetKey }));
+                            setSuggestOpen(false);
+                          }}
+                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm transition hover:bg-slate-900 text-white group"
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 group-hover:bg-cyan-500 group-hover:text-white transition-all">
+                              <Icon name="mapPin" size="xs" />
+                            </span>
+                            <div>
+                              <span className="font-extrabold text-white block leading-snug">{label}</span>
+                              <span className="text-2xs text-slate-400 font-medium">{country}</span>
+                            </div>
+                          </div>
+                          {dbKey && (
+                            <span className="rounded-full bg-cyan-500/20 px-2 py-0.5 text-[9px] font-bold text-cyan-300">
+                              Smart Rate Available
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </Field>
 
             <Field label="Number of days" htmlFor="days">
