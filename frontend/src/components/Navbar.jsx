@@ -50,10 +50,10 @@ function MegaMenu({ group, open, onOpen, onClose }) {
         aria-haspopup="true"
         onClick={() => (open ? onClose() : onOpen())}
         className={cn(
-          'inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors duration-200',
+          'inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 backdrop-blur-md',
           groupActive || open
-            ? 'bg-surface-muted text-brand-700 dark:text-brand-200'
-            : 'text-fg-muted hover:bg-surface-muted hover:text-fg'
+            ? 'border border-cyan-400/40 bg-gradient-to-r from-cyan-500/20 to-indigo-600/20 text-slate-900 dark:text-cyan-200 shadow-sm font-bold backdrop-blur-xl'
+            : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
         )}
       >
         {group.label}
@@ -447,17 +447,17 @@ function Navbar({ onOpenCommand }) {
             <BrandLogo />
           </Link>
 
-          <ul className="hidden items-center gap-1 lg:flex xl:gap-1.5">
+          <ul className="hidden items-center gap-1 rounded-full border border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-slate-950/70 p-1.5 shadow-xl backdrop-blur-2xl lg:flex xl:gap-1">
             <li>
               <NavLink
                 to="/"
                 end
                 className={({ isActive }) =>
                   cn(
-                    'inline-flex items-center rounded-full px-3.5 py-2 text-sm font-semibold transition-colors duration-200',
+                    'inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 backdrop-blur-md',
                     isActive
-                      ? 'bg-surface-muted text-brand-700 dark:text-brand-200'
-                      : 'text-fg-muted hover:bg-surface-muted hover:text-fg'
+                      ? 'border border-cyan-400/40 bg-gradient-to-r from-cyan-500/20 to-indigo-600/20 text-slate-900 dark:text-cyan-200 shadow-sm font-bold backdrop-blur-xl'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
                   )
                 }
               >
@@ -480,10 +480,10 @@ function Navbar({ onOpenCommand }) {
                 to="/community"
                 className={({ isActive }) =>
                   cn(
-                    'inline-flex items-center rounded-full px-3.5 py-2 text-sm font-semibold transition-colors duration-200',
+                    'inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 backdrop-blur-md',
                     isActive
-                      ? 'bg-surface-muted text-brand-700 dark:text-brand-200'
-                      : 'text-fg-muted hover:bg-surface-muted hover:text-fg'
+                      ? 'border border-cyan-400/40 bg-gradient-to-r from-cyan-500/20 to-indigo-600/20 text-slate-900 dark:text-cyan-200 shadow-sm font-bold backdrop-blur-xl'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
                   )
                 }
               >
@@ -496,22 +496,22 @@ function Navbar({ onOpenCommand }) {
             <button
               type="button"
               onClick={onOpenCommand}
-              className="hidden shrink-0 items-center gap-2 rounded-full border border-line bg-surface px-3 py-2 text-xs font-medium text-fg-subtle shadow-xs transition hover:border-brand-300 hover:text-fg xl:inline-flex"
+              className="hidden shrink-0 items-center gap-2 rounded-full border border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-slate-950/70 px-3.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 shadow-md backdrop-blur-xl transition hover:border-cyan-500/40 hover:text-slate-900 dark:hover:text-white hover:-translate-y-0.5 xl:inline-flex"
               aria-label="Open search (Command K)"
             >
-              <Icon name="search" size="sm" />
+              <Icon name="search" size="sm" className="text-cyan-500" />
               <span className="hidden lg:inline">Search…</span>
-              <kbd className="rounded border border-line bg-surface-muted px-1.5 py-0.5 text-2xs font-bold">⌘K</kbd>
+              <kbd className="rounded border border-slate-300/60 dark:border-white/15 bg-slate-100/70 dark:bg-white/10 px-1.5 py-0.5 text-2xs font-bold">⌘K</kbd>
             </button>
 
             <Link
               to="/profile?tab=saved"
-              className="relative hidden rounded-full border border-line bg-surface p-2 text-fg-muted shadow-xs transition hover:border-brand-300 hover:text-brand-600 sm:inline-flex"
+              className="relative hidden rounded-full border border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-slate-950/70 p-2.5 text-slate-600 dark:text-slate-300 shadow-md backdrop-blur-xl transition hover:border-cyan-500/40 hover:text-rose-500 dark:hover:text-rose-400 hover:-translate-y-0.5 sm:inline-flex"
               aria-label={`Saved items (${favourites.length})`}
             >
               <Icon name="heart" size="sm" />
               {favourites.length > 0 && (
-                <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[9px] font-bold text-white">
+                <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[9px] font-bold text-white shadow-md">
                   {favourites.length}
                 </span>
               )}
@@ -520,7 +520,7 @@ function Navbar({ onOpenCommand }) {
             <button
               type="button"
               onClick={toggleTheme}
-              className="rounded-full border border-line bg-surface p-2 text-fg-muted shadow-xs transition hover:border-brand-300 hover:text-brand-600"
+              className="rounded-full border border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-slate-950/70 p-2.5 text-slate-600 dark:text-slate-300 shadow-md backdrop-blur-xl transition hover:border-cyan-500/40 hover:text-cyan-500 dark:hover:text-cyan-400 hover:-translate-y-0.5"
               aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             >
               <Icon name={theme === 'dark' ? 'sun' : 'moon'} size="sm" />
@@ -533,7 +533,7 @@ function Navbar({ onOpenCommand }) {
             <button
               type="button"
               onClick={() => setDrawerOpen(true)}
-              className="rounded-full border border-line bg-surface p-2 text-fg shadow-xs transition hover:border-brand-300 lg:hidden"
+              className="rounded-full border border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-slate-950/70 p-2.5 text-fg shadow-md backdrop-blur-xl transition hover:border-cyan-500/40 lg:hidden"
               aria-label="Open menu"
               aria-expanded={drawerOpen}
             >

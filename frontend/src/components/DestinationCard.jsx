@@ -185,14 +185,14 @@ export default function DestinationCard({ destination, layout = 'grid', tilt = t
           <Link
             to={href}
             onClick={() => trackView({ id: `dest-${destination.slug}`, type: 'destination', title: destination.name, href })}
-            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-gradient px-4 py-2.5 text-sm font-semibold text-white shadow-float transition-all duration-200 hover:-translate-y-0.5 hover:shadow-glow"
+            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-gradient px-4 py-2.5 text-sm font-semibold text-white shadow-float backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-glow"
           >
             Explore
             <Icon name="arrowRight" size="sm" className="transition-transform duration-200 group-hover:translate-x-0.5" />
           </Link>
           <Link
             to={`/trip-planner?destination=${encodeURIComponent(destination.name)}`}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-line bg-surface px-3 py-2.5 text-sm font-semibold text-fg-muted transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-300 hover:text-brand-700 dark:hover:text-brand-200"
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 px-3 py-2.5 text-sm font-semibold text-fg-muted backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-cyan-500/40 hover:bg-white/90 dark:hover:bg-slate-800/80 hover:text-cyan-600 dark:hover:text-cyan-300 hover:shadow-md"
             aria-label={`Plan a trip to ${destination.name}`}
           >
             <Icon name="sparkles" size="sm" />

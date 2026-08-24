@@ -18,10 +18,10 @@ function AssistantLauncher({ onClick }) {
         type="button"
         onClick={onClick}
         aria-label="Open SafarAI assistant"
-        className="group relative inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-cyan-500 to-indigo-600 py-3 pl-3 pr-4 text-sm font-bold text-white shadow-2xl transition-all duration-300 ease-spring hover:-translate-y-0.5 hover:shadow-cyan-500/25"
+        className="group relative inline-flex items-center gap-2.5 rounded-full border border-cyan-400/40 bg-gradient-to-r from-cyan-500/90 to-indigo-600/90 py-3 pl-3 pr-4 text-sm font-bold text-white shadow-2xl backdrop-blur-xl transition-all duration-300 ease-spring hover:-translate-y-0.5 hover:border-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.4)]"
       >
         <span className="absolute inset-0 -z-10 rounded-full bg-cyan-500/30 animate-ping" aria-hidden="true" />
-        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/20">
+        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/20 backdrop-blur-md">
           <Icon name="sparkles" size="sm" />
         </span>
         <span className="hidden sm:inline">Ask SafarAI</span>
@@ -45,7 +45,7 @@ function BackToTop() {
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       aria-label="Back to top"
       className={cn(
-        'fixed bottom-4 left-4 z-[92] inline-flex h-11 w-11 items-center justify-center rounded-full border border-line/80 bg-slate-950/80 text-slate-300 shadow-2xl backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:text-cyan-400 sm:bottom-6 sm:left-6',
+        'fixed bottom-4 left-4 z-[92] inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/60 dark:border-white/15 bg-white/80 dark:bg-slate-950/80 text-slate-700 dark:text-slate-200 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-500/50 hover:text-cyan-600 dark:hover:text-cyan-400 sm:bottom-6 sm:left-6',
         visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-3 opacity-0'
       )}
     >
@@ -127,7 +127,14 @@ function MainLayout() {
 
       {showAssistant &&
         (assistantMounted ? (
-          <Suspense fallback={<AssistantLauncher onClick={() => {}} />}>
+          <Suspense fallback={
+            <AssistantLauncher
+              onClick={() => {
+                setAssistantMounted(true);
+                openDock();
+              }}
+            />
+          }>
             <TravelAssistantChat />
           </Suspense>
         ) : (

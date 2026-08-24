@@ -46,8 +46,8 @@ export function Chip({ active, onClick, icon, children, className, count, ...res
         'inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 py-2 text-[13px] font-semibold transition-all duration-200',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas',
         active
-          ? 'border-transparent bg-brand-gradient text-white shadow-float'
-          : 'border-line bg-surface text-fg-muted hover:-translate-y-0.5 hover:border-brand-300 hover:text-brand-700 hover:shadow-sm dark:hover:text-brand-200',
+          ? 'border-cyan-400/50 bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg backdrop-blur-xl hover:shadow-[0_0_20px_rgba(6,182,212,0.3)]'
+          : 'border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 text-fg-muted backdrop-blur-md hover:-translate-y-0.5 hover:border-cyan-500/40 hover:bg-white/90 dark:hover:bg-slate-800/80 hover:text-fg hover:shadow-md',
         className
       )}
       {...rest}

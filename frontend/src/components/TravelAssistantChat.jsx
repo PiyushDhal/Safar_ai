@@ -321,7 +321,7 @@ function TravelAssistantChat({ mode = 'floating', initialQuestion }) {
         aria-expanded={dockOpen}
         aria-label={dockOpen ? 'Close SafarAI assistant' : 'Open SafarAI assistant'}
         className={cn(
-          'pointer-events-auto group relative inline-flex items-center gap-2.5 rounded-full bg-brand-gradient py-3 pl-3 pr-4 text-sm font-bold text-white shadow-glow transition-all duration-300 ease-spring hover:-translate-y-0.5 hover:shadow-lift',
+          'pointer-events-auto group relative inline-flex items-center gap-2.5 rounded-full border border-cyan-400/40 bg-gradient-to-r from-cyan-500/90 to-indigo-600/90 py-3 pl-3 pr-4 text-sm font-bold text-white shadow-2xl backdrop-blur-xl transition-all duration-300 ease-spring hover:-translate-y-0.5 hover:border-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.4)]',
           dockOpen && 'pl-3.5 pr-3.5'
         )}
       >

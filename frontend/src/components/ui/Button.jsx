@@ -15,23 +15,23 @@ const base =
 
 const variants = {
   primary:
-    'bg-brand-gradient bg-[length:180%_180%] text-white shadow-float hover:-translate-y-0.5 hover:shadow-glow hover:bg-[position:100%_50%]',
+    'bg-brand-gradient bg-[length:180%_180%] text-white shadow-float hover:-translate-y-0.5 hover:shadow-glow hover:bg-[position:100%_50%] backdrop-blur-sm',
   secondary:
-    'border border-line bg-surface text-fg shadow-sm hover:-translate-y-0.5 hover:border-brand-300 hover:text-brand-700 hover:shadow-card dark:hover:text-brand-200',
+    'border border-line/80 dark:border-white/10 bg-surface/90 dark:bg-slate-900/80 text-fg shadow-sm backdrop-blur-md hover:-translate-y-0.5 hover:border-brand-400/50 hover:bg-surface dark:hover:bg-slate-800/90 hover:text-brand-600 dark:hover:text-cyan-300 hover:shadow-lift',
   soft:
-    'bg-brand-50 text-brand-700 hover:bg-brand-100 dark:bg-brand-500/12 dark:text-brand-200 dark:hover:bg-brand-500/20',
+    'bg-brand-50/80 text-brand-700 backdrop-blur-md hover:bg-brand-100 dark:bg-brand-500/15 dark:text-brand-200 dark:hover:bg-brand-500/25',
   ghost:
-    'text-fg-muted hover:bg-surface-muted hover:text-fg',
+    'text-fg-muted backdrop-blur-sm hover:bg-surface-muted/80 hover:text-fg dark:hover:bg-white/10',
   outline:
-    'border border-brand-300 text-brand-700 hover:bg-brand-50 dark:border-brand-400/40 dark:text-brand-200 dark:hover:bg-brand-500/10',
+    'border border-brand-300/80 dark:border-cyan-500/40 text-brand-700 dark:text-cyan-300 backdrop-blur-md hover:bg-brand-50/80 dark:hover:bg-cyan-500/15 hover:border-brand-400 dark:hover:border-cyan-400',
   danger:
-    'bg-rose-500 text-white shadow-sm hover:-translate-y-0.5 hover:bg-rose-600',
+    'bg-rose-500/90 text-white shadow-sm backdrop-blur-md hover:-translate-y-0.5 hover:bg-rose-600 hover:shadow-rose-500/30',
   dangerSoft:
-    'border border-rose-200 bg-surface text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:text-rose-300 dark:hover:bg-rose-500/10',
+    'border border-rose-200/80 bg-surface/80 text-rose-600 backdrop-blur-md hover:bg-rose-50 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-900/40',
   success:
-    'bg-emerald-500 text-white shadow-sm hover:-translate-y-0.5 hover:bg-emerald-600',
+    'bg-emerald-500/90 text-white shadow-sm backdrop-blur-md hover:-translate-y-0.5 hover:bg-emerald-600 hover:shadow-emerald-500/30',
   glass:
-    'border border-slate-300 dark:border-cyan-500/40 bg-white/90 dark:bg-slate-950/70 text-slate-900 dark:text-cyan-300 backdrop-blur-xl hover:bg-slate-100 dark:hover:bg-slate-900 shadow-md',
+    'border border-slate-200/70 dark:border-cyan-500/30 bg-white/80 dark:bg-slate-950/70 text-slate-900 dark:text-cyan-300 backdrop-blur-xl shadow-lg hover:border-cyan-400/50 hover:bg-white/95 dark:hover:bg-slate-900/90 hover:text-cyan-600 dark:hover:text-cyan-200 hover:shadow-[0_0_25px_rgba(6,182,212,0.25)] hover:-translate-y-0.5',
 };
 
 const sizes = {
