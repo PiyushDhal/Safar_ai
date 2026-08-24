@@ -158,7 +158,7 @@ export default function CommandPalette({ open, onClose }) {
     items.push({
       id: 'ai',
       group: 'AI',
-      title: `Ask Yatri AI: “${query.trim()}”`,
+      title: `Ask VibeVoyage: “${query.trim()}”`,
       subtitle: 'Get a natural-language answer from the travel assistant',
       icon: 'sparkles',
       to: `/assistant?q=${encodeURIComponent(query.trim())}`,
@@ -225,7 +225,7 @@ export default function CommandPalette({ open, onClose }) {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Search Yatri AI"
+        aria-label="Search VibeVoyage"
         className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-line bg-surface-raised shadow-lift animate-scale-in"
       >
         <div className="flex items-center gap-3 border-b border-line px-4">

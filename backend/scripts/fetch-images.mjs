@@ -36,7 +36,7 @@ const { hotelsDatabase } = await importFromBackend('data/hotelsDatabase.js');
 const { pointsOfInterest } = await importFromBackend('data/pointsOfInterest.js');
 
 const API = 'https://en.wikipedia.org/api/rest_v1/page/summary/';
-const USER_AGENT = 'Yatri AI-image-verifier/1.0 (https://github.com/; contact: developer@travelcore.com)';
+const USER_AGENT = 'VibeVoyage-image-verifier/1.0 (https://github.com/; contact: developer@travelcore.com)';
 
 const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 

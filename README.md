@@ -1,6 +1,6 @@
-# Yatri AI — AI-Powered Travel Assistant
+# VibeVoyage — AI-Powered Travel Assistant
 
-Yatri AI is an AI-powered travel planning platform for Indian destinations, featuring an interactive globe, budget calculator, trip planner, hotel finder, and an AI chat assistant powered by Groq.
+VibeVoyage is an AI-powered travel planning platform for Indian destinations, featuring an interactive globe, budget calculator, trip planner, hotel finder, and an AI chat assistant powered by Groq.
 
 ---
 

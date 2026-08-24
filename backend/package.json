@@ -1,9 +1,9 @@
 {
-  "name": "yatriai-backend",
+  "name": "vibevoyage-backend",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Yatri AI production API server — Express.js, Groq AI, Supabase, and destination intelligence.",
+  "description": "VibeVoyage production API server — Express.js, Groq AI, Supabase, and destination intelligence.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

@@ -1,5 +1,5 @@
 /**
- * Yatri AI Supabase client — Node.js / backend edition.
+ * VibeVoyage Supabase client — Node.js / backend edition.
  *
  * Uses process.env / config.js (supports VITE_SUPABASE_URL & SUPABASE_URL).
  * Safe to use in Node scripts, server-side tasks, and API endpoints.
@@ -15,7 +15,7 @@ export const isSupabaseConfigured = Boolean(config.supabaseUrl && config.supabas
 
 if (config.nodeEnv === 'development' && !isSupabaseConfigured) {
   console.info(
-    '[Yatri AI Supabase] URL/Key not set. Operating in local guest mode.'
+    '[VibeVoyage Supabase] URL/Key not set. Operating in local guest mode.'
   );
 }
 

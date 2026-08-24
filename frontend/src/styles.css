@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   Yatri AI Design System — Foundations
+   VibeVoyage Design System — Foundations
    Tokens → Base → Components → Utilities
    ========================================================================== */
 
@@ -398,7 +398,7 @@
     border-radius: 4px;
   }
 
-  .yatriai-pin {
+  .vibevoyage-pin {
     position: relative;
     display: block;
     width: 100%;
@@ -406,7 +406,7 @@
     filter: drop-shadow(0 4px 6px rgb(15 23 42 / 0.45));
     transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .yatriai-pin::before {
+  .vibevoyage-pin::before {
     content: '';
     position: absolute;
     left: 50%;
@@ -418,7 +418,7 @@
     background: var(--pin, #6366f1);
     border: 2px solid rgb(255 255 255 / 0.9);
   }
-  .yatriai-pin__dot {
+  .vibevoyage-pin__dot {
     position: absolute;
     left: 50%;
     top: 26%;
@@ -428,13 +428,13 @@
     border-radius: 999px;
     background: rgb(255 255 255 / 0.95);
   }
-  .yatriai-marker:hover .yatriai-pin {
+  .vibevoyage-marker:hover .vibevoyage-pin {
     transform: scale(1.15) translateY(-2px);
   }
-  .yatriai-pin.is-selected {
+  .vibevoyage-pin.is-selected {
     animation: pin-bounce 1.8s ease-in-out infinite;
   }
-  .yatriai-pin.is-selected::after {
+  .vibevoyage-pin.is-selected::after {
     content: '';
     position: absolute;
     left: 50%;
@@ -448,7 +448,7 @@
     animation: pulse-ring 2.2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
   }
 
-  .yatriai-cluster__bubble {
+  .vibevoyage-cluster__bubble {
     display: grid;
     place-items: center;
     border-radius: 999px;
@@ -462,11 +462,11 @@
       0 8px 18px -6px rgb(15 23 42 / 0.6);
     transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .yatriai-cluster:hover .yatriai-cluster__bubble {
+  .vibevoyage-cluster:hover .vibevoyage-cluster__bubble {
     transform: scale(1.08);
   }
 
-  .yatriai-tooltip.leaflet-tooltip {
+  .vibevoyage-tooltip.leaflet-tooltip {
     background: rgb(15 23 42 / 0.82);
     border: 1px solid rgb(255 255 255 / 0.14);
     color: #fff;
@@ -477,7 +477,7 @@
     box-shadow: none;
     backdrop-filter: blur(6px);
   }
-  .yatriai-tooltip.leaflet-tooltip::before {
+  .vibevoyage-tooltip.leaflet-tooltip::before {
     display: none;
   }
 
@@ -495,25 +495,25 @@
   .leaflet-popup-content {
     margin: 10px 12px;
   }
-  .yatriai-popup__title {
+  .vibevoyage-popup__title {
     font-size: 13px;
     font-weight: 800;
     color: rgb(var(--c-fg));
   }
-  .yatriai-popup__meta {
+  .vibevoyage-popup__meta {
     margin-top: 2px;
     font-size: 10px;
     font-weight: 600;
     color: rgb(var(--ring-brand));
   }
-  .yatriai-popup__text {
+  .vibevoyage-popup__text {
     margin-top: 6px;
     font-size: 11px;
     line-height: 1.45;
     color: rgb(var(--c-fg-muted));
   }
 
-  .yatriai-poi__dot {
+  .vibevoyage-poi__dot {
     display: block;
     width: 14px;
     height: 14px;
@@ -524,14 +524,14 @@
     box-shadow: 0 2px 6px rgb(15 23 42 / 0.45);
     transition: transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .yatriai-poi:hover .yatriai-poi__dot {
+  .vibevoyage-poi:hover .vibevoyage-poi__dot {
     transform: scale(1.35);
   }
-  .yatriai-tooltip--poi {
+  .vibevoyage-tooltip--poi {
     font-weight: 600;
     opacity: 0.92;
   }
-  .yatriai-popup__link {
+  .vibevoyage-popup__link {
     display: inline-block;
     margin-top: 8px;
     font-size: 11px;
@@ -539,7 +539,7 @@
     color: rgb(var(--ring-brand));
   }
 
-  .yatriai-route-label span {
+  .vibevoyage-route-label span {
     display: inline-flex;
     align-items: center;
     justify-content: center;

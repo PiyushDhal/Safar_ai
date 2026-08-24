@@ -443,7 +443,7 @@ function Navbar({ onOpenCommand }) {
         )}
       >
         <nav ref={navRef} className="content-grid flex h-[var(--nav-h)] items-center justify-between gap-2 xl:gap-4" aria-label="Main">
-          <Link to="/" className="shrink-0" aria-label="Yatri AI home">
+          <Link to="/" className="shrink-0" aria-label="VibeVoyage home">
             <BrandLogo />
           </Link>
 

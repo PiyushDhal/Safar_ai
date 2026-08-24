@@ -101,7 +101,7 @@ function AssistantPromo() {
             Ask anything. Get a plan, not a paragraph.
           </h2>
           <p className="mt-3 max-w-lg text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-            Yatri AI knows your saved trips, preferred style and recently viewed destinations — so answers arrive already tailored to the exact way you travel.
+            VibeVoyage knows your saved trips, preferred style and recently viewed destinations — so answers arrive already tailored to the exact way you travel.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button onClick={openDock} variant="glass" leadingIcon="sparkles" className="border-cyan-500/40 text-cyan-700 dark:text-white bg-cyan-500/10 dark:bg-cyan-500/20 hover:bg-cyan-500/20 dark:hover:bg-cyan-500/30">
@@ -183,8 +183,8 @@ function SeasonalRail() {
 
 function HomePage() {
   usePageMeta(
-    'Yatri AI | Cinematic AI Travel Intelligence Platform',
-    'Yatri AI helps travelers plan smarter and safer with AI itinerary generation, 3D destination intelligence, transport tools, and personalized recommendations.'
+    'VibeVoyage | Cinematic AI Travel Intelligence Platform',
+    'VibeVoyage helps travelers plan smarter and safer with AI itinerary generation, 3D destination intelligence, transport tools, and personalized recommendations.'
   );
 
   return (

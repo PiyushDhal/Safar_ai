@@ -224,7 +224,7 @@ function CompareModal({ open, onClose, items, onRemove }) {
 /* --------------------------------------------------------------------- page */
 
 function ExplorePage() {
-  usePageMeta('Explore | Yatri AI', 'Discover destinations, food, events, and local stories with Yatri AI.');
+  usePageMeta('Explore | VibeVoyage', 'Discover destinations, food, events, and local stories with VibeVoyage.');
 
   const [searchParams] = useSearchParams();
   const [tab, setTab] = useState(searchParams.get('tab') === 'food' ? 'food' : 'destinations');

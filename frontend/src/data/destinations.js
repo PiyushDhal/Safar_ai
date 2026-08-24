@@ -1,5 +1,5 @@
 /**
- * Yatri AI destination catalogue — the single source of truth for every
+ * VibeVoyage destination catalogue — the single source of truth for every
  * discovery surface (globe, map, explorer, search, planner, dashboard).
  *
  * Composition:

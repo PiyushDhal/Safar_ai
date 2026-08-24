@@ -2,22 +2,22 @@ import { createContext, useCallback, useContext, useMemo } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 
 /**
- * WorkspaceContext — the personalisation layer of Yatri AI.
+ * WorkspaceContext — the personalisation layer of VibeVoyage.
  *
  * Everything is persisted locally (no backend change required) and the
  * original storage keys/shapes are preserved so existing saved data keeps
  * working:
- *   • `yatriai_trips`    — itineraries saved from the Trip Planner
- *   • `yatriai_events`   — user created events (managed by EventsExplorer)
+ *   • `vibevoyage_trips`    — itineraries saved from the Trip Planner
+ *   • `vibevoyage_events`   — user created events (managed by EventsExplorer)
  * New keys add favourites, recently viewed items and an activity feed.
  */
 
-const TRIPS_KEY = 'yatriai_trips';
-const FAVOURITES_KEY = 'yatriai_favourites';
-const RECENT_KEY = 'yatriai_recent';
-const ACTIVITY_KEY = 'yatriai_activity';
-const PREFS_KEY = 'yatriai_preferences';
-const SEARCHES_KEY = 'yatriai_recent_searches';
+const TRIPS_KEY = 'vibevoyage_trips';
+const FAVOURITES_KEY = 'vibevoyage_favourites';
+const RECENT_KEY = 'vibevoyage_recent';
+const ACTIVITY_KEY = 'vibevoyage_activity';
+const PREFS_KEY = 'vibevoyage_preferences';
+const SEARCHES_KEY = 'vibevoyage_recent_searches';
 
 const defaultPreferences = {
   homeCity: 'Delhi',

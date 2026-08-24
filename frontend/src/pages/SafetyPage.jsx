@@ -77,7 +77,7 @@ const SCENARIOS = [
 ];
 
 function SafetyPage() {
-  usePageMeta('Safety | Yatri AI', 'Get travel safety intelligence and context-aware alerts with Yatri AI.');
+  usePageMeta('Safety | VibeVoyage', 'Get travel safety intelligence and context-aware alerts with VibeVoyage.');
 
   const { preferences } = useWorkspace();
   const toast = useToast();

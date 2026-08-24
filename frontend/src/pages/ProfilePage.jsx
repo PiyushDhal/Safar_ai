@@ -34,7 +34,7 @@ const TYPE_META = {
 const INTEREST_OPTIONS = ['culture', 'food', 'nature', 'adventure', 'beach', 'wellness', 'heritage', 'nightlife'];
 
 function ProfilePage() {
-  usePageMeta('Dashboard | Yatri AI', 'Manage account preferences, saved trips, and personalization settings in Yatri AI.');
+  usePageMeta('Dashboard | VibeVoyage', 'Manage account preferences, saved trips, and personalization settings in VibeVoyage.');
 
   const [searchParams] = useSearchParams();
   const [tab, setTab] = useState(searchParams.get('tab') || 'overview');
@@ -674,7 +674,7 @@ function ProfilePage() {
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = 'yatriai-data.json';
+                    link.download = 'vibevoyage-data.json';
                     link.click();
                     URL.revokeObjectURL(url);
                     toast.success('Data exported');

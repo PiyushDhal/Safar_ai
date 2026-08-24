@@ -68,7 +68,7 @@ const destinationOptions = Object.keys(destinationCosts).map((key) => ({
 const SEASON_LABELS = { off: 'Off season', normal: 'Normal season', peak: 'Peak season' };
 
 function BudgetCalculator() {
-  usePageMeta('Budget Calculator | Yatri AI', 'Estimate destination-based travel cost using smart trip budget calculations.');
+  usePageMeta('Budget Calculator | VibeVoyage', 'Estimate destination-based travel cost using smart trip budget calculations.');
 
   const { logActivity } = useWorkspace();
   const toast = useToast();

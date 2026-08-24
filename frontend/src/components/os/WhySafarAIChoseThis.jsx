@@ -2,7 +2,7 @@ import React from 'react';
 import { useTravelOS } from '../../context/TravelOSContext';
 import Icon from '../ui/Icon';
 
-export default function WhyYatriAIChoseThis() {
+export default function WhyVibeVoyageChoseThis() {
   const { activeDestination, intent } = useTravelOS();
 
   if (!activeDestination?.intel) return null;
@@ -18,7 +18,7 @@ export default function WhyYatriAIChoseThis() {
             <Icon name="sparkles" size="sm" />
           </span>
           <div>
-            <h3 className="text-base font-extrabold text-white">Why Yatri AI Chose {activeDestination.name}</h3>
+            <h3 className="text-base font-extrabold text-white">Why VibeVoyage Chose {activeDestination.name}</h3>
             <p className="text-2xs font-semibold text-slate-400">Explainable AI Recommendation Matrix</p>
           </div>
         </div>

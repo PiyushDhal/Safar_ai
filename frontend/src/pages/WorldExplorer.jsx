@@ -241,7 +241,7 @@ function DetailPanel({ destination, onClose, onZoomToMap, view }) {
 
 function WorldExplorer() {
   usePageMeta(
-    'World Explorer | Yatri AI',
+    'World Explorer | VibeVoyage',
     'Spin a photoreal 3D globe, zoom into a real terrain map, and explore 150+ destinations across every continent.'
   );
 

@@ -99,11 +99,11 @@ const REGION_PACKING = {
 };
 
 function PlanTripPage() {
-  usePageMeta('Plan Trip | Yatri AI', 'Build AI-powered itineraries and save personalized travel plans with Yatri AI.');
+  usePageMeta('Plan Trip | VibeVoyage', 'Build AI-powered itineraries and save personalized travel plans with VibeVoyage.');
 
   const { trips } = useWorkspace();
   const { send, openDock } = useAssistant();
-  const [checklists, setChecklists] = useLocalStorage('yatriai_trip_checklists', {});
+  const [checklists, setChecklists] = useLocalStorage('vibevoyage_trip_checklists', {});
   const [activeId, setActiveId] = useState('');
 
   const sortedTrips = useMemo(

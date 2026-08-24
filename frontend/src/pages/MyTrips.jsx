@@ -110,7 +110,7 @@ function TripCard({ trip, onDelete, onDuplicate, onExport }) {
 }
 
 function MyTrips() {
-  usePageMeta('My Trips | Yatri AI', 'View and manage your saved travel plans on Yatri AI.');
+  usePageMeta('My Trips | VibeVoyage', 'View and manage your saved travel plans on VibeVoyage.');
 
   const { trips, deleteTrip } = useWorkspace();
   const toast = useToast();
@@ -143,7 +143,7 @@ function MyTrips() {
 
   const exportTrip = (trip) => {
     const text = [
-      `Yatri AI — ${trip.days}-day ${trip.travelStyle} trip to ${trip.destination}`,
+      `VibeVoyage — ${trip.days}-day ${trip.travelStyle} trip to ${trip.destination}`,
       trip.startDate && trip.endDate ? `${formatDate(trip.startDate)} → ${formatDate(trip.endDate)}` : '',
       '',
       ...(trip.itinerary || []).map((item) => `Day ${item.day}: ${item.activities}`),
@@ -155,7 +155,7 @@ function MyTrips() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `yatriai-${String(trip.destination).toLowerCase().replace(/\s+/g, '-')}.txt`;
+    link.download = `vibevoyage-${String(trip.destination).toLowerCase().replace(/\s+/g, '-')}.txt`;
     link.click();
     URL.revokeObjectURL(url);
     toast.success('Trip exported');

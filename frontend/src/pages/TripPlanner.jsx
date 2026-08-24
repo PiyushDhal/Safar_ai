@@ -103,7 +103,7 @@ function DayCard({ item, index, total, expanded, onToggle }) {
 }
 
 function TripPlanner() {
-  usePageMeta('Trip Planner | Yatri AI', 'Generate AI-powered multi-day travel itineraries with Yatri AI.');
+  usePageMeta('Trip Planner | VibeVoyage', 'Generate AI-powered multi-day travel itineraries with VibeVoyage.');
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -243,7 +243,7 @@ function TripPlanner() {
 
   const planAsText = () =>
     [
-      `Yatri AI — ${days}-day ${style} trip to ${destination.trim()}`,
+      `VibeVoyage — ${days}-day ${style} trip to ${destination.trim()}`,
       startDate && endDate ? `${formatDate(startDate)} → ${formatDate(endDate)}` : '',
       estimate ? `Estimated cost: ${formatINR(estimate.total)} for ${estimate.travellers} traveller(s)` : '',
       '',
@@ -266,7 +266,7 @@ function TripPlanner() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `yatriai-${destination.trim().toLowerCase().replace(/\s+/g, '-')}-${days}d.txt`;
+    link.download = `vibevoyage-${destination.trim().toLowerCase().replace(/\s+/g, '-')}-${days}d.txt`;
     link.click();
     URL.revokeObjectURL(url);
     toast.success('Itinerary downloaded');
@@ -287,7 +287,7 @@ function TripPlanner() {
         eyebrow="AI planner"
         icon="sparkles"
         title="Build a complete itinerary in one pass"
-        description="Pick a destination, set your dates and travel style. Yatri AI drafts a realistic day-by-day plan you can save, refine or export."
+        description="Pick a destination, set your dates and travel style. VibeVoyage drafts a realistic day-by-day plan you can save, refine or export."
         actions={
           <>
             <Button to="/my-trips" variant="secondary" leadingIcon="luggage">

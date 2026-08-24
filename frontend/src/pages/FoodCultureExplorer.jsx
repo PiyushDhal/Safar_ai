@@ -18,8 +18,8 @@ import { useAssistant } from '../context/AssistantContext';
 
 function FoodCultureExplorer() {
   usePageMeta(
-    'Food & Culture Explorer | Yatri AI',
-    'Explore local dishes, restaurants, and cultural experiences across destinations with Yatri AI.'
+    'Food & Culture Explorer | VibeVoyage',
+    'Explore local dishes, restaurants, and cultural experiences across destinations with VibeVoyage.'
   );
 
   const [searchParams] = useSearchParams();

@@ -11,7 +11,7 @@ const WELCOME = {
   id: 'welcome',
   role: 'assistant',
   text:
-    'Hi! I am your **Yatri AI travel assistant**.\n\nAsk me to plan an itinerary, compare destinations, estimate a budget, or find food and stays. Try:\n- “5 days in Kerala on a mid-range budget”\n- “Is Goa good in November?”\n- “Cheapest way from Delhi to Jaipur”',
+    'Hi! I am your **VibeVoyage travel assistant**.\n\nAsk me to plan an itinerary, compare destinations, estimate a budget, or find food and stays. Try:\n- “5 days in Kerala on a mid-range budget”\n- “Is Goa good in November?”\n- “Cheapest way from Delhi to Jaipur”',
   at: new Date().toISOString(),
 };
 

@@ -147,8 +147,8 @@ console.log('\nTrip Planner');
 
   const save = byText(container, 'Save trip');
   await act(async () => click(save));
-  const stored = JSON.parse(localStorage.getItem('yatriai_trips') || '[]');
-  assert(stored.length === 1 && stored[0].destination === 'Goa', 'trip persists to yatriai_trips storage');
+  const stored = JSON.parse(localStorage.getItem('vibevoyage_trips') || '[]');
+  assert(stored.length === 1 && stored[0].destination === 'Goa', 'trip persists to vibevoyage_trips storage');
   assert(stored[0].itinerary.length === 4, 'saved trip keeps the full itinerary');
 
   await unmount();

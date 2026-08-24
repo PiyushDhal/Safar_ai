@@ -30,7 +30,7 @@ const SEED_POSTS = [
     destination: 'Varanasi',
     rating: 5,
     title: 'Solo in Varanasi: calmer than I expected',
-    body: 'Booked a guesthouse two lanes from Assi Ghat and did the 5:30am boat ride on day one. Mornings are peaceful, evenings are intense. Keep cash for the ghats, and use the Yatri AI safety checklist — sharing my live location every night made my family relax.',
+    body: 'Booked a guesthouse two lanes from Assi Ghat and did the 5:30am boat ride on day one. Mornings are peaceful, evenings are intense. Keep cash for the ghats, and use the VibeVoyage safety checklist — sharing my live location every night made my family relax.',
     tags: ['Solo', 'Spiritual', 'Budget'],
     likes: 128,
     comments: 14,
@@ -141,13 +141,13 @@ function PostCard({ post, liked, onLike, onOpen }) {
 }
 
 function CommunityPage() {
-  usePageMeta('Community | Yatri AI', 'Read and share traveller reviews and stories on Yatri AI.');
+  usePageMeta('Community | VibeVoyage', 'Read and share traveller reviews and stories on VibeVoyage.');
 
   const toast = useToast();
   const { user, displayName } = useAuth();
 
-  const [userPosts, setUserPosts] = useLocalStorage('yatriai_community_posts', []);
-  const [likes, setLikes] = useLocalStorage('yatriai_community_likes', []);
+  const [userPosts, setUserPosts] = useLocalStorage('vibevoyage_community_posts', []);
+  const [likes, setLikes] = useLocalStorage('vibevoyage_community_likes', []);
   const [filter, setFilter] = useState('All');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('recent');
