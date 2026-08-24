@@ -9,29 +9,29 @@ import Icon from './Icon';
  */
 const base =
   'relative inline-flex shrink-0 select-none items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold ' +
-  'transition-[transform,box-shadow,background-color,border-color,color,opacity] duration-200 ease-smooth ' +
+  'transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.96] ' +
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 ' +
-  'focus-visible:ring-offset-canvas disabled:pointer-events-none disabled:opacity-55 active:translate-y-px';
+  'focus-visible:ring-offset-canvas disabled:pointer-events-none disabled:opacity-50';
 
 const variants = {
   primary:
-    'bg-brand-gradient bg-[length:180%_180%] text-white shadow-float hover:-translate-y-0.5 hover:shadow-glow hover:bg-[position:100%_50%] backdrop-blur-sm',
+    'bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 text-white shadow-md hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/25 backdrop-blur-md border-t border-white/30',
   secondary:
-    'border border-line/80 dark:border-white/10 bg-surface/90 dark:bg-slate-900/80 text-fg shadow-sm backdrop-blur-md hover:-translate-y-0.5 hover:border-brand-400/50 hover:bg-surface dark:hover:bg-slate-800/90 hover:text-brand-600 dark:hover:text-cyan-300 hover:shadow-lift',
+    'border border-white/40 dark:border-white/12 bg-white/70 dark:bg-slate-900/70 text-fg shadow-sm backdrop-blur-2xl hover:-translate-y-0.5 hover:border-cyan-500/40 hover:bg-white/90 dark:hover:bg-slate-800/90 hover:text-cyan-600 dark:hover:text-cyan-300 hover:shadow-md',
   soft:
-    'bg-brand-50/80 text-brand-700 backdrop-blur-md hover:bg-brand-100 dark:bg-brand-500/15 dark:text-brand-200 dark:hover:bg-brand-500/25',
+    'bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 backdrop-blur-xl border border-cyan-500/20 hover:bg-cyan-500/20',
   ghost:
-    'text-fg-muted backdrop-blur-sm hover:bg-surface-muted/80 hover:text-fg dark:hover:bg-white/10',
+    'text-fg-muted backdrop-blur-sm hover:bg-white/60 dark:hover:bg-white/10 hover:text-fg',
   outline:
-    'border border-brand-300/80 dark:border-cyan-500/40 text-brand-700 dark:text-cyan-300 backdrop-blur-md hover:bg-brand-50/80 dark:hover:bg-cyan-500/15 hover:border-brand-400 dark:hover:border-cyan-400',
+    'border border-cyan-500/40 text-cyan-700 dark:text-cyan-300 backdrop-blur-xl hover:bg-cyan-500/15 hover:border-cyan-400',
   danger:
-    'bg-rose-500/90 text-white shadow-sm backdrop-blur-md hover:-translate-y-0.5 hover:bg-rose-600 hover:shadow-rose-500/30',
+    'bg-rose-500/90 text-white shadow-sm backdrop-blur-md border-t border-white/30 hover:-translate-y-0.5 hover:bg-rose-600 hover:shadow-rose-500/30',
   dangerSoft:
-    'border border-rose-200/80 bg-surface/80 text-rose-600 backdrop-blur-md hover:bg-rose-50 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-900/40',
+    'border border-rose-200/80 bg-white/70 dark:bg-rose-950/40 text-rose-600 dark:text-rose-300 backdrop-blur-xl hover:bg-rose-50 dark:hover:bg-rose-900/40',
   success:
-    'bg-emerald-500/90 text-white shadow-sm backdrop-blur-md hover:-translate-y-0.5 hover:bg-emerald-600 hover:shadow-emerald-500/30',
+    'bg-emerald-500/90 text-white shadow-sm backdrop-blur-md border-t border-white/30 hover:-translate-y-0.5 hover:bg-emerald-600 hover:shadow-emerald-500/30',
   glass:
-    'border border-slate-200/70 dark:border-cyan-500/30 bg-white/80 dark:bg-slate-950/70 text-slate-900 dark:text-cyan-300 backdrop-blur-xl shadow-lg hover:border-cyan-400/50 hover:bg-white/95 dark:hover:bg-slate-900/90 hover:text-cyan-600 dark:hover:text-cyan-200 hover:shadow-[0_0_25px_rgba(6,182,212,0.25)] hover:-translate-y-0.5',
+    'border border-white/40 dark:border-white/15 bg-white/60 dark:bg-slate-900/65 text-slate-900 dark:text-cyan-300 backdrop-blur-3xl shadow-md hover:border-cyan-400/50 hover:bg-white/85 dark:hover:bg-slate-900/90 hover:text-cyan-600 dark:hover:text-cyan-200 hover:shadow-[0_8px_30px_rgba(6,182,212,0.25)] hover:-translate-y-0.5',
 };
 
 const sizes = {

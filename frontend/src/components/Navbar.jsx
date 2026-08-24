@@ -447,17 +447,17 @@ function Navbar({ onOpenCommand }) {
             <BrandLogo />
           </Link>
 
-          <ul className="hidden items-center gap-1 rounded-full border border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-slate-950/70 p-1.5 shadow-xl backdrop-blur-2xl lg:flex xl:gap-1">
+          <ul className="hidden items-center gap-1 rounded-full border border-white/40 dark:border-white/12 bg-white/60 dark:bg-slate-950/65 p-1.5 shadow-2xl backdrop-blur-3xl lg:flex xl:gap-1">
             <li>
               <NavLink
                 to="/"
                 end
                 className={({ isActive }) =>
                   cn(
-                    'inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 backdrop-blur-md',
+                    'inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-95 backdrop-blur-md',
                     isActive
-                      ? 'border border-cyan-400/40 bg-gradient-to-r from-cyan-500/20 to-indigo-600/20 text-slate-900 dark:text-cyan-200 shadow-sm font-bold backdrop-blur-xl'
-                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
+                      ? 'border border-white/40 bg-gradient-to-r from-cyan-500/20 to-indigo-600/20 text-slate-900 dark:text-cyan-200 shadow-sm font-bold backdrop-blur-2xl border-t border-white/40'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
                   )
                 }
               >
@@ -480,10 +480,10 @@ function Navbar({ onOpenCommand }) {
                 to="/community"
                 className={({ isActive }) =>
                   cn(
-                    'inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 backdrop-blur-md',
+                    'inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-95 backdrop-blur-md',
                     isActive
-                      ? 'border border-cyan-400/40 bg-gradient-to-r from-cyan-500/20 to-indigo-600/20 text-slate-900 dark:text-cyan-200 shadow-sm font-bold backdrop-blur-xl'
-                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
+                      ? 'border border-white/40 bg-gradient-to-r from-cyan-500/20 to-indigo-600/20 text-slate-900 dark:text-cyan-200 shadow-sm font-bold backdrop-blur-2xl border-t border-white/40'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
                   )
                 }
               >
@@ -496,17 +496,17 @@ function Navbar({ onOpenCommand }) {
             <button
               type="button"
               onClick={onOpenCommand}
-              className="hidden shrink-0 items-center gap-2 rounded-full border border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-slate-950/70 px-3.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 shadow-md backdrop-blur-xl transition hover:border-cyan-500/40 hover:text-slate-900 dark:hover:text-white hover:-translate-y-0.5 xl:inline-flex"
+              className="hidden shrink-0 items-center gap-2 rounded-full border border-white/40 dark:border-white/12 bg-white/60 dark:bg-slate-950/65 px-3.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 shadow-md backdrop-blur-2xl transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-95 hover:border-cyan-500/40 hover:text-slate-900 dark:hover:text-white hover:-translate-y-0.5 xl:inline-flex"
               aria-label="Open search (Command K)"
             >
               <Icon name="search" size="sm" className="text-cyan-500" />
               <span className="hidden lg:inline">Search…</span>
-              <kbd className="rounded border border-slate-300/60 dark:border-white/15 bg-slate-100/70 dark:bg-white/10 px-1.5 py-0.5 text-2xs font-bold">⌘K</kbd>
+              <kbd className="rounded border border-white/30 dark:border-white/15 bg-white/50 dark:bg-white/10 px-1.5 py-0.5 text-2xs font-bold">⌘K</kbd>
             </button>
 
             <Link
               to="/profile?tab=saved"
-              className="relative hidden rounded-full border border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-slate-950/70 p-2.5 text-slate-600 dark:text-slate-300 shadow-md backdrop-blur-xl transition hover:border-cyan-500/40 hover:text-rose-500 dark:hover:text-rose-400 hover:-translate-y-0.5 sm:inline-flex"
+              className="relative hidden rounded-full border border-white/40 dark:border-white/12 bg-white/60 dark:bg-slate-950/65 p-2.5 text-slate-600 dark:text-slate-300 shadow-md backdrop-blur-2xl transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-95 hover:border-cyan-500/40 hover:text-rose-500 dark:hover:text-rose-400 hover:-translate-y-0.5 sm:inline-flex"
               aria-label={`Saved items (${favourites.length})`}
             >
               <Icon name="heart" size="sm" />
@@ -520,7 +520,7 @@ function Navbar({ onOpenCommand }) {
             <button
               type="button"
               onClick={toggleTheme}
-              className="rounded-full border border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-slate-950/70 p-2.5 text-slate-600 dark:text-slate-300 shadow-md backdrop-blur-xl transition hover:border-cyan-500/40 hover:text-cyan-500 dark:hover:text-cyan-400 hover:-translate-y-0.5"
+              className="rounded-full border border-white/40 dark:border-white/12 bg-white/60 dark:bg-slate-950/65 p-2.5 text-slate-600 dark:text-slate-300 shadow-md backdrop-blur-2xl transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-95 hover:border-cyan-500/40 hover:text-cyan-500 dark:hover:text-cyan-400 hover:-translate-y-0.5"
               aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             >
               <Icon name={theme === 'dark' ? 'sun' : 'moon'} size="sm" />

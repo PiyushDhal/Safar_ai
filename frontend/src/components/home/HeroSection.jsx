@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import Icon from '../ui/Icon';
 import Button from '../ui/Button';
+import CloudAtmosphere from '../ui/CloudAtmosphere';
 import DestinationImage from '../DestinationImage';
 import HeroGlobe3D from '../3d/HeroGlobe3D';
 import TravelPlaneOverlay from './TravelPlaneOverlay';
@@ -106,7 +107,10 @@ export default function HeroSection() {
       className="relative min-h-[90vh] lg:min-h-screen flex items-center justify-center overflow-hidden py-12 lg:py-0"
     >
       {/* Light Mode Soft Sky Backdrop */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-sky-50/50 via-slate-50/80 to-slate-50 dark:hidden pointer-events-none" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-sky-50/60 via-slate-50/80 to-slate-50 dark:hidden pointer-events-none" />
+
+      {/* ETHEREAL CLOUD ATMOSPHERE BACKGROUND */}
+      <CloudAtmosphere />
 
       {/* FULL SCREEN 3D GLOBE CANVAS BACKGROUND */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-auto">
@@ -152,9 +156,9 @@ export default function HeroSection() {
             </p>
           </div>
 
-          {/* Glassmorphic Search Panel */}
+          {/* iOS Liquid Glassmorphic Search Panel */}
           <div ref={searchRef} className="relative mt-8 max-w-xl">
-            <div className="flex flex-col gap-2.5 rounded-2xl border border-slate-200 dark:border-cyan-500/30 bg-white/90 dark:bg-slate-950/85 p-2.5 shadow-2xl backdrop-blur-2xl sm:flex-row sm:items-center">
+            <div className="flex flex-col gap-2.5 rounded-3xl border border-white/40 dark:border-white/15 bg-white/70 dark:bg-slate-950/70 p-3 shadow-2xl backdrop-blur-3xl border-t border-white/50 sm:flex-row sm:items-center">
               <div className="relative flex flex-1 items-center gap-2.5 px-3">
                 <Icon name="search" size="md" className="text-cyan-500 dark:text-cyan-400" />
                 <input

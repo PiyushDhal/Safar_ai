@@ -43,11 +43,11 @@ export function Chip({ active, onClick, icon, children, className, count, ...res
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        'inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 py-2 text-[13px] font-semibold transition-all duration-200',
+        'inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 py-2 text-[13px] font-semibold transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-95',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas',
         active
-          ? 'border-cyan-400/50 bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg backdrop-blur-xl hover:shadow-[0_0_20px_rgba(6,182,212,0.3)]'
-          : 'border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 text-fg-muted backdrop-blur-md hover:-translate-y-0.5 hover:border-cyan-500/40 hover:bg-white/90 dark:hover:bg-slate-800/80 hover:text-fg hover:shadow-md',
+          ? 'border-white/40 bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 text-white shadow-md backdrop-blur-2xl border-t border-white/40'
+          : 'border-white/40 dark:border-white/12 bg-white/60 dark:bg-slate-900/60 text-fg-muted backdrop-blur-2xl hover:-translate-y-0.5 hover:border-cyan-500/40 hover:bg-white/85 dark:hover:bg-slate-800/80 hover:text-fg hover:shadow-md',
         className
       )}
       {...rest}
