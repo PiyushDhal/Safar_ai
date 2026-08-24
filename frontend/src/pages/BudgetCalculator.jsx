@@ -158,6 +158,7 @@ function BudgetCalculator() {
   });
 
   const [currency, setCurrency] = useState('INR');
+  const [hasCalculated, setHasCalculated] = useState(false);
   const [result, setResult] = useState(null);
 
   const selectedDestinationLabel = useMemo(
@@ -226,8 +227,7 @@ function BudgetCalculator() {
     };
   }
 
-  const preview = useMemo(() => calculateForStyle(form.style), [form, selectedDestinationLabel]);
-  const shown = result || preview;
+  const shown = hasCalculated ? result : null;
 
   const targetBudgetCap = useMemo(() => {
     return Math.max(1000, Number(form.customBudget) || 50000);
@@ -270,14 +270,17 @@ function BudgetCalculator() {
   }, [form, selectedDestinationLabel]);
 
   useEffect(() => {
-    if (result) setResult(calculateForStyle(form.style));
+    if (hasCalculated) {
+      setResult(calculateForStyle(form.style));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form]);
+  }, [form, hasCalculated]);
 
   function handleCalculate(event) {
     event.preventDefault();
     const next = calculateForStyle(form.style);
     if (!next) return;
+    setHasCalculated(true);
     setResult(next);
     logActivity({
       type: 'budget',
@@ -608,11 +611,19 @@ https://vibevoyage.app`;
         {/* Results Dashboard */}
         <div className="space-y-4 lg:sticky lg:top-[calc(var(--nav-h)+1.5rem)]">
           {!shown ? (
-            <EmptyState
-              icon="wallet"
-              title="Pick a destination to see calculations"
-              description="We combine hotel pricing, per-day dining averages, transport rates, and custom budget limits."
-            />
+            <Card padding="lg" className="flex flex-col items-center justify-center text-center p-8 min-h-[420px] border border-cyan-500/20 bg-slate-900/60 backdrop-blur-xl">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 mb-4 shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+                <Icon name="calculator" size="lg" />
+              </div>
+              <h3 className="text-lg font-black text-white">Ready to Calculate Your Trip Budget</h3>
+              <p className="mt-2 text-xs font-medium text-slate-300 max-w-sm leading-relaxed">
+                Fill in your destination, duration, travellers, and budget cap on the left, then click <strong className="text-cyan-400">"Calculate Trip Budget"</strong> to reveal your full cost breakdown.
+              </p>
+              <div className="mt-6 flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-2xs font-bold text-cyan-300">
+                <Icon name="sparkles" size="xs" />
+                <span>AI-Powered Budget Intelligence</span>
+              </div>
+            </Card>
           ) : (
             <>
               {/* Total Estimated Cost Card */}
