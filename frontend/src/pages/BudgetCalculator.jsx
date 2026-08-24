@@ -7,7 +7,7 @@ import Icon from '../components/ui/Icon';
 import Badge from '../components/ui/Badge';
 import { Progress } from '../components/ui/Progress';
 import EmptyState from '../components/ui/EmptyState';
-import { Field, Input, Select, RangeSlider } from '../components/ui/Input';
+import { Field, Input, Select } from '../components/ui/Input';
 import { DonutChart } from '../components/charts/Charts';
 import { destinationCosts } from '../data/budgetDatabase';
 import { stateHotelCosts } from '../data/stateHotelCosts';
@@ -136,21 +136,19 @@ function formatCost(amountInINR, currencyKey = 'INR', compact = false) {
 }
 
 function BudgetCalculator() {
-  usePageMeta('Budget Calculator | VibeVoyage', 'Estimate destination-based travel cost using smart trip budget calculations.');
+  usePageMeta('Budget Calculator | VibeVoyage', 'Unified trip cost calculator & custom budget planner.');
 
   const { logActivity } = useWorkspace();
   const toast = useToast();
   const { send, openDock } = useAssistant();
   const navigate = useNavigate();
 
-  // Mode Selection: 'estimator' (destination first) or 'custom' (custom budget amount first)
-  const [calcMode, setCalcMode] = useState('estimator');
-
   const [form, setForm] = useState({
     destination: destinationOptions[0]?.value || '',
     days: '4',
     travelers: '2',
     style: 'Standard',
+    customBudget: '50000',
     travelMode: 'train',
     distance: 'medium',
     season: 'normal',
@@ -159,13 +157,6 @@ function BudgetCalculator() {
     includeBuffer: true,
   });
 
-  // State for Custom Travel Amount Mode
-  const [customAmount, setCustomAmount] = useState(45000);
-  const [customDays, setCustomDays] = useState('4');
-  const [customTravelers, setCustomTravelers] = useState('2');
-  const [customStyle, setCustomStyle] = useState('Standard');
-
-  const [cap, setCap] = useState(50000);
   const [currency, setCurrency] = useState('INR');
   const [result, setResult] = useState(null);
 
@@ -238,63 +229,37 @@ function BudgetCalculator() {
   const preview = useMemo(() => calculateForStyle(form.style), [form, selectedDestinationLabel]);
   const shown = result || preview;
 
-  /* Custom Travel Amount Reverse Budget Engine */
-  const customAnalysis = useMemo(() => {
-    const amount = Math.max(1000, Number(customAmount) || 1000);
-    const days = Math.max(1, parseInt(customDays, 10) || 1);
-    const travelers = Math.max(1, parseInt(customTravelers, 10) || 1);
+  const targetBudgetCap = useMemo(() => {
+    return Math.max(1000, Number(form.customBudget) || 50000);
+  }, [form.customBudget]);
 
-    const perPerson = Math.round(amount / travelers);
-    const perDay = Math.round(amount / days);
-    const dailyPerPerson = Math.round(amount / (days * travelers));
+  /* Calculate alternative affordable destinations based on custom budget cap */
+  const matchedDestinations = useMemo(() => {
+    const days = Math.max(1, parseInt(form.days, 10) || 1);
+    const travelers = Math.max(1, parseInt(form.travelers, 10) || 1);
 
-    // Suggested category allocation based on financial travel best practices
-    const hotel = Math.round(amount * 0.35);      // 35% Stay
-    const food = Math.round(amount * 0.25);       // 25% Food
-    const travel = Math.round(amount * 0.20);     // 20% Transport
-    const activities = Math.round(amount * 0.10); // 10% Sightseeing
-    const buffer = Math.round(amount * 0.10);     // 10% Buffer/Shopping
+    return destinationOptions
+      .map((opt) => {
+        const calc = calculateForStyle(form.style, opt.value, String(days), String(travelers));
+        const estCost = calc ? calc.total : 50000;
+        const isAffordable = estCost <= targetBudgetCap;
+        const difference = targetBudgetCap - estCost;
+        const baseDailyRate = calc ? Math.round(calc.total / days) : 5000;
+        const maxPossibleDays = Math.max(1, Math.floor(targetBudgetCap / baseDailyRate));
 
-    // Calculate affordability across all database destinations
-    const matchedDestinations = destinationOptions.map((opt) => {
-      const calc = calculateForStyle(customStyle, opt.value, String(days), String(travelers));
-      const estCost = calc ? calc.total : 50000;
-      const isAffordable = estCost <= amount;
-      const difference = amount - estCost;
-
-      // Estimate max days this budget could last at this destination
-      const baseDailyRate = calc ? Math.round(calc.total / days) : 5000;
-      const maxPossibleDays = Math.max(1, Math.floor(amount / baseDailyRate));
-
-      return {
-        key: opt.value,
-        name: opt.label,
-        estCost,
-        isAffordable,
-        difference,
-        maxPossibleDays,
-        calc,
-      };
-    }).sort((a, b) => (b.isAffordable ? 1 : 0) - (a.isAffordable ? 1 : 0) || Math.abs(a.difference) - Math.abs(b.difference));
-
-    // Determine optimal style recommendation
-    let recommendedStyle = 'Budget';
-    if (dailyPerPerson >= 5000) recommendedStyle = 'Luxury';
-    else if (dailyPerPerson >= 2500) recommendedStyle = 'Standard';
-
-    return {
-      amount,
-      days,
-      travelers,
-      perPerson,
-      perDay,
-      dailyPerPerson,
-      recommendedStyle,
-      allocation: { hotel, food, travel, activities, buffer },
-      matchedDestinations,
-      affordableCount: matchedDestinations.filter((d) => d.isAffordable).length,
-    };
-  }, [customAmount, customDays, customTravelers, customStyle, form.season, form.travelMode, form.distance]);
+        return {
+          key: opt.value,
+          name: opt.label,
+          estCost,
+          isAffordable,
+          difference,
+          maxPossibleDays,
+        };
+      })
+      .filter((d) => d.key !== form.destination)
+      .sort((a, b) => (b.isAffordable ? 1 : 0) - (a.isAffordable ? 1 : 0) || Math.abs(a.difference) - Math.abs(b.difference))
+      .slice(0, 5);
+  }, [form.days, form.travelers, form.style, form.season, form.travelMode, form.distance, targetBudgetCap, form.destination]);
 
   /* Tier Comparisons (Budget vs Standard vs Luxury) */
   const styleComparisons = useMemo(() => {
@@ -325,7 +290,7 @@ function BudgetCalculator() {
     });
   }
 
-  /* Auto-optimize budget when user exceeds cap */
+  /* Auto-optimize budget when user exceeds target budget cap */
   function autoOptimizeBudget() {
     if (!shown) return;
     let newStyle = form.style;
@@ -360,8 +325,7 @@ Destination: ${shown.destination}
 Duration: ${shown.days} Days
 Travellers: ${shown.travelers}
 Travel Style: ${shown.style} (×${shown.styleMultiplier})
-Season: ${shown.season}
-Transport: ${shown.travelMode} (${shown.distance})
+Target Budget Cap: ${formatCost(targetBudgetCap, currency)}
 -------------------------------------------
 COST BREAKDOWN:
   • Stay & Lodging:        ${formatCost(shown.hotel, currency)}
@@ -397,32 +361,23 @@ https://vibevoyage.app`;
         }))
     : [];
 
-  const customDonutData = customAnalysis
-    ? Object.entries(customAnalysis.allocation).map(([key, value]) => ({
-        label: CATEGORY_META[key]?.label || key,
-        value,
-        display: formatCost(value, currency, true),
-        color: CATEGORY_META[key]?.color || '#06b6d4',
-      }))
-    : [];
-
   const perPerson = shown ? Math.round(shown.total / shown.travelers) : 0;
   const perDay = shown ? Math.round(shown.total / shown.days) : 0;
-  const capUsage = shown ? Math.min(100, Math.round((shown.total / cap) * 100)) : 0;
-  const isOverCap = shown && shown.total > cap;
-  const overCapAmount = isOverCap ? shown.total - cap : 0;
+  const capUsage = shown ? Math.min(100, Math.round((shown.total / targetBudgetCap) * 100)) : 0;
+  const isOverCap = shown && shown.total > targetBudgetCap;
+  const overCapAmount = isOverCap ? shown.total - targetBudgetCap : 0;
 
   const destinationTips =
     DESTINATION_SAVINGS_TIPS[shown?.destinationKey] || DESTINATION_SAVINGS_TIPS.default;
 
   return (
     <div className="space-y-8">
-      {/* ----------------------------------------------------------- Header */}
+      {/* Header */}
       <PageHeader
-        eyebrow="Budget planner & Intelligence"
+        eyebrow="Unified Budget Intelligence"
         icon="wallet"
-        title="Know the real cost & set custom travel amounts"
-        description="Calculate estimates by destination OR enter your custom travel budget to discover matched destinations, max days, and smart expense allocations."
+        title="Smart Travel Cost & Custom Budget Calculator"
+        description="Pick a destination, set your custom budget cap, and customize your travel preferences. Get instant line-item calculations, budget health metrics, and savings tips."
         actions={
           <div className="flex flex-wrap items-center gap-3">
             {/* Currency Selector */}
@@ -453,623 +408,444 @@ https://vibevoyage.app`;
         }
       />
 
-      {/* Mode Switcher Tabs (Destination Estimator vs Custom Budget Planner) */}
-      <div className="flex rounded-2xl border border-line bg-surface p-1.5 shadow-sm max-w-md">
-        <button
-          type="button"
-          onClick={() => setCalcMode('estimator')}
-          className={cn(
-            'flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-extrabold transition-all',
-            calcMode === 'estimator'
-              ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md'
-              : 'text-fg-muted hover:text-fg'
-          )}
-        >
-          <Icon name="calculator" size="sm" />
-          <span>Destination Estimator</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => setCalcMode('custom')}
-          className={cn(
-            'flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-extrabold transition-all',
-            calcMode === 'custom'
-              ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md'
-              : 'text-fg-muted hover:text-fg'
-          )}
-        >
-          <Icon name="sparkles" size="sm" />
-          <span>Custom Travel Amount Mode</span>
-        </button>
-      </div>
+      {/* Unified Single Layout Grid */}
+      <div className="grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:items-start">
+        {/* Form Card */}
+        <Card padding="lg" as="form" onSubmit={handleCalculate} className="space-y-5">
+          <div>
+            <h3 className="text-base font-black text-fg flex items-center gap-2">
+              <Icon name="calculator" size="md" className="text-cyan-500" />
+              <span>Trip Parameters & Custom Budget</span>
+            </h3>
+            <p className="mt-0.5 text-xs text-fg-muted">Set your trip details and target budget cap below.</p>
+          </div>
 
-      {/* MODE 1: DESTINATION ESTIMATOR MODE */}
-      {calcMode === 'estimator' && (
-        <div className="grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:items-start">
-          {/* Form */}
-          <Card padding="lg" as="form" onSubmit={handleCalculate}>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Destination" htmlFor="destination" className="sm:col-span-2">
-                <Select id="destination" name="destination" icon="mapPin" value={form.destination} onChange={handleChange}>
-                  {destinationOptions.map((destination) => (
-                    <option key={destination.value} value={destination.value}>
-                      {destination.label}
-                    </option>
-                  ))}
-                </Select>
-              </Field>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Destination" htmlFor="destination" className="sm:col-span-2">
+              <Select id="destination" name="destination" icon="mapPin" value={form.destination} onChange={handleChange}>
+                {destinationOptions.map((destination) => (
+                  <option key={destination.value} value={destination.value}>
+                    {destination.label}
+                  </option>
+                ))}
+              </Select>
+            </Field>
 
-              <Field label="Number of days" htmlFor="days">
-                <Input id="days" name="days" type="number" min="1" max="60" value={form.days} onChange={handleChange} icon="calendar" />
-              </Field>
+            <Field label="Number of days" htmlFor="days">
+              <Input id="days" name="days" type="number" min="1" max="60" value={form.days} onChange={handleChange} icon="calendar" />
+            </Field>
 
-              <Field label="Number of travellers" htmlFor="travelers">
-                <Input
-                  id="travelers"
-                  name="travelers"
-                  type="number"
-                  min="1"
-                  max="50"
-                  value={form.travelers}
-                  onChange={handleChange}
-                  icon="users"
-                />
-              </Field>
-            </div>
-
-            {/* Travel Style Tier Selection */}
-            <fieldset className="mt-5">
-              <legend className="mb-2.5 text-xs font-bold uppercase tracking-wide text-fg-muted">Travel style</legend>
-              <div className="grid gap-2.5 sm:grid-cols-3">
-                {Object.entries(STYLE_CONFIG).map(([key, config]) => {
-                  const active = form.style === key;
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setForm((prev) => ({ ...prev, style: key }))}
-                      aria-pressed={active}
-                      className={cn(
-                        'flex flex-col items-start gap-1 rounded-2xl border p-3.5 text-left transition-all duration-200',
-                        active
-                          ? 'border-cyan-500/50 bg-gradient-to-br from-cyan-600 via-blue-600 to-indigo-600 text-white shadow-float'
-                          : 'border-line bg-surface hover:-translate-y-0.5 hover:border-cyan-400/50 hover:shadow-sm'
-                      )}
-                    >
-                      <span className="flex items-center gap-2">
-                        <Icon name={config.icon} size="md" className={active ? 'text-white' : 'text-cyan-500'} />
-                        <span className={cn('text-sm font-bold', active ? 'text-white' : 'text-fg')}>{key}</span>
-                      </span>
-                      <span className={cn('text-2xs', active ? 'text-white/80' : 'text-fg-subtle')}>{config.blurb}</span>
-                      <span className={cn('text-2xs font-bold', active ? 'text-white' : 'text-cyan-600 dark:text-cyan-300')}>
-                        ×{config.multiplier} multiplier
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </fieldset>
-
-            {/* Travel Mode, Distance, Season */}
-            <div className="mt-5 grid gap-4 sm:grid-cols-3">
-              <Field label="Intercity Mode" htmlFor="travelMode">
-                <Select id="travelMode" name="travelMode" icon="train" value={form.travelMode} onChange={handleChange}>
-                  <option value="train">Train / Rail</option>
-                  <option value="flight">Flight / Airline</option>
-                </Select>
-              </Field>
-
-              <Field label="Distance" htmlFor="distance">
-                <Select id="distance" name="distance" icon="map" value={form.distance} onChange={handleChange}>
-                  <option value="short">Short (&lt; 500 km)</option>
-                  <option value="medium">Medium (500–1200 km)</option>
-                  <option value="long">Long (&gt; 1200 km)</option>
-                </Select>
-              </Field>
-
-              <Field label="Season" htmlFor="season">
-                <Select id="season" name="season" icon="sun" value={form.season} onChange={handleChange}>
-                  <option value="off">Off season (×0.85)</option>
-                  <option value="normal">Normal (×1.0)</option>
-                  <option value="peak">Peak (×1.35)</option>
-                </Select>
-              </Field>
-            </div>
-
-            {/* Customizable Add-ons */}
-            <div className="mt-6 space-y-4 rounded-2xl border border-line bg-surface-muted/70 p-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-extrabold uppercase tracking-wider text-fg-muted">Custom Add-ons & Outlay</span>
-                <Badge tone="neutral" icon="sparkles">Smart Parameters</Badge>
-              </div>
-
-              <div className="space-y-3 pt-1">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="shoppingFund" className="text-xs font-semibold text-fg">
-                    Shopping & Souvenirs / person: <span className="font-extrabold text-cyan-600 dark:text-cyan-400">{formatCost(form.shoppingFund, currency)}</span>
-                  </label>
-                </div>
-                <input
-                  id="shoppingFund"
-                  name="shoppingFund"
-                  type="range"
-                  min="0"
-                  max="25000"
-                  step="500"
-                  value={form.shoppingFund}
-                  onChange={handleChange}
-                  className="h-2 w-full accent-cyan-500 cursor-pointer"
-                />
-
-                <div className="grid grid-cols-2 gap-3 pt-2">
-                  <label className="flex items-center gap-2.5 rounded-xl border border-line bg-surface p-2.5 text-xs font-semibold text-fg cursor-pointer hover:border-cyan-500/40">
-                    <input
-                      type="checkbox"
-                      name="includeBuffer"
-                      checked={form.includeBuffer}
-                      onChange={handleChange}
-                      className="h-4 w-4 rounded accent-cyan-500"
-                    />
-                    <span>10% Emergency Fund</span>
-                  </label>
-
-                  <label className="flex items-center gap-2.5 rounded-xl border border-line bg-surface p-2.5 text-xs font-semibold text-fg cursor-pointer hover:border-cyan-500/40">
-                    <input
-                      type="checkbox"
-                      name="includeIntercity"
-                      checked={form.includeIntercity}
-                      onChange={handleChange}
-                      className="h-4 w-4 rounded accent-cyan-500"
-                    />
-                    <span>Include Transport Ticket</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            {/* Budget Cap Range Slider */}
-            <div className="mt-5 rounded-2xl border border-line bg-surface-muted p-4">
-              <RangeSlider
-                id="budget-cap"
-                label="Target Budget Cap"
-                min={10000}
-                max={300000}
-                step={5000}
-                value={cap}
-                onChange={setCap}
-                format={(value) => formatCost(value, currency, true)}
+            <Field label="Number of travellers" htmlFor="travelers">
+              <Input
+                id="travelers"
+                name="travelers"
+                type="number"
+                min="1"
+                max="50"
+                value={form.travelers}
+                onChange={handleChange}
+                icon="users"
               />
-              {shown && (
-                <div className="mt-3">
+            </Field>
+          </div>
+
+          {/* Custom Budget Amount / Cap */}
+          <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-4 space-y-3">
+            <Field label="Custom Budget Cap / Amount" htmlFor="customBudget">
+              <div className="relative">
+                <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-cyan-500 font-extrabold text-base">
+                  {CURRENCIES[currency]?.symbol || '₹'}
+                </span>
+                <input
+                  id="customBudget"
+                  name="customBudget"
+                  type="number"
+                  min="1000"
+                  step="1000"
+                  value={form.customBudget}
+                  onChange={handleChange}
+                  className="h-11 w-full rounded-xl border border-cyan-500/40 bg-surface pl-10 pr-4 text-base font-black text-fg shadow-xs outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                  placeholder="e.g. 50000"
+                />
+              </div>
+            </Field>
+
+            {/* Quick Budget Preset Pills */}
+            <div className="flex flex-wrap gap-2">
+              {[15000, 30000, 50000, 100000, 200000].map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, customBudget: String(preset) }))}
+                  className={cn(
+                    'rounded-full px-3 py-1 text-2xs font-extrabold border transition-all',
+                    Number(form.customBudget) === preset
+                      ? 'border-cyan-500 bg-cyan-500 text-white shadow-sm'
+                      : 'border-line bg-surface text-fg-muted hover:border-cyan-500/40 hover:text-fg'
+                  )}
+                >
+                  {formatCost(preset, currency, true)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Travel Style Tier Selection */}
+          <fieldset>
+            <legend className="mb-2 text-xs font-bold uppercase tracking-wide text-fg-muted">Travel style tier</legend>
+            <div className="grid gap-2.5 sm:grid-cols-3">
+              {Object.entries(STYLE_CONFIG).map(([key, config]) => {
+                const active = form.style === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setForm((prev) => ({ ...prev, style: key }))}
+                    aria-pressed={active}
+                    className={cn(
+                      'flex flex-col items-start gap-1 rounded-2xl border p-3 text-left transition-all duration-200',
+                      active
+                        ? 'border-cyan-500/50 bg-gradient-to-br from-cyan-600 via-blue-600 to-indigo-600 text-white shadow-float'
+                        : 'border-line bg-surface hover:-translate-y-0.5 hover:border-cyan-400/50 hover:shadow-sm'
+                    )}
+                  >
+                    <span className="flex items-center gap-2">
+                      <Icon name={config.icon} size="md" className={active ? 'text-white' : 'text-cyan-500'} />
+                      <span className={cn('text-sm font-bold', active ? 'text-white' : 'text-fg')}>{key}</span>
+                    </span>
+                    <span className={cn('text-2xs', active ? 'text-white/80' : 'text-fg-subtle')}>{config.blurb}</span>
+                    <span className={cn('text-2xs font-bold', active ? 'text-white' : 'text-cyan-600 dark:text-cyan-300')}>
+                      ×{config.multiplier} multiplier
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </fieldset>
+
+          {/* Travel Mode, Distance, Season */}
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Field label="Intercity Mode" htmlFor="travelMode">
+              <Select id="travelMode" name="travelMode" icon="train" value={form.travelMode} onChange={handleChange}>
+                <option value="train">Train / Rail</option>
+                <option value="flight">Flight / Airline</option>
+              </Select>
+            </Field>
+
+            <Field label="Distance" htmlFor="distance">
+              <Select id="distance" name="distance" icon="map" value={form.distance} onChange={handleChange}>
+                <option value="short">Short (&lt; 500 km)</option>
+                <option value="medium">Medium (500–1200 km)</option>
+                <option value="long">Long (&gt; 1200 km)</option>
+              </Select>
+            </Field>
+
+            <Field label="Season" htmlFor="season">
+              <Select id="season" name="season" icon="sun" value={form.season} onChange={handleChange}>
+                <option value="off">Off season (×0.85)</option>
+                <option value="normal">Normal (×1.0)</option>
+                <option value="peak">Peak (×1.35)</option>
+              </Select>
+            </Field>
+          </div>
+
+          {/* Customizable Add-ons */}
+          <div className="space-y-4 rounded-2xl border border-line bg-surface-muted/70 p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-fg-muted">Custom Outlay & Add-ons</span>
+              <Badge tone="neutral" icon="sparkles">Parameters</Badge>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <label htmlFor="shoppingFund" className="text-xs font-semibold text-fg">
+                  Shopping & Souvenirs / person: <span className="font-extrabold text-cyan-600 dark:text-cyan-400">{formatCost(form.shoppingFund, currency)}</span>
+                </label>
+              </div>
+              <input
+                id="shoppingFund"
+                name="shoppingFund"
+                type="range"
+                min="0"
+                max="25000"
+                step="500"
+                value={form.shoppingFund}
+                onChange={handleChange}
+                className="h-2 w-full accent-cyan-500 cursor-pointer"
+              />
+
+              <div className="grid grid-cols-2 gap-3 pt-1">
+                <label className="flex items-center gap-2.5 rounded-xl border border-line bg-surface p-2.5 text-xs font-semibold text-fg cursor-pointer hover:border-cyan-500/40">
+                  <input
+                    type="checkbox"
+                    name="includeBuffer"
+                    checked={form.includeBuffer}
+                    onChange={handleChange}
+                    className="h-4 w-4 rounded accent-cyan-500"
+                  />
+                  <span>10% Emergency Fund</span>
+                </label>
+
+                <label className="flex items-center gap-2.5 rounded-xl border border-line bg-surface p-2.5 text-xs font-semibold text-fg cursor-pointer hover:border-cyan-500/40">
+                  <input
+                    type="checkbox"
+                    name="includeIntercity"
+                    checked={form.includeIntercity}
+                    onChange={handleChange}
+                    className="h-4 w-4 rounded accent-cyan-500"
+                  />
+                  <span>Include Transport Ticket</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <Button type="submit" size="lg" fullWidth className="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 text-white font-extrabold shadow-lg shadow-cyan-500/25 border-0" leadingIcon="chart">
+            Calculate Trip Budget
+          </Button>
+        </Card>
+
+        {/* Results Dashboard */}
+        <div className="space-y-4 lg:sticky lg:top-[calc(var(--nav-h)+1.5rem)]">
+          {!shown ? (
+            <EmptyState
+              icon="wallet"
+              title="Pick a destination to see calculations"
+              description="We combine hotel pricing, per-day dining averages, transport rates, and custom budget limits."
+            />
+          ) : (
+            <>
+              {/* Total Estimated Cost Card */}
+              <Card tone="gradient" padding="lg" className="border border-cyan-500/30">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-2xs font-extrabold uppercase tracking-[0.2em] text-cyan-600 dark:text-cyan-300">
+                      Estimated Total Cost
+                    </p>
+                    <p className="mt-2 text-4xl font-black tracking-tight text-fg">{formatCost(shown.total, currency)}</p>
+                    <p className="mt-1 text-sm font-medium text-fg-muted">
+                      {shown.destination} · {shown.days} days · {shown.travelers} traveller
+                      {shown.travelers > 1 ? 's' : ''}
+                    </p>
+                  </div>
+                  <Badge tone={STYLE_CONFIG[shown.style]?.tone || 'brand'} icon={STYLE_CONFIG[shown.style]?.icon}>
+                    {shown.style}
+                  </Badge>
+                </div>
+
+                {/* Progress Bar vs Target Budget Cap */}
+                <div className="mt-5 rounded-2xl border border-line bg-surface/90 p-3.5 shadow-sm space-y-2">
                   <Progress
                     value={capUsage}
-                    tone={shown.total <= cap ? 'success' : 'danger'}
-                    label={shown.total <= cap ? 'Within your target cap' : 'Exceeds budget cap'}
+                    tone={shown.total <= targetBudgetCap ? 'success' : 'danger'}
+                    label={shown.total <= targetBudgetCap ? 'Within custom budget cap' : 'Exceeds budget cap'}
                     showValue
                   />
-                  <p className="mt-1.5 text-xs text-fg-muted">
-                    {shown.total <= cap
-                      ? `${formatCost(cap - shown.total, currency)} remaining in your target limit.`
-                      : `${formatCost(overCapAmount, currency)} above your cap — try adjusting style, season, or auto-optimize.`}
+                  <p className="text-2xs text-fg-muted">
+                    {shown.total <= targetBudgetCap
+                      ? `${formatCost(targetBudgetCap - shown.total, currency)} surplus remaining under your cap of ${formatCost(targetBudgetCap, currency)}.`
+                      : `${formatCost(overCapAmount, currency)} above your target cap of ${formatCost(targetBudgetCap, currency)}.`}
                   </p>
                 </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  <div className="rounded-xl border border-line bg-surface/90 px-4 py-3 shadow-sm">
+                    <p className="text-2xs font-bold uppercase tracking-wide text-fg-subtle">Per Person Outlay</p>
+                    <p className="mt-1 text-lg font-black text-fg">{formatCost(perPerson, currency)}</p>
+                  </div>
+                  <div className="rounded-xl border border-line bg-surface/90 px-4 py-3 shadow-sm">
+                    <p className="text-2xs font-bold uppercase tracking-wide text-fg-subtle">Per Day Outlay</p>
+                    <p className="mt-1 text-lg font-black text-fg">{formatCost(perDay, currency)}</p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Cap Alert & Auto-Optimizer Banner */}
+              {isOverCap && (
+                <div className="rounded-2xl border border-amber-500/40 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-4 backdrop-blur-xl">
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-amber-500 font-bold">
+                      ⚠️
+                    </span>
+                    <div className="flex-1">
+                      <h4 className="text-sm font-extrabold text-amber-500 dark:text-amber-400">
+                        {formatCost(overCapAmount, currency)} Over Budget Cap
+                      </h4>
+                      <p className="mt-0.5 text-xs text-fg-muted">
+                        Your total cost exceeds your set cap of {formatCost(targetBudgetCap, currency)}.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={autoOptimizeBudget}
+                        className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-md hover:from-amber-400 hover:to-orange-500 transition-all"
+                      >
+                        <Icon name="sparkles" size="sm" />
+                        <span>⚡ Auto-Optimize Budget</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               )}
-            </div>
 
-            <Button type="submit" size="lg" fullWidth className="mt-5 bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 text-white font-extrabold shadow-lg shadow-cyan-500/25 border-0" leadingIcon="chart">
-              Calculate trip budget
-            </Button>
-          </Card>
+              {/* Expense Allocation Chart */}
+              <Card padding="lg">
+                <h3 className="text-base font-bold text-fg">Expense Allocation</h3>
+                <div className="mt-4">
+                  <DonutChart
+                    data={donutData}
+                    size={150}
+                    thickness={20}
+                    centerLabel="Total"
+                    centerValue={formatCost(shown.total, currency, true)}
+                  />
+                </div>
+              </Card>
 
-          {/* Results */}
-          <div className="space-y-4 lg:sticky lg:top-[calc(var(--nav-h)+1.5rem)]">
-            {!shown ? (
-              <EmptyState
-                icon="wallet"
-                title="Pick a destination to see the estimate"
-                description="We combine state-level hotel pricing, per-day food and activity averages, and your transport mode."
-              />
-            ) : (
-              <>
-                {/* Total Estimated Cost Card */}
-                <Card tone="gradient" padding="lg" className="border border-cyan-500/30">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-2xs font-extrabold uppercase tracking-[0.2em] text-cyan-600 dark:text-cyan-300">
-                        Estimated Total Cost
-                      </p>
-                      <p className="mt-2 text-4xl font-black tracking-tight text-fg">{formatCost(shown.total, currency)}</p>
-                      <p className="mt-1 text-sm font-medium text-fg-muted">
-                        {shown.destination} · {shown.days} days · {shown.travelers} traveller
-                        {shown.travelers > 1 ? 's' : ''}
-                      </p>
-                    </div>
-                    <Badge tone={STYLE_CONFIG[shown.style]?.tone || 'brand'} icon={STYLE_CONFIG[shown.style]?.icon}>
-                      {shown.style}
-                    </Badge>
-                  </div>
-
-                  <div className="mt-5 grid grid-cols-2 gap-3">
-                    <div className="rounded-xl border border-line bg-surface/90 px-4 py-3 shadow-sm">
-                      <p className="text-2xs font-bold uppercase tracking-wide text-fg-subtle">Per Person Outlay</p>
-                      <p className="mt-1 text-lg font-black text-fg">{formatCost(perPerson, currency)}</p>
-                    </div>
-                    <div className="rounded-xl border border-line bg-surface/90 px-4 py-3 shadow-sm">
-                      <p className="text-2xs font-bold uppercase tracking-wide text-fg-subtle">Per Day Outlay</p>
-                      <p className="mt-1 text-lg font-black text-fg">{formatCost(perDay, currency)}</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap gap-2 text-2xs">
-                    {form.includeIntercity && (
-                      <Badge tone="neutral" icon="train">
-                        {shown.travelMode} · {shown.distance}
-                      </Badge>
-                    )}
-                    <Badge tone="neutral" icon="sun">
-                      {shown.season}
-                    </Badge>
-                    <Badge tone="neutral" icon="target">
-                      Tier Multiplier ×{shown.styleMultiplier}
-                    </Badge>
-                  </div>
-                </Card>
-
-                {/* Cap Alert & Auto-Optimizer Banner */}
-                {isOverCap && (
-                  <div className="rounded-2xl border border-amber-500/40 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-4 backdrop-blur-xl">
-                    <div className="flex items-start gap-3">
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-amber-500 font-bold">
-                        ⚠️
-                      </span>
-                      <div className="flex-1">
-                        <h4 className="text-sm font-extrabold text-amber-500 dark:text-amber-400">
-                          {formatCost(overCapAmount, currency)} Over Target Budget Cap
-                        </h4>
-                        <p className="mt-0.5 text-xs text-fg-muted">
-                          Your total estimated cost exceeds your set cap of {formatCost(cap, currency)}.
-                        </p>
-                        <button
-                          type="button"
-                          onClick={autoOptimizeBudget}
-                          className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-md hover:from-amber-400 hover:to-orange-500 transition-all"
+              {/* Line Items Detail & Tier Matrix */}
+              <Card padding="lg">
+                <h3 className="text-base font-bold text-fg">Line Item Breakdown</h3>
+                <ul className="mt-3 space-y-2.5">
+                  {Object.entries(CATEGORY_META)
+                    .filter(([key]) => shown[key] > 0)
+                    .map(([key, meta]) => (
+                      <li key={key} className="flex items-center gap-3 rounded-xl border border-line bg-surface-muted p-3">
+                        <span
+                          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white shadow-sm"
+                          style={{ background: meta.color }}
                         >
-                          <Icon name="sparkles" size="sm" />
-                          <span>⚡ Auto-Optimize Budget</span>
-                        </button>
-                      </div>
+                          <Icon name={meta.icon} size="sm" />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-sm font-semibold text-fg">{meta.label}</span>
+                          <span className="block text-2xs text-fg-subtle">
+                            {key === 'hotel' && `${shown.days} night${shown.days > 1 ? 's' : ''} stay`}
+                            {key === 'food' && `${shown.days} days × ${shown.travelers} traveller${shown.travelers > 1 ? 's' : ''}`}
+                            {key === 'travel' && `${shown.travelMode} (${shown.distance}) × ${shown.travelers}`}
+                            {key === 'activities' && `${shown.days} day${shown.days > 1 ? 's' : ''} of experiences`}
+                            {key === 'shopping' && `Shopping & souvenir allowance`}
+                            {key === 'buffer' && `10% emergency safety fund`}
+                          </span>
+                        </span>
+                        <span className="shrink-0 text-sm font-extrabold text-fg">{formatCost(shown[key], currency)}</span>
+                      </li>
+                    ))}
+                </ul>
+
+                {/* 3-Tier Comparison Matrix */}
+                <div className="mt-5 border-t border-line pt-4">
+                  <h4 className="text-xs font-extrabold uppercase tracking-wider text-fg-muted">Tier Matrix</h4>
+                  <div className="mt-2.5 grid grid-cols-3 gap-2">
+                    {styleComparisons.map((item) => (
+                      <button
+                        key={item.style}
+                        type="button"
+                        onClick={() => setForm((prev) => ({ ...prev, style: item.style }))}
+                        className={cn(
+                          'flex flex-col items-center justify-between rounded-xl border p-2.5 text-center transition-all',
+                          form.style === item.style
+                            ? 'border-cyan-500 bg-cyan-500/10 text-cyan-500 font-extrabold shadow-sm'
+                            : 'border-line bg-surface-muted text-fg hover:border-cyan-500/40'
+                        )}
+                      >
+                        <span className="text-3xs font-bold uppercase">{item.style}</span>
+                        <span className="mt-1 text-xs font-black">{formatCost(item.data.total, currency, true)}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Alternative Matched Destinations */}
+                {matchedDestinations.length > 0 && (
+                  <div className="mt-5 border-t border-line pt-4 space-y-2">
+                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-fg-muted">
+                      Alternative Destinations for {formatCost(targetBudgetCap, currency, true)}
+                    </h4>
+                    <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                      {matchedDestinations.map((item) => (
+                        <div
+                          key={item.key}
+                          className="flex items-center justify-between rounded-xl border border-line bg-surface-muted p-2.5 text-xs"
+                        >
+                          <div>
+                            <span className="font-extrabold text-fg">{item.name}</span>
+                            <span className="block text-2xs text-fg-muted">
+                              Est: <span className="font-bold">{formatCost(item.estCost, currency, true)}</span> · Max: <span className="text-cyan-500 font-bold">{item.maxPossibleDays} days</span>
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setForm((prev) => ({ ...prev, destination: item.key }));
+                              toast.success(`Switched destination to ${item.name}!`);
+                            }}
+                            className="rounded-lg bg-surface border border-line px-2.5 py-1 text-2xs font-extrabold text-cyan-600 dark:text-cyan-400 hover:border-cyan-500"
+                          >
+                            Switch
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
 
-                {/* Expense Allocation Chart */}
-                <Card padding="lg">
-                  <h3 className="text-base font-bold text-fg">Expense Allocation</h3>
-                  <div className="mt-4">
-                    <DonutChart
-                      data={donutData}
-                      size={150}
-                      thickness={20}
-                      centerLabel="Total"
-                      centerValue={formatCost(shown.total, currency, true)}
-                    />
+                {/* Destination Smart Savings Tips */}
+                <div className="mt-5 rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-4">
+                  <div className="flex items-center gap-2 text-xs font-extrabold text-cyan-600 dark:text-cyan-400">
+                    <Icon name="lightbulb" size="sm" />
+                    <span>Smart Savings Tips for {shown.destination}</span>
                   </div>
-                </Card>
-
-                {/* Line Items Detail */}
-                <Card padding="lg">
-                  <h3 className="text-base font-bold text-fg">Line Item Breakdown</h3>
-                  <ul className="mt-3 space-y-2.5">
-                    {Object.entries(CATEGORY_META)
-                      .filter(([key]) => shown[key] > 0)
-                      .map(([key, meta]) => (
-                        <li key={key} className="flex items-center gap-3 rounded-xl border border-line bg-surface-muted p-3">
-                          <span
-                            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white shadow-sm"
-                            style={{ background: meta.color }}
-                          >
-                            <Icon name={meta.icon} size="sm" />
-                          </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block text-sm font-semibold text-fg">{meta.label}</span>
-                            <span className="block text-2xs text-fg-subtle">
-                              {key === 'hotel' && `${shown.days} night${shown.days > 1 ? 's' : ''} stay`}
-                              {key === 'food' && `${shown.days} days × ${shown.travelers} traveller${shown.travelers > 1 ? 's' : ''}`}
-                              {key === 'travel' && `${shown.travelMode} (${shown.distance}) × ${shown.travelers}`}
-                              {key === 'activities' && `${shown.days} day${shown.days > 1 ? 's' : ''} of experiences`}
-                              {key === 'shopping' && `Shopping & souvenir allowance`}
-                              {key === 'buffer' && `10% emergency safety fund`}
-                            </span>
-                          </span>
-                          <span className="shrink-0 text-sm font-extrabold text-fg">{formatCost(shown[key], currency)}</span>
-                        </li>
-                      ))}
+                  <ul className="mt-2 space-y-1.5 text-2xs text-fg-muted">
+                    {destinationTips.map((tip, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-cyan-500 font-bold">•</span>
+                        <span>{tip}</span>
+                      </li>
+                    ))}
                   </ul>
-
-                  {/* 3-Tier Comparison Matrix */}
-                  <div className="mt-5 border-t border-line pt-4">
-                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-fg-muted">Tier Comparison</h4>
-                    <div className="mt-2.5 grid grid-cols-3 gap-2">
-                      {styleComparisons.map((item) => (
-                        <button
-                          key={item.style}
-                          type="button"
-                          onClick={() => setForm((prev) => ({ ...prev, style: item.style }))}
-                          className={cn(
-                            'flex flex-col items-center justify-between rounded-xl border p-2.5 text-center transition-all',
-                            form.style === item.style
-                              ? 'border-cyan-500 bg-cyan-500/10 text-cyan-500 font-extrabold shadow-sm'
-                              : 'border-line bg-surface-muted text-fg hover:border-cyan-500/40'
-                          )}
-                        >
-                          <span className="text-3xs font-bold uppercase">{item.style}</span>
-                          <span className="mt-1 text-xs font-black">{formatCost(item.data.total, currency, true)}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Destination Smart Savings Tips */}
-                  <div className="mt-5 rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-4">
-                    <div className="flex items-center gap-2 text-xs font-extrabold text-cyan-600 dark:text-cyan-400">
-                      <Icon name="lightbulb" size="sm" />
-                      <span>Smart Savings Tips for {shown.destination}</span>
-                    </div>
-                    <ul className="mt-2 space-y-1.5 text-2xs text-fg-muted">
-                      {destinationTips.map((tip, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span className="text-cyan-500 font-bold">•</span>
-                          <span>{tip}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="mt-5 flex flex-wrap gap-2 border-t border-line pt-4">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      leadingIcon="bot"
-                      onClick={() => {
-                        openDock();
-                        send(
-                          `How can I reduce a ${formatCost(shown.total, currency)} budget for ${shown.days} days in ${
-                            shown.destination
-                          } with ${shown.travelers} travellers? Give specific budget swaps.`
-                        );
-                      }}
-                    >
-                      Ask AI to cut costs
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="glass"
-                      leadingIcon="sparkles"
-                      onClick={() => {
-                        navigate(
-                          `/trip-planner?${new URLSearchParams({
-                            destination: shown.destination,
-                            days: String(shown.days),
-                            style: shown.style,
-                          }).toString()}`
-                        );
-                      }}
-                    >
-                      Generate itinerary
-                    </Button>
-                    <Button size="sm" variant="ghost" leadingIcon="download" onClick={exportBudgetReport}>
-                      Export report
-                    </Button>
-                  </div>
-                </Card>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* MODE 2: CUSTOM TRAVEL AMOUNT REVERSE BUDGET MODE */}
-      {calcMode === 'custom' && (
-        <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr] lg:items-start">
-          {/* Custom Budget Form Controls */}
-          <Card padding="lg" className="space-y-6">
-            <div>
-              <h3 className="text-base font-black text-fg flex items-center gap-2">
-                <Icon name="sparkles" size="md" className="text-cyan-500" />
-                <span>Set Your Custom Travel Budget</span>
-              </h3>
-              <p className="mt-1 text-xs text-fg-muted">
-                Enter your available travel funds. VibeVoyage will calculate category allocations, recommended destinations, and max stay durations.
-              </p>
-            </div>
-
-            {/* Custom Budget Input & Quick Presets */}
-            <div className="space-y-3">
-              <Field label="Total Custom Travel Amount" htmlFor="custom-budget-input">
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-cyan-500 font-extrabold text-base">
-                    {CURRENCIES[currency]?.symbol || '₹'}
-                  </span>
-                  <input
-                    id="custom-budget-input"
-                    type="number"
-                    min="1000"
-                    step="1000"
-                    value={customAmount}
-                    onChange={(e) => setCustomAmount(Number(e.target.value) || 0)}
-                    className="h-12 w-full rounded-xl border border-cyan-500/40 bg-surface pl-10 pr-4 text-lg font-black text-fg shadow-xs outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
-                    placeholder="e.g. 45000"
-                  />
                 </div>
-              </Field>
 
-              {/* Quick Budget Preset Pills */}
-              <div className="flex flex-wrap gap-2 pt-1">
-                {[15000, 30000, 50000, 100000, 200000].map((preset) => (
-                  <button
-                    key={preset}
-                    type="button"
-                    onClick={() => setCustomAmount(preset)}
-                    className={cn(
-                      'rounded-full px-3 py-1 text-2xs font-extrabold border transition-all',
-                      customAmount === preset
-                        ? 'border-cyan-500 bg-cyan-500 text-white shadow-sm'
-                        : 'border-line bg-surface text-fg-muted hover:border-cyan-500/40 hover:text-fg'
-                    )}
+                {/* Action Buttons */}
+                <div className="mt-5 flex flex-wrap gap-2 border-t border-line pt-4">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    leadingIcon="bot"
+                    onClick={() => {
+                      openDock();
+                      send(
+                        `How can I reduce a ${formatCost(shown.total, currency)} budget for ${shown.days} days in ${
+                          shown.destination
+                        } with ${shown.travelers} travellers? Give specific budget swaps.`
+                      );
+                    }}
                   >
-                    {formatCost(preset, currency, true)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              <Field label="Trip Duration" htmlFor="custom-days">
-                <Input
-                  id="custom-days"
-                  type="number"
-                  min="1"
-                  max="60"
-                  value={customDays}
-                  onChange={(e) => setCustomDays(e.target.value)}
-                  icon="calendar"
-                />
-              </Field>
-
-              <Field label="Travellers" htmlFor="custom-travelers">
-                <Input
-                  id="custom-travelers"
-                  type="number"
-                  min="1"
-                  max="50"
-                  value={customTravelers}
-                  onChange={(e) => setCustomTravelers(e.target.value)}
-                  icon="users"
-                />
-              </Field>
-
-              <Field label="Travel Style Tier" htmlFor="custom-style">
-                <Select
-                  id="custom-style"
-                  value={customStyle}
-                  onChange={(e) => setCustomStyle(e.target.value)}
-                  icon="compass"
-                >
-                  <option value="Budget">Budget Tier</option>
-                  <option value="Standard">Standard Tier</option>
-                  <option value="Luxury">Luxury Tier</option>
-                </Select>
-              </Field>
-            </div>
-
-            {/* Recommended Allocation Summary Box */}
-            <div className="rounded-2xl border border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-transparent p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-cyan-600 dark:text-cyan-300">
-                  Custom Budget Outlay
-                </span>
-                <Badge tone="brand" icon="target">
-                  Recommended Tier: {customAnalysis.recommendedStyle}
-                </Badge>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <div className="rounded-xl border border-line bg-surface p-3">
-                  <span className="text-3xs font-bold uppercase text-fg-subtle">Per Person Total</span>
-                  <p className="mt-0.5 text-base font-black text-fg">{formatCost(customAnalysis.perPerson, currency)}</p>
-                </div>
-                <div className="rounded-xl border border-line bg-surface p-3">
-                  <span className="text-3xs font-bold uppercase text-fg-subtle">Per Day Total</span>
-                  <p className="mt-0.5 text-base font-black text-fg">{formatCost(customAnalysis.perDay, currency)}</p>
-                </div>
-                <div className="rounded-xl border border-line bg-surface p-3 sm:col-span-1 col-span-2">
-                  <span className="text-3xs font-bold uppercase text-fg-subtle">Daily Per Person</span>
-                  <p className="mt-0.5 text-base font-black text-cyan-500">{formatCost(customAnalysis.dailyPerPerson, currency)}</p>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Results: Recommended Categories & Matched Destinations */}
-          <div className="space-y-4">
-            {/* Donut Allocation */}
-            <Card padding="lg">
-              <h3 className="text-base font-bold text-fg">Calculated Category Outlay</h3>
-              <p className="mt-0.5 text-xs text-fg-muted">Recommended spending allocation based on your custom budget amount.</p>
-              <div className="mt-4">
-                <DonutChart
-                  data={customDonutData}
-                  size={150}
-                  thickness={20}
-                  centerLabel="Custom Budget"
-                  centerValue={formatCost(customAnalysis.amount, currency, true)}
-                />
-              </div>
-            </Card>
-
-            {/* Matched Destinations You Can Afford */}
-            <Card padding="lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-base font-bold text-fg">Destinations Fitting Your Budget</h3>
-                  <p className="mt-0.5 text-xs text-fg-muted">
-                    {customAnalysis.affordableCount} destination(s) fit within your custom budget of {formatCost(customAnalysis.amount, currency)}.
-                  </p>
-                </div>
-                <Badge tone="success" icon="checkCircle">
-                  {customAnalysis.affordableCount} Matches
-                </Badge>
-              </div>
-
-              <div className="mt-4 space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
-                {customAnalysis.matchedDestinations.map((item) => (
-                  <div
-                    key={item.key}
-                    className={cn(
-                      'flex items-center justify-between rounded-xl border p-3 transition-all',
-                      item.isAffordable
-                        ? 'border-emerald-500/40 bg-emerald-500/5 hover:border-emerald-500'
-                        : 'border-line bg-surface-muted/50 opacity-75'
-                    )}
+                    Ask AI to cut costs
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="glass"
+                    leadingIcon="sparkles"
+                    onClick={() => {
+                      navigate(
+                        `/trip-planner?${new URLSearchParams({
+                          destination: shown.destination,
+                          days: String(shown.days),
+                          style: shown.style,
+                        }).toString()}`
+                      );
+                    }}
                   >
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-extrabold text-fg">{item.name}</span>
-                        {item.isAffordable ? (
-                          <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[9px] font-bold text-emerald-500">
-                            Fits Budget (Save {formatCost(item.difference, currency, true)})
-                          </span>
-                        ) : (
-                          <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[9px] font-bold text-rose-500">
-                            +{formatCost(Math.abs(item.difference), currency, true)} over
-                          </span>
-                        )}
-                      </div>
-                      <p className="mt-0.5 text-2xs text-fg-muted">
-                        Est. Cost: <span className="font-bold text-fg">{formatCost(item.estCost, currency)}</span> · Lasts up to <span className="font-bold text-cyan-500">{item.maxPossibleDays} days</span>
-                      </p>
-                    </div>
-
-                    <Button
-                      size="sm"
-                      variant={item.isAffordable ? 'secondary' : 'ghost'}
-                      leadingIcon="arrowRight"
-                      onClick={() => {
-                        setForm((prev) => ({ ...prev, destination: item.key, days: String(customDays), travelers: String(customTravelers), style: customStyle }));
-                        setCalcMode('estimator');
-                        toast.success(`Selected ${item.name} for budget calculation!`);
-                      }}
-                    >
-                      Select
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </div>
+                    Generate itinerary
+                  </Button>
+                  <Button size="sm" variant="ghost" leadingIcon="download" onClick={exportBudgetReport}>
+                    Export report
+                  </Button>
+                </div>
+              </Card>
+            </>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
