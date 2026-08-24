@@ -70,8 +70,8 @@ function MegaMenu({ group, open, onOpen, onClose }) {
           open ? 'visible opacity-100 translate-y-0' : 'invisible -translate-y-1 opacity-0'
         )}
       >
-        <div className="overflow-hidden rounded-2xl border border-line bg-surface-raised p-2 shadow-lift">
-          <p className="px-3 pb-1 pt-2 text-2xs font-bold uppercase tracking-wider text-fg-subtle">
+        <div className="overflow-hidden rounded-2xl border border-cyan-500/30 bg-slate-950 p-2 shadow-2xl backdrop-blur-2xl">
+          <p className="px-3 pb-2 pt-2 text-2xs font-extrabold uppercase tracking-wider text-cyan-400">
             {group.description}
           </p>
           {group.items.map((item) => (
@@ -81,24 +81,33 @@ function MegaMenu({ group, open, onOpen, onClose }) {
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  'group flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors duration-150',
-                  isActive ? 'bg-brand-50 dark:bg-brand-500/12' : 'hover:bg-surface-muted'
+                  'group flex items-start gap-3 rounded-xl px-3 py-3 border transition-all duration-150',
+                  isActive
+                    ? 'border-cyan-500/50 bg-gradient-to-r from-cyan-500/25 via-blue-600/20 to-indigo-600/20 shadow-md'
+                    : 'border-transparent hover:border-cyan-500/30 hover:bg-slate-900/90'
                 )
               }
             >
-              <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600 transition-colors duration-150 group-hover:bg-brand-gradient group-hover:text-white dark:bg-brand-500/12 dark:text-brand-300">
+              <span
+                className={cn(
+                  'mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-150',
+                  'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 group-hover:bg-cyan-500 group-hover:text-white group-hover:shadow-md'
+                )}
+              >
                 <Icon name={item.icon} size="sm" />
               </span>
               <span className="min-w-0">
-                <span className="flex items-center gap-2 text-sm font-semibold text-fg">
+                <span className="flex items-center gap-2 text-sm font-extrabold text-white">
                   {item.label}
                   {item.badge && (
-                    <span className="rounded-full bg-accent-100 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-accent-700 dark:bg-accent-500/20 dark:text-accent-200">
+                    <span className="rounded-full bg-cyan-500/20 border border-cyan-500/40 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-cyan-300">
                       {item.badge}
                     </span>
                   )}
                 </span>
-                <span className="mt-0.5 block text-xs leading-5 text-fg-muted">{item.description}</span>
+                <span className="mt-1 block text-xs font-medium leading-relaxed text-slate-300 group-hover:text-slate-100">
+                  {item.description}
+                </span>
               </span>
             </NavLink>
           ))}
@@ -151,16 +160,16 @@ function UserMenu({ onCommand }) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-line bg-surface-raised p-2 shadow-lift animate-slide-down"
+          className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-cyan-500/30 bg-slate-950 p-2 shadow-2xl backdrop-blur-2xl animate-slide-down"
         >
-          <div className="border-b border-line px-3 pb-3 pt-2">
-            <p className="truncate text-sm font-bold text-fg">{displayName}</p>
-            <p className="truncate text-xs text-fg-muted">{user.email}</p>
+          <div className="border-b border-slate-800 px-3 pb-3 pt-2">
+            <p className="truncate text-sm font-extrabold text-white">{displayName}</p>
+            <p className="truncate text-xs font-medium text-slate-400">{user.email}</p>
             <div className="mt-2 flex gap-2">
-              <span className="rounded-full bg-surface-muted px-2 py-0.5 text-2xs font-semibold text-fg-muted">
+              <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-0.5 text-2xs font-bold text-cyan-300">
                 {trips.length} trips
               </span>
-              <span className="rounded-full bg-surface-muted px-2 py-0.5 text-2xs font-semibold text-fg-muted">
+              <span className="rounded-full border border-purple-500/30 bg-purple-500/10 px-2.5 py-0.5 text-2xs font-bold text-purple-300">
                 {favourites.length} saved
               </span>
             </div>
