@@ -1,5 +1,5 @@
 /**
- * SafarAI AI service — frontend entry point.
+ * Yatri AI AI service — frontend entry point.
  *
  * Checks VITE_API_URL first to query the production Railway API server.
  * If VITE_API_URL is not set or network fails, falls back gracefully to
@@ -21,7 +21,7 @@ export const aiStatus = {
 
 if (import.meta.env.DEV) {
   console.info(
-    '[SafarAI AI] Configuration status:',
+    '[Yatri AI AI] Configuration status:',
     aiStatus.remoteServer ? `Railway API (${apiUrl})` : apiKey ? 'Browser Groq Key' : 'Offline Fallback'
   );
 }
@@ -34,14 +34,14 @@ function getClient() {
     clientPromise = import('groq-sdk')
       .then(({ default: Groq }) => new Groq({ apiKey, dangerouslyAllowBrowser: true }))
       .catch((error) => {
-        console.error('[SafarAI AI] Failed to load the Groq SDK:', error);
+        console.error('[Yatri AI AI] Failed to load the Groq SDK:', error);
         return null;
       });
   }
   return clientPromise;
 }
 
-const SYSTEM_PROMPT = `You are SafarAI, an expert AI travel assistant built by TravelCore. You help users plan detailed trip itineraries, discover destinations, explore local food and culture, suggest safe travel routes, and estimate travel budgets. Always be friendly, specific, and practical in your advice.
+const SYSTEM_PROMPT = `You are Yatri AI, an expert AI travel assistant built by TravelCore. You help users plan detailed trip itineraries, discover destinations, explore local food and culture, suggest safe travel routes, and estimate travel budgets. Always be friendly, specific, and practical in your advice.
 
 Formatting rules:
 - Reply in short markdown sections with bold labels.
@@ -170,7 +170,7 @@ export async function generateAITravelResponse(message, options = {}) {
         }
       }
     } catch (error) {
-      console.warn('[SafarAI AI] Railway API server call failed, falling back to local client:', error);
+      console.warn('[Yatri AI AI] Railway API server call failed, falling back to local client:', error);
     }
   }
 

@@ -35,10 +35,10 @@ function DestinationDetails() {
   const [tab, setTab] = useState('overview');
 
   usePageMeta(
-    destination ? `${destination.name} | SafarAI` : 'Destination Details | SafarAI',
+    destination ? `${destination.name} | Yatri AI` : 'Destination Details | Yatri AI',
     destination
-      ? `Explore attractions, budget expectations, and the best time to visit ${destination.name} with SafarAI.`
-      : 'Explore destination details with SafarAI.'
+      ? `Explore attractions, budget expectations, and the best time to visit ${destination.name} with Yatri AI.`
+      : 'Explore destination details with Yatri AI.'
   );
 
   useEffect(() => {
@@ -115,7 +115,7 @@ function DestinationDetails() {
     const url = window.location.href;
     try {
       if (navigator.share) {
-        await navigator.share({ title: `${destination.name} · SafarAI`, url });
+        await navigator.share({ title: `${destination.name} · Yatri AI`, url });
       } else {
         await navigator.clipboard.writeText(url);
         toast.success('Link copied to clipboard');

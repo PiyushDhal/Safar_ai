@@ -34,7 +34,7 @@ const TYPE_META = {
 const INTEREST_OPTIONS = ['culture', 'food', 'nature', 'adventure', 'beach', 'wellness', 'heritage', 'nightlife'];
 
 function ProfilePage() {
-  usePageMeta('Dashboard | SafarAI', 'Manage account preferences, saved trips, and personalization settings in SafarAI.');
+  usePageMeta('Dashboard | Yatri AI', 'Manage account preferences, saved trips, and personalization settings in Yatri AI.');
 
   const [searchParams] = useSearchParams();
   const [tab, setTab] = useState(searchParams.get('tab') || 'overview');
@@ -674,7 +674,7 @@ function ProfilePage() {
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = 'safarai-data.json';
+                    link.download = 'yatriai-data.json';
                     link.click();
                     URL.revokeObjectURL(url);
                     toast.success('Data exported');

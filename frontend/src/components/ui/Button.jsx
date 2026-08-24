@@ -4,7 +4,7 @@ import { cn } from '../../lib/cn';
 import Icon from './Icon';
 
 /**
- * Button — the single source of truth for actions across SafarAI.
+ * Button — the single source of truth for actions across Yatri AI.
  * Variants map to intent, never to decoration.
  */
 const base =

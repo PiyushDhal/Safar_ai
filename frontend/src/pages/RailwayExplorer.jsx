@@ -170,7 +170,7 @@ function TrainCard({ train, onTrack }) {
 }
 
 function RailwayExplorer() {
-  usePageMeta('Railway Explorer | SafarAI', 'Search trains, check PNR status, and explore Indian railway stations with SafarAI.');
+  usePageMeta('Railway Explorer | Yatri AI', 'Search trains, check PNR status, and explore Indian railway stations with Yatri AI.');
 
   const toast = useToast();
   const { toggleFavourite, isFavourite } = useWorkspace();
@@ -381,7 +381,7 @@ function RailwayExplorer() {
             <h2 className="text-base font-bold text-fg">Check PNR status</h2>
             <p className="mt-1 text-sm text-fg-muted">
               Enter your 10-digit PNR. We hand off to the official Indian Railways enquiry service — no credentials are
-              stored by SafarAI.
+              stored by Yatri AI.
             </p>
 
             <div className="mt-5">

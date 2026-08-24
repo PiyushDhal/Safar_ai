@@ -29,7 +29,7 @@ function BrandLogo({ compact = false, className, inverted = false }) {
               inverted ? 'text-white' : 'text-fg'
             )}
           >
-            SAFARAI
+            YATRI AI
           </span>
           <span
             className={cn(

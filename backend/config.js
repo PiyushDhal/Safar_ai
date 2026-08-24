@@ -1,5 +1,5 @@
 /**
- * SafarAI backend configuration.
+ * Yatri AI backend configuration.
  *
  * Automatically loads a .env file from the backend directory if present.
  * Supports both standard process.env variables and VITE_ prefixed variables.

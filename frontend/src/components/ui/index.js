@@ -1,4 +1,4 @@
-/** Barrel export for the SafarAI UI primitive library. */
+/** Barrel export for the Yatri AI UI primitive library. */
 export { default as Button } from './Button';
 export { default as Card, CardHeader } from './Card';
 export { default as Icon, iconNames } from './Icon';

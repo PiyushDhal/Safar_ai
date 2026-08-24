@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 /**
- * SafarAI Design System — Tailwind theme
+ * Yatri AI Design System — Tailwind theme
  * ------------------------------------------------------------------
  * Colour model:
  *  • Static brand scales (brand / accent / gold) keep product identity.

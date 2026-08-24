@@ -26,7 +26,7 @@ const STARTERS = [
 
 function AIAssistant() {
   usePageMeta(
-    'AI Travel Assistant | SafarAI',
+    'AI Travel Assistant | Yatri AI',
     'Ask anything about destinations, trips, budgets, or travel advice.'
   );
 
@@ -41,7 +41,7 @@ function AIAssistant() {
         eyebrow="AI assistant"
         icon="bot"
         title="Your travel co-pilot"
-        description="Ask in plain language. SafarAI answers with structured, practical plans grounded in the same data the rest of the product uses."
+        description="Ask in plain language. Yatri AI answers with structured, practical plans grounded in the same data the rest of the product uses."
         actions={
           <>
             <Button variant="secondary" leadingIcon="refresh" onClick={reset} disabled={messages.length <= 1}>
@@ -68,7 +68,7 @@ function AIAssistant() {
             <p className="mt-2 text-xs leading-5 text-fg-muted">
               {aiStatus.configured
                 ? `Connected to ${aiStatus.model} via Groq for low-latency responses.`
-                : 'No API key configured, so answers are generated from SafarAI’s built-in destination, stay and food datasets.'}
+                : 'No API key configured, so answers are generated from Yatri AI’s built-in destination, stay and food datasets.'}
             </p>
           </Card>
 

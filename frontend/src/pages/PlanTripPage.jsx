@@ -99,11 +99,11 @@ const REGION_PACKING = {
 };
 
 function PlanTripPage() {
-  usePageMeta('Plan Trip | SafarAI', 'Build AI-powered itineraries and save personalized travel plans with SafarAI.');
+  usePageMeta('Plan Trip | Yatri AI', 'Build AI-powered itineraries and save personalized travel plans with Yatri AI.');
 
   const { trips } = useWorkspace();
   const { send, openDock } = useAssistant();
-  const [checklists, setChecklists] = useLocalStorage('safarai_trip_checklists', {});
+  const [checklists, setChecklists] = useLocalStorage('yatriai_trip_checklists', {});
   const [activeId, setActiveId] = useState('');
 
   const sortedTrips = useMemo(

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   SafarAI Design System — Foundations
+   Yatri AI Design System — Foundations
    Tokens → Base → Components → Utilities
    ========================================================================== */
 
@@ -398,7 +398,7 @@
     border-radius: 4px;
   }
 
-  .safarai-pin {
+  .yatriai-pin {
     position: relative;
     display: block;
     width: 100%;
@@ -406,7 +406,7 @@
     filter: drop-shadow(0 4px 6px rgb(15 23 42 / 0.45));
     transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .safarai-pin::before {
+  .yatriai-pin::before {
     content: '';
     position: absolute;
     left: 50%;
@@ -418,7 +418,7 @@
     background: var(--pin, #6366f1);
     border: 2px solid rgb(255 255 255 / 0.9);
   }
-  .safarai-pin__dot {
+  .yatriai-pin__dot {
     position: absolute;
     left: 50%;
     top: 26%;
@@ -428,13 +428,13 @@
     border-radius: 999px;
     background: rgb(255 255 255 / 0.95);
   }
-  .safarai-marker:hover .safarai-pin {
+  .yatriai-marker:hover .yatriai-pin {
     transform: scale(1.15) translateY(-2px);
   }
-  .safarai-pin.is-selected {
+  .yatriai-pin.is-selected {
     animation: pin-bounce 1.8s ease-in-out infinite;
   }
-  .safarai-pin.is-selected::after {
+  .yatriai-pin.is-selected::after {
     content: '';
     position: absolute;
     left: 50%;
@@ -448,7 +448,7 @@
     animation: pulse-ring 2.2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
   }
 
-  .safarai-cluster__bubble {
+  .yatriai-cluster__bubble {
     display: grid;
     place-items: center;
     border-radius: 999px;
@@ -462,11 +462,11 @@
       0 8px 18px -6px rgb(15 23 42 / 0.6);
     transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .safarai-cluster:hover .safarai-cluster__bubble {
+  .yatriai-cluster:hover .yatriai-cluster__bubble {
     transform: scale(1.08);
   }
 
-  .safarai-tooltip.leaflet-tooltip {
+  .yatriai-tooltip.leaflet-tooltip {
     background: rgb(15 23 42 / 0.82);
     border: 1px solid rgb(255 255 255 / 0.14);
     color: #fff;
@@ -477,7 +477,7 @@
     box-shadow: none;
     backdrop-filter: blur(6px);
   }
-  .safarai-tooltip.leaflet-tooltip::before {
+  .yatriai-tooltip.leaflet-tooltip::before {
     display: none;
   }
 
@@ -495,25 +495,25 @@
   .leaflet-popup-content {
     margin: 10px 12px;
   }
-  .safarai-popup__title {
+  .yatriai-popup__title {
     font-size: 13px;
     font-weight: 800;
     color: rgb(var(--c-fg));
   }
-  .safarai-popup__meta {
+  .yatriai-popup__meta {
     margin-top: 2px;
     font-size: 10px;
     font-weight: 600;
     color: rgb(var(--ring-brand));
   }
-  .safarai-popup__text {
+  .yatriai-popup__text {
     margin-top: 6px;
     font-size: 11px;
     line-height: 1.45;
     color: rgb(var(--c-fg-muted));
   }
 
-  .safarai-poi__dot {
+  .yatriai-poi__dot {
     display: block;
     width: 14px;
     height: 14px;
@@ -524,14 +524,14 @@
     box-shadow: 0 2px 6px rgb(15 23 42 / 0.45);
     transition: transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .safarai-poi:hover .safarai-poi__dot {
+  .yatriai-poi:hover .yatriai-poi__dot {
     transform: scale(1.35);
   }
-  .safarai-tooltip--poi {
+  .yatriai-tooltip--poi {
     font-weight: 600;
     opacity: 0.92;
   }
-  .safarai-popup__link {
+  .yatriai-popup__link {
     display: inline-block;
     margin-top: 8px;
     font-size: 11px;
@@ -539,7 +539,7 @@
     color: rgb(var(--ring-brand));
   }
 
-  .safarai-route-label span {
+  .yatriai-route-label span {
     display: inline-flex;
     align-items: center;
     justify-content: center;

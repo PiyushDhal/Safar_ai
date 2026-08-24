@@ -62,13 +62,13 @@ function markerIcon(destination, { selected = false } = {}) {
   const color = CONTINENT_COLORS[destination.continent] || '#6366f1';
   const size = selected ? 42 : 30;
   return L.divIcon({
-    className: 'safarai-marker',
+    className: 'yatriai-marker',
     iconSize: [size, size],
     iconAnchor: [size / 2, size],
     popupAnchor: [0, -size + 4],
     html: `
-      <span class="safarai-pin ${selected ? 'is-selected' : ''}" style="--pin:${color}">
-        <span class="safarai-pin__dot"></span>
+      <span class="yatriai-pin ${selected ? 'is-selected' : ''}" style="--pin:${color}">
+        <span class="yatriai-pin__dot"></span>
       </span>`,
   });
 }
@@ -77,10 +77,10 @@ function clusterIcon(count, dominant) {
   const color = CONTINENT_COLORS[dominant] || '#6366f1';
   const size = count > 40 ? 54 : count > 12 ? 46 : 38;
   return L.divIcon({
-    className: 'safarai-cluster',
+    className: 'yatriai-cluster',
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
-    html: `<span class="safarai-cluster__bubble" style="--pin:${color};width:${size}px;height:${size}px">${count}</span>`,
+    html: `<span class="yatriai-cluster__bubble" style="--pin:${color};width:${size}px;height:${size}px">${count}</span>`,
   });
 }
 
@@ -233,15 +233,15 @@ const WorldMap = forwardRef(function WorldMap(
               permanent: true,
               direction: 'top',
               offset: [0, -30],
-              className: 'safarai-tooltip',
+              className: 'yatriai-tooltip',
             });
           }
 
           marker.bindPopup(
-            `<div class="safarai-popup">
-               <p class="safarai-popup__title">${destination.name}</p>
-               <p class="safarai-popup__meta">${destination.country} · ${destination.bestTime}</p>
-               <p class="safarai-popup__text">${destination.tagline}</p>
+            `<div class="yatriai-popup">
+               <p class="yatriai-popup__title">${destination.name}</p>
+               <p class="yatriai-popup__meta">${destination.country} · ${destination.bestTime}</p>
+               <p class="yatriai-popup__text">${destination.tagline}</p>
              </div>`,
             { closeButton: false, maxWidth: 220 }
           );
@@ -305,10 +305,10 @@ const WorldMap = forwardRef(function WorldMap(
       const category = POI_CATEGORIES[item.category] || POI_CATEGORIES.landmark;
       const marker = L.marker([item.coords.lat, item.coords.lng], {
         icon: L.divIcon({
-          className: 'safarai-poi',
+          className: 'yatriai-poi',
           iconSize: [26, 26],
           iconAnchor: [13, 13],
-          html: `<span class="safarai-poi__dot" style="--pin:${category.color}" title="${item.name}"></span>`,
+          html: `<span class="yatriai-poi__dot" style="--pin:${category.color}" title="${item.name}"></span>`,
         }),
         alt: `${item.name} — ${category.label}`,
         riseOnHover: true,
@@ -318,17 +318,17 @@ const WorldMap = forwardRef(function WorldMap(
         permanent: showLabels,
         direction: 'right',
         offset: [10, 0],
-        className: 'safarai-tooltip safarai-tooltip--poi',
+        className: 'yatriai-tooltip yatriai-tooltip--poi',
       });
 
       marker.bindPopup(
-        `<div class="safarai-popup">
-           <p class="safarai-popup__title">${item.name}</p>
-           <p class="safarai-popup__meta">${category.label}</p>
-           ${item.note ? `<p class="safarai-popup__text">${item.note}</p>` : ''}
+        `<div class="yatriai-popup">
+           <p class="yatriai-popup__title">${item.name}</p>
+           <p class="yatriai-popup__meta">${category.label}</p>
+           ${item.note ? `<p class="yatriai-popup__text">${item.note}</p>` : ''}
            ${
              item.wiki
-               ? `<a class="safarai-popup__link" target="_blank" rel="noreferrer" href="https://en.wikipedia.org/wiki/${item.wiki}">Read more →</a>`
+               ? `<a class="yatriai-popup__link" target="_blank" rel="noreferrer" href="https://en.wikipedia.org/wiki/${item.wiki}">Read more →</a>`
                : ''
            }
          </div>`,
@@ -384,7 +384,7 @@ const WorldMap = forwardRef(function WorldMap(
     L.marker(midpoint, {
       interactive: false,
       icon: L.divIcon({
-        className: 'safarai-route-label',
+        className: 'yatriai-route-label',
         html: `<span>${distance.toLocaleString('en-IN')} km</span>`,
         iconSize: [90, 22],
         iconAnchor: [45, 11],

@@ -1,9 +1,9 @@
 {
-  "name": "safarai-backend",
+  "name": "yatriai-backend",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "SafarAI production API server — Express.js, Groq AI, Supabase, and destination intelligence.",
+  "description": "Yatri AI production API server — Express.js, Groq AI, Supabase, and destination intelligence.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

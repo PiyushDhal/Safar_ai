@@ -1,6 +1,6 @@
-# SafarAI — AI-Powered Travel Assistant
+# Yatri AI — AI-Powered Travel Assistant
 
-SafarAI is an AI-powered travel planning platform for Indian destinations, featuring an interactive globe, budget calculator, trip planner, hotel finder, and an AI chat assistant powered by Groq.
+Yatri AI is an AI-powered travel planning platform for Indian destinations, featuring an interactive globe, budget calculator, trip planner, hotel finder, and an AI chat assistant powered by Groq.
 
 ---
 

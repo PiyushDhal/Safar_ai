@@ -98,7 +98,7 @@ export default function IndiaTravelMap() {
                 viewBox={`-4 -4 ${VIEW.w + 8} ${VIEW.h + 8}`}
                 className="h-auto w-full"
                 role="group"
-                aria-label="Map of India with SafarAI destinations"
+                aria-label="Map of India with Yatri AI destinations"
               >
                 <defs>
                   <linearGradient id="india-fill" x1="0" y1="0" x2="1" y2="1">

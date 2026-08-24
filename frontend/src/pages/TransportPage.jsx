@@ -88,7 +88,7 @@ const LOCAL_TIPS = [
 ];
 
 function TransportPage() {
-  usePageMeta('Transport | SafarAI', 'Railway and transport planning tools for smoother trip movement with SafarAI.');
+  usePageMeta('Transport | Yatri AI', 'Railway and transport planning tools for smoother trip movement with Yatri AI.');
 
   const [distanceKey, setDistanceKey] = useState('medium');
   const [travellers, setTravellers] = useState(2);

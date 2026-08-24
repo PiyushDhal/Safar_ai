@@ -224,7 +224,7 @@ function CompareModal({ open, onClose, items, onRemove }) {
 /* --------------------------------------------------------------------- page */
 
 function ExplorePage() {
-  usePageMeta('Explore | SafarAI', 'Discover destinations, food, events, and local stories with SafarAI.');
+  usePageMeta('Explore | Yatri AI', 'Discover destinations, food, events, and local stories with Yatri AI.');
 
   const [searchParams] = useSearchParams();
   const [tab, setTab] = useState(searchParams.get('tab') === 'food' ? 'food' : 'destinations');

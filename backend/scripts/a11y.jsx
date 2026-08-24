@@ -5,7 +5,7 @@
 import { JSDOM } from 'jsdom';
 
 const dom = new JSDOM(
-  '<!doctype html><html lang="en"><head><meta name="description" content=""><title>SafarAI</title></head><body><div id="root"></div></body></html>',
+  '<!doctype html><html lang="en"><head><meta name="description" content=""><title>Yatri AI</title></head><body><div id="root"></div></body></html>',
   { url: 'https://localhost/', pretendToBeVisual: true }
 );
 

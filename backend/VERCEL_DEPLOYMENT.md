@@ -1,12 +1,12 @@
-# SafarAI Backend — Vercel Deployment Guide
+# Yatri AI Backend — Vercel Deployment Guide
 
-This guide walks through deploying the SafarAI Express API backend directly to **Vercel** as a Serverless Function.
+This guide walks through deploying the Yatri AI Express API backend directly to **Vercel** as a Serverless Function.
 
 ---
 
 ## 📋 Overview
 
-The SafarAI backend is configured with `@vercel/node` and `vercel.json` to run seamlessly on Vercel Serverless Functions.
+The Yatri AI backend is configured with `@vercel/node` and `vercel.json` to run seamlessly on Vercel Serverless Functions.
 
 Available endpoints on your Vercel deployment:
 - 🏥 `GET /health` — Health check status
@@ -50,14 +50,14 @@ vercel --prod
 
 ## 🧪 Testing Your Vercel API
 
-Once deployed, test your Vercel URL (e.g. `https://safarai-backend.vercel.app`):
+Once deployed, test your Vercel URL (e.g. `https://yatriai-backend.vercel.app`):
 
 ```bash
 # Health Check
-curl https://safarai-backend.vercel.app/health
+curl https://yatriai-backend.vercel.app/health
 
 # Output:
-# {"status":"ok","service":"SafarAI Backend","environment":"production",...}
+# {"status":"ok","service":"Yatri AI Backend","environment":"production",...}
 ```
 
 ---
@@ -67,5 +67,5 @@ curl https://safarai-backend.vercel.app/health
 In your frontend Vercel project environment variables:
 
 ```env
-VITE_API_URL=https://safarai-backend.vercel.app
+VITE_API_URL=https://yatriai-backend.vercel.app
 ```

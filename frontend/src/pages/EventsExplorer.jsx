@@ -12,7 +12,7 @@ import { useToast } from '../context/ToastContext';
 import { formatDate } from '../lib/format';
 import { cn } from '../lib/cn';
 
-const STORAGE_KEY = 'safarai_events';
+const STORAGE_KEY = 'yatriai_events';
 
 const CATEGORY_OPTIONS = ['Music', 'Festival', 'Food', 'Sports', 'Workshop', 'Meetup', 'Other'];
 
@@ -179,7 +179,7 @@ function EventCard({ event, onView, onDelete }) {
 
 function EventsExplorer() {
   usePageMeta(
-    'Events & Activities Finder | SafarAI',
+    'Events & Activities Finder | Yatri AI',
     'Discover nearby events, add your own activities, and explore what is happening in your city.'
   );
 

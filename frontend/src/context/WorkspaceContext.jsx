@@ -2,22 +2,22 @@ import { createContext, useCallback, useContext, useMemo } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 
 /**
- * WorkspaceContext — the personalisation layer of SafarAI.
+ * WorkspaceContext — the personalisation layer of Yatri AI.
  *
  * Everything is persisted locally (no backend change required) and the
  * original storage keys/shapes are preserved so existing saved data keeps
  * working:
- *   • `safarai_trips`    — itineraries saved from the Trip Planner
- *   • `safarai_events`   — user created events (managed by EventsExplorer)
+ *   • `yatriai_trips`    — itineraries saved from the Trip Planner
+ *   • `yatriai_events`   — user created events (managed by EventsExplorer)
  * New keys add favourites, recently viewed items and an activity feed.
  */
 
-const TRIPS_KEY = 'safarai_trips';
-const FAVOURITES_KEY = 'safarai_favourites';
-const RECENT_KEY = 'safarai_recent';
-const ACTIVITY_KEY = 'safarai_activity';
-const PREFS_KEY = 'safarai_preferences';
-const SEARCHES_KEY = 'safarai_recent_searches';
+const TRIPS_KEY = 'yatriai_trips';
+const FAVOURITES_KEY = 'yatriai_favourites';
+const RECENT_KEY = 'yatriai_recent';
+const ACTIVITY_KEY = 'yatriai_activity';
+const PREFS_KEY = 'yatriai_preferences';
+const SEARCHES_KEY = 'yatriai_recent_searches';
 
 const defaultPreferences = {
   homeCity: 'Delhi',

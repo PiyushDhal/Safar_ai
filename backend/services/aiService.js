@@ -1,5 +1,5 @@
 /**
- * SafarAI AI service — Node.js / backend edition.
+ * Yatri AI AI service — Node.js / backend edition.
  *
  * Uses process.env / config.js.
  * Does NOT use dangerouslyAllowBrowser — runs in trusted Node context.
@@ -32,14 +32,14 @@ function getClient() {
     clientPromise = import('groq-sdk')
       .then(({ default: Groq }) => new Groq({ apiKey }))
       .catch((error) => {
-        console.error('[SafarAI AI] Failed to load the Groq SDK:', error);
+        console.error('[Yatri AI AI] Failed to load the Groq SDK:', error);
         return null;
       });
   }
   return clientPromise;
 }
 
-const SYSTEM_PROMPT = `You are SafarAI, an expert AI travel assistant built by TravelCore. You help users plan detailed trip itineraries, discover destinations, explore local food and culture, suggest safe travel routes, and estimate travel budgets. Always be friendly, specific, and practical in your advice.
+const SYSTEM_PROMPT = `You are Yatri AI, an expert AI travel assistant built by TravelCore. You help users plan detailed trip itineraries, discover destinations, explore local food and culture, suggest safe travel routes, and estimate travel budgets. Always be friendly, specific, and practical in your advice.
 
 Formatting rules:
 - Reply in short markdown sections with bold labels.
@@ -200,7 +200,7 @@ export async function generateAITravelResponse(message, options = {}) {
 
     return response.choices?.[0]?.message?.content?.trim() || offlineAnswer(message);
   } catch (error) {
-    console.error('[SafarAI AI] Groq API Error:', error.message);
+    console.error('[Yatri AI AI] Groq API Error:', error.message);
     return offlineAnswer(message);
   }
 }

@@ -136,7 +136,7 @@ function HotelCard({ hotel, nights, guests, onView }) {
 }
 
 function HotelsFinderPage() {
-  usePageMeta('Hotels & Stay Finder | SafarAI', 'Search and discover hotels across popular Indian destinations with SafarAI.');
+  usePageMeta('Hotels & Stay Finder | Yatri AI', 'Search and discover hotels across popular Indian destinations with Yatri AI.');
 
   const [searchParams, setSearchParams] = useSearchParams();
   const searchParamsRef = useRef(setSearchParams);
