@@ -351,17 +351,17 @@ https://vibevoyage.app`;
         actions={
           <div className="flex flex-wrap items-center gap-3">
             {/* Currency Selector */}
-            <div className="flex items-center gap-2 rounded-2xl border border-line bg-surface px-3 py-1.5 shadow-sm">
-              <Icon name="globe" size="sm" className="text-cyan-500" />
-              <span className="text-2xs font-bold uppercase text-fg-subtle">Currency</span>
+            <div className="flex items-center gap-2 rounded-2xl border border-cyan-500/40 bg-slate-900/90 text-white px-3.5 py-2 shadow-md backdrop-blur-md transition-all hover:border-cyan-400">
+              <Icon name="globe" size="sm" className="text-cyan-400" />
+              <span className="text-2xs font-extrabold uppercase tracking-wider text-cyan-300">Currency</span>
               <select
                 aria-label="Currency"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="bg-transparent text-xs font-extrabold text-fg outline-none cursor-pointer"
+                className="bg-slate-950 text-xs font-black text-white outline-none cursor-pointer border border-slate-800 rounded-lg px-2 py-1 focus:ring-2 focus:ring-cyan-500/50"
               >
                 {Object.entries(CURRENCIES).map(([code, item]) => (
-                  <option key={code} value={code}>
+                  <option key={code} value={code} className="bg-slate-950 text-white font-bold py-1">
                     {item.label}
                   </option>
                 ))}
